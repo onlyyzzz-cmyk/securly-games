@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>securly tools</title>
+<link rel="icon" id="main-favicon" href="">
+<link rel="apple-touch-icon" id="apple-touch-icon" href="">
+<link rel="apple-touch-icon-precomposed" id="apple-touch-icon-pre" href="">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style id="custom-css"></style>
+<style>
+:root {
+  --accent: #00f5ff;
+  --accent-dim: rgba(0,245,255,0.12);
+  --accent-glow: rgba(0,245,255,0.35);
+  --accent-rgb: 0,245,255;
+  --bg-deep: #060612;
+  --bg-mid: #0d0d1f;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-sidebar: rgba(8,8,22,0.97);
+  --text: #e8eaf6;
+  --text-dim: rgba(232,234,246,0.45);
+  --red: #ff3b5c;
+  --red-glow: rgba(255,59,92,0.4);
+  --grad-b: #7b2fff;
+  --sidebar-w: 64px;
+  --sidebar-w-open: 220px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body {
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  transition: background 0.5s;
+}
+
+#bg-svg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+#bg-svg-layer svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.scanlines {
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,.07) 3px, rgba(0,0,0,.07) 4px);
+  pointer-events: none; z-index: 1;
+  animation: scanmove 10s linear infinite;
+}
+@keyframes scanmove { 0%{background-position:0 0} 100%{background-position:0 100px} }
+
+#startup {
+  position: fixed; inset: 0;
+  background: var(--bg-deep);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 20000; gap: 28px; padding: 20px; text-align: center;
+}
+#startup h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.8rem,5vw,2.8rem);
+  font-weight: 900; letter-spacing: 6px;
+  color: var(--accent);
+  text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent-glow);
+  animation: pulse-text 2s ease-in-out infinite;
+}
+#startup-sub { font-size: .8rem; letter-spacing: 4px; color: var(--text-dim); text-transform: uppercase; animation: blink 1.5s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes pulse-text {
+  0%,100%{text-shadow:0 0 20px var(--accent-glow),0 0 40px var(--accent-glow)}
+  50%{text-shadow:0 0 40px var(--accent-glow),0 0 80px var(--accent-glow),0 0 120px rgba(var(--accent-rgb),.2)}
+}
+.load-bar { width: min(380px,80%); height: 3px; background: rgba(255,255,255,.07); border-radius: 10px; overflow: hidden; }
+.load-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--grad-b)); border-radius: 10px; box-shadow: 0 0 12px var(--accent-glow); transition: width .15s ease; }
+
+#sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  border-right: 1px solid rgba(var(--accent-rgb),.1);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0;
+  z-index: 100;
+  transition: width .3s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+#sidebar.expanded { width: var(--sidebar-w-open); }
+.sidebar-logo {
+  width: 100%; padding: 18px 0 16px;
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid rgba(var(--accent-rgb),.08);
+  flex-shrink: 0;
+  gap: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.sidebar-logo-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--grad-b));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; font-weight: 900;
+  color: #000;
+  font-family: 'Orbitron', monospace;
+  box-shadow: 0 0 16px var(--accent-glow);
+  transition: box-shadow .3s;
+}
+.sidebar-logo-text {
+  font-family: 'Orbitron', monospace;
+  font-size: .65rem; font-weight: 700; letter-spacing: 2px;
+  color: var(--accent); white-space: nowrap;
+  opacity: 0; transform: translateX(-8px);
+  transition: opacity .25s, transform .25s;
+}
+#sidebar.expanded .sidebar-logo-text { opacity: 1; transform: translateX(0); }
+
+.sidebar-nav { flex: 1; width: 100%; padding: 12px 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+.sidebar-nav::-webkit-scrollbar { display: none; }
+.sidebar-section-label {
+  font-size: .55rem; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-dim); padding: 10px 0 6px 22px;
+  white-space: nowrap; overflow: hidden;
+  opacity: 0; transition: opacity .2s;
+}
+#sidebar.expanded .sidebar-section-label { opacity: 1; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0 10px 18px;
+  cursor: pointer; white-space: nowrap;
+  color: var(--text-dim);
+  font-size: .8rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  transition: color .2s, background .2s;
+  border-left: 2px solid transparent;
+  position: relative;
+  border-radius: 0 8px 8px 0;
+  margin: 1px 8px 1px 0;
+}
+.nav-item:hover { color: var(--accent); background: var(--accent-dim); }
+.nav-item.active { color: var(--accent); background: var(--accent-dim); border-left-color: var(--accent); }
+.nav-item svg { flex-shrink: 0; width: 18px; height: 18px; margin-left: 4px; }
+.nav-label { opacity: 0; transform: translateX(-6px); transition: opacity .22s, transform .22s; font-size: .78rem; }
+#sidebar.expanded .nav-label { opacity: 1; transform: translateX(0); }
+.nav-badge {
+  margin-left: auto; margin-right: 10px;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  background: rgba(var(--accent-rgb),.2); color: var(--accent);
+  font-size: .6rem; font-weight: 700; letter-spacing: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+  opacity: 0; transition: opacity .22s;
+}
+#sidebar.expanded .nav-badge { opacity: 1; }
+
+.sidebar-bottom { width: 100%; border-top: 1px solid rgba(var(--accent-rgb),.08); padding: 10px 0; flex-shrink: 0; }
+
+#main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex; flex-direction: column;
+  position: relative; z-index: 2;
+  transition: margin-left .3s cubic-bezier(.4,0,.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb),.2) transparent;
+}
+#main::-webkit-scrollbar { width: 4px; }
+#main::-webkit-scrollbar-thumb { background: rgba(var(--accent-rgb),.25); border-radius: 4px; }
+
+#topbar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 24px;
+  background: rgba(6,6,18,.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(var(--accent-rgb),.07);
+}
+#searchwrap { position: relative; flex: 1; max-width: 420px; }
+#searchbar {
+  width: 100%; padding: 9px 40px 9px 16px;
+  font-family: 'Rajdhani', sans-serif; font-size: .9rem;
+  font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text); background: rgba(var(--accent-rgb),.05);
+  border: 1px solid rgba(var(--accent-rgb),.18); border-radius: 8px;
+  outline: none; caret-color: var(--accent);
+  transition: border-color .25s, box-shadow .25s;
+}
+#searchbar::placeholder { color: var(--text-dim); letter-spacing: 2px; }
+#searchbar:focus { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
+.search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--accent); opacity: .5; font-size: 1.1rem; pointer-events: none; }
+
+#cat-bar { display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; flex-shrink: 0; }
+#cat-bar::-webkit-scrollbar { display: none; }
+.cat-chip {
+  padding: 6px 14px; border-radius: 20px;
+  font-family: 'Rajdhani', sans-serif; font-size: .7rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-dim); background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  cursor: pointer; white-space: nowrap;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.cat-chip:hover { color: var(--accent); border-color: rgba(var(--accent-rgb),.35); background: var(--accent-dim); }
+.cat-chip.active { color: var(--accent); background: var(--accent-dim); border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+
+#lucky-btn {
+  padding: 6px 12px; border-radius: 8px; flex-shrink: 0;
+  font-family: 'Rajdhani', sans-serif; font-size: .75rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),.12), rgba(123,47,255,.12));
+  color: var(--accent);
+  border: 1px solid rgba(var(--accent-rgb),.3);
+  cursor: pointer; white-space: nowrap;
+  transition: all .25s; position: relative; overflow: hidden;
+  display: flex; align-items: center;
+}
+#lucky-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),.18), transparent);
+  transform: translateX(-150%); transition: transform .5s;
+}
+#lucky-btn:hover::before { transform: translateX(150%); }
+#lucky-btn:hover { background: linear-gradient(135deg, rgba(var(--accent-rgb),.22), rgba(123,47,255,.22)); box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent); }
+
+#content { flex: 1; padding: 24px 24px 60px; }
+
+.section { margin-bottom: 36px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: .75rem; font-weight: 700; letter-spacing: 4px;
+  color: var(--accent); text-transform: uppercase;
+}
+.section-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(var(--accent-rgb),.3), transparent); }
+.section-count { font-size: .65rem; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 12px;
+}
+.game-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid rgba(var(--accent-rgb),.1);
+  border-radius: 14px;
+  padding: 16px 14px 14px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), border-color .25s, box-shadow .25s, opacity .3s;
+  opacity: 0; transform: translateY(16px);
+  display: flex; flex-direction: column; gap: 10px;
+  min-height: 110px;
+}
+.game-card.visible { opacity: 1; transform: translateY(0); }
+.game-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),.07) 0%, transparent 60%);
+  opacity: 0; transition: opacity .25s;
+}
+.game-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--grad-b));
+  transform: scaleX(0); transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  transform-origin: left;
+}
+.game-card:hover { transform: translateY(-5px) scale(1.02) !important; border-color: rgba(var(--accent-rgb),.42); box-shadow: 0 12px 36px rgba(0,0,0,.5), 0 0 20px rgba(var(--accent-rgb),.12); }
+.game-card:hover::before { opacity: 1; }
+.game-card:hover::after { transform: scaleX(1); }
+.game-card:active { transform: translateY(-1px) scale(.98) !important; }
+body.no-anims .game-card:hover { transform: none !important; box-shadow: none !important; }
+body.no-anims .game-card::after { display: none; }
+
+.card-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(.85rem,1.8vw,.98rem);
+  font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text);
+  position: relative; z-index: 1; flex: 1;
+  line-height: 1.3;
+  margin-top: 10px;
+}
+.card-meta { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+.card-plays { font-size: .62rem; letter-spacing: 1.5px; color: var(--text-dim); text-transform: uppercase; }
+.card-actions { display: flex; align-items: center; gap: 6px; }
+
+.card-star, .card-thumb {
+  background: none; border: none; cursor: pointer;
+  padding: 3px; border-radius: 4px;
+  color: var(--text-dim); font-size: .85rem;
+  transition: color .2s, transform .2s;
+  line-height: 1;
+}
+.card-star:hover, .card-thumb:hover { transform: scale(1.25); }
+.card-star.on { color: #ffd700; }
+.card-thumb.liked { color: var(--accent); }
+.card-thumb.disliked { color: var(--red); }
+
+.card-tag {
+  position: absolute; top: 10px; right: 10px;
+  font-size: .52rem; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--accent); background: rgba(var(--accent-rgb),.1);
+  border: 1px solid rgba(var(--accent-rgb),.2);
+  border-radius: 4px; padding: 2px 6px;
+  font-family: 'Rajdhani', sans-serif; font-weight: 700;
+}
+
+.recents-grid {
+  display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.recents-grid::-webkit-scrollbar { display: none; }
+.recent-card {
+  flex-shrink: 0; width: 160px;
+  background: var(--bg-card);
+  border: 1px solid rgba(var(--accent-rgb),.1);
+  border-radius: 12px; padding: 14px 12px 12px;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform .25s, border-color .2s, box-shadow .2s;
+}
+.recent-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--grad-b));
+  transform: scaleX(0); transition: transform .25s; transform-origin: left;
+}
+.recent-card:hover { transform: translateY(-4px); border-color: rgba(var(--accent-rgb),.38); box-shadow: 0 8px 28px rgba(0,0,0,.45); }
+.recent-card:hover::after { transform: scaleX(1); }
+.recent-name { font-size: .82rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.recent-time { font-size: .6rem; letter-spacing: 1px; color: var(--text-dim); text-transform: uppercase; }
+.recent-play-icon { position: absolute; top: 10px; right: 10px; color: var(--accent); opacity: .6; font-size: .8rem; }
+.recents-empty { font-size: .8rem; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; padding: 10px 0; }
+
+#noresults { display: none; text-align: center; color: var(--text-dim); font-size: .9rem; letter-spacing: 3px; text-transform: uppercase; padding: 40px 0; }
+#tools-loading { color: var(--text-dim); font-size: .8rem; letter-spacing: 3px; text-transform: uppercase; padding: 30px 0; }
+#tools-loading::after { content:''; display:block; width:24px; height:24px; margin:12px auto 0; border:2px solid rgba(var(--accent-rgb),.15); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+
+
+
+#exit-btn {
+  display:none; position:fixed; top:16px; right:16px; z-index:10005;
+  align-items:center; gap:7px; padding:8px 16px 8px 11px;
+  background:rgba(8,8,20,.78); border:1px solid rgba(255,59,92,.3);
+  border-radius:50px; backdrop-filter:blur(16px); cursor:pointer;
+  font-family:'Rajdhani',sans-serif; font-size:.75rem; font-weight:600;
+  letter-spacing:2px; text-transform:uppercase; color:rgba(255,143,160,.85);
+  transition:all .22s; box-shadow:0 4px 20px rgba(0,0,0,.45);
+  animation:slideDownIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+#exit-btn:hover { background:rgba(255,59,92,.16); border-color:var(--red); color:#fff; box-shadow:0 0 22px var(--red-glow),0 4px 20px rgba(0,0,0,.45); transform:translateY(-1px); }
+.exit-x { width:20px; height:20px; display:flex; align-items:center; justify-content:center; background:rgba(255,59,92,.18); border-radius:50%; font-size:.75rem; transition:background .2s, transform .2s; }
+#exit-btn:hover .exit-x { background:rgba(255,59,92,.35); transform:rotate(90deg); }
+@keyframes slideDownIn { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+#game-bar {
+  display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+  align-items:center; background:rgba(8,8,20,.85); border:1px solid rgba(var(--accent-rgb),.18);
+  border-radius:50px; backdrop-filter:blur(18px); box-shadow:0 8px 40px rgba(0,0,0,.55);
+  overflow:hidden; opacity:0; z-index:10005;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), opacity .35s;
+  white-space:nowrap;
+}
+#game-bar.bar-visible { transform:translateX(-50%) translateY(0); opacity:1; }
+#game-bar.bar-hidden { transform:translateX(-50%) translateY(80px); opacity:0; pointer-events:none; }
+.bar-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent-glow); animation:dotpulse 2s ease-in-out infinite; flex-shrink:0; }
+@keyframes dotpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
+.bar-label { display:flex; align-items:center; gap:8px; padding:11px 18px 11px 18px; border-right:1px solid rgba(var(--accent-rgb),.1); }
+.bar-name { font-size:.75rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+.bar-action { display:flex; align-items:center; gap:6px; padding:11px 16px; font-family:'Rajdhani',sans-serif; font-size:.7rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); background:transparent; border:none; cursor:pointer; transition:all .2s; }
+.bar-action:hover { color:var(--accent); background:rgba(var(--accent-rgb),.07); }
+
+#loader { position:fixed; inset:0; background:var(--bg-deep); display:none; align-items:center; justify-content:center; flex-direction:column; gap:20px; z-index:15000; text-align:center; padding:20px; }
+#loader h2 { font-family:'Orbitron',monospace; font-size:clamp(1.2rem,4vw,1.8rem); letter-spacing:4px; color:var(--accent); text-shadow:0 0 20px var(--accent-glow); animation:pulse-text 1.5s ease-in-out infinite; }
+#loaderMsg { font-size:clamp(.9rem,2vw,1.05rem); letter-spacing:2px; color:var(--text-dim); min-height:1.5em; transition:opacity .3s; }
+
+#updatelog { position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:30000; backdrop-filter:blur(8px); padding:20px; }
+#updatelog.show { display:flex; animation:fadein .25s ease; }
+@keyframes fadein { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+.logbox { background:rgba(13,13,31,.97); padding:32px; width:min(480px,90%); border-radius:16px; border:1px solid rgba(var(--accent-rgb),.2); box-shadow:0 0 60px rgba(var(--accent-rgb),.12),0 30px 60px rgba(0,0,0,.5); max-height:80vh; overflow-y:auto; }
+.logbox h2 { font-family:'Orbitron',monospace; font-size:clamp(1rem,3vw,1.2rem); letter-spacing:4px; color:var(--accent); margin-bottom:18px; text-shadow:0 0 16px var(--accent-glow); }
+.logbox ul { padding-left:0; line-height:2; font-size:clamp(.9rem,2vw,1rem); color:var(--text-dim); list-style:none; }
+.logbox ul li::before { content:'▸ '; color:var(--accent); margin-right:4px; }
+.closebtn { margin-top:22px; padding:10px 28px; font-family:'Rajdhani',sans-serif; font-size:.9rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; background:var(--accent); color:#000; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 0 20px var(--accent-glow); display:block; }
+.closebtn:hover { background:#fff; transform:translateY(-2px); }
+
+#settings-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; align-items:center; justify-content:center; z-index:30001; backdrop-filter:blur(10px); padding:20px; }
+#settings-overlay.show { display:flex; animation:fadein .25s ease; }
+.settings-panel { background:linear-gradient(160deg,rgba(13,13,31,.98),rgba(6,6,18,.99)); width:min(600px,95%); max-height:90vh; border-radius:20px; border:1px solid rgba(var(--accent-rgb),.25); box-shadow:0 0 80px rgba(var(--accent-rgb),.1),0 40px 80px rgba(0,0,0,.6); overflow:hidden; display:flex; flex-direction:column; }
+.settings-header { display:flex; align-items:center; justify-content:space-between; padding:20px 26px 16px; border-bottom:1px solid rgba(var(--accent-rgb),.1); background:rgba(var(--accent-rgb),.04); flex-shrink:0; }
+.settings-header h2 { font-family:'Orbitron',monospace; font-size:1rem; letter-spacing:4px; color:var(--accent); }
+.settings-close { width:30px; height:30px; border-radius:50%; background:rgba(255,59,92,.15); border:1px solid rgba(255,59,92,.3); color:#ff8fa0; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.settings-close:hover { background:rgba(255,59,92,.3); color:#fff; transform:rotate(90deg); }
+.settings-tabs { display:flex; border-bottom:1px solid rgba(var(--accent-rgb),.1); flex-shrink:0; overflow-x:auto; scrollbar-width:none; }
+.settings-tabs::-webkit-scrollbar { display:none; }
+.settings-tab { flex:1; min-width:60px; padding:11px 4px; font-family:'Rajdhani',sans-serif; font-size:.7rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); background:transparent; border:none; cursor:pointer; transition:all .2s; border-bottom:2px solid transparent; white-space:nowrap; }
+.settings-tab:hover { color:var(--accent); }
+.settings-tab.active { color:var(--accent); border-bottom-color:var(--accent); background:rgba(var(--accent-rgb),.04); }
+.settings-body { overflow-y:auto; padding:22px 26px; flex:1; scrollbar-width:thin; scrollbar-color:rgba(var(--accent-rgb),.3) transparent; }
+.settings-body::-webkit-scrollbar { width:4px; }
+.settings-body::-webkit-scrollbar-thumb { background:rgba(var(--accent-rgb),.3); border-radius:4px; }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; animation:fadeSlide .2s ease; }
+@keyframes fadeSlide { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.settings-section { margin-bottom:24px; }
+.settings-section-label { font-family:'Rajdhani',sans-serif; font-size:.65rem; letter-spacing:4px; text-transform:uppercase; color:var(--accent); opacity:.7; margin-bottom:12px; padding-bottom:7px; border-bottom:1px solid rgba(var(--accent-rgb),.1); }
+.settings-row { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.03); gap:12px; }
+.settings-row:last-child { border-bottom:none; }
+.settings-row-label { font-size:.9rem; letter-spacing:1px; color:var(--text); }
+.settings-row-sub { font-size:.7rem; color:var(--text-dim); letter-spacing:1px; margin-top:2px; }
+.toggle { position:relative; width:44px; height:24px; cursor:pointer; flex-shrink:0; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle-track { position:absolute; inset:0; background:rgba(255,255,255,.08); border-radius:24px; border:1px solid rgba(255,255,255,.1); transition:all .3s; }
+.toggle-track::after { content:''; position:absolute; left:3px; top:50%; transform:translateY(-50%); width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.4); transition:all .3s; }
+.toggle input:checked + .toggle-track { background:rgba(var(--accent-rgb),.3); border-color:var(--accent); box-shadow:0 0 10px rgba(var(--accent-rgb),.3); }
+.toggle input:checked + .toggle-track::after { left:calc(100% - 19px); background:var(--accent); }
+
+.bg-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.bg-theme-card {
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all .25s;
+  position: relative;
+  aspect-ratio: 16/9;
+  background: #0a0a1a;
+}
+.bg-theme-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.5); }
+.bg-theme-card.active { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
+.bg-theme-card svg { width: 100%; height: 100%; display: block; }
+.bg-theme-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 5px 8px;
+  background: rgba(0,0,0,.6);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: .62rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: #fff; text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+.cloak-input { width:100%; padding:9px 12px; margin-top:7px; font-family:'Rajdhani',sans-serif; font-size:.88rem; font-weight:600; letter-spacing:1px; color:var(--text); background:rgba(var(--accent-rgb),.05); border:1px solid rgba(var(--accent-rgb),.2); border-radius:8px; outline:none; caret-color:var(--accent); transition:border-color .25s,box-shadow .25s; }
+.cloak-input:focus { border-color:var(--accent); box-shadow:0 0 12px var(--accent-glow); }
+.cloak-presets { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.preset-btn { padding:5px 12px; font-family:'Rajdhani',sans-serif; font-size:.68rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; background:rgba(var(--accent-rgb),.07); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.2); border-radius:6px; cursor:pointer; transition:all .2s; }
+.preset-btn:hover { background:var(--accent-dim); border-color:var(--accent); }
+.apply-btn { margin-top:12px; padding:10px 22px; font-family:'Rajdhani',sans-serif; font-size:.82rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; background:linear-gradient(90deg,var(--accent),var(--grad-b)); color:#000; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 0 18px var(--accent-glow); }
+.apply-btn:hover { opacity:.9; transform:translateY(-2px); }
+.key-display { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); border-radius:6px; font-family:'Orbitron',monospace; font-size:.7rem; color:var(--text-dim); letter-spacing:2px; }
+.key-set-btn { padding:7px 14px; font-family:'Rajdhani',sans-serif; font-size:.75rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; background:rgba(var(--accent-rgb),.08); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.25); border-radius:6px; cursor:pointer; transition:all .2s; }
+.key-set-btn:hover { background:var(--accent-dim); }
+.key-set-btn.listening { background:rgba(255,154,0,.15); color:#ff9a00; border-color:#ff9a00; animation:blink .8s step-end infinite; }
+.favicon-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:8px; }
+.favicon-opt { padding:8px 3px; border-radius:8px; cursor:pointer; text-align:center; font-size:.56rem; letter-spacing:.8px; color:var(--text-dim); background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); transition:all .2s; line-height:1.4; }
+.favicon-opt:hover { background:var(--accent-dim); border-color:var(--accent); color:var(--accent); }
+.favicon-opt.active { background:var(--accent-dim); border-color:var(--accent); color:var(--accent); box-shadow:0 0 10px var(--accent-glow); }
+.fav-img { width:18px; height:18px; display:block; margin:0 auto 3px; border-radius:3px; object-fit:contain; }
+.settings-footer { padding:14px 26px; border-top:1px solid rgba(var(--accent-rgb),.08); background:rgba(var(--accent-rgb),.02); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:max(14px,env(safe-area-inset-bottom)); }
+.footer-version { font-size:.65rem; letter-spacing:3px; color:var(--text-dim); text-transform:uppercase; }
+.reset-btn { padding:6px 14px; font-family:'Rajdhani',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; background:rgba(255,59,92,.1); color:#ff8fa0; border:1px solid rgba(255,59,92,.25); border-radius:6px; cursor:pointer; transition:all .2s; }
+.reset-btn:hover { background:rgba(255,59,92,.2); border-color:var(--red); }
+
+#gamereq-overlay { position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:30002; backdrop-filter:blur(12px); padding:20px; }
+#gamereq-overlay.show { display:flex; animation:fadein .25s ease; }
+.gamereq-panel { background:linear-gradient(160deg,rgba(13,13,31,.98),rgba(6,6,18,.99)); width:min(660px,95%); max-height:92vh; border-radius:20px; border:1px solid rgba(var(--accent-rgb),.25); box-shadow:0 0 80px rgba(var(--accent-rgb),.12),0 40px 80px rgba(0,0,0,.6); overflow:hidden; display:flex; flex-direction:column; }
+.gamereq-header { display:flex; align-items:center; justify-content:space-between; padding:20px 26px 16px; border-bottom:1px solid rgba(var(--accent-rgb),.1); background:rgba(var(--accent-rgb),.04); flex-shrink:0; }
+.gamereq-header h2 { font-family:'Orbitron',monospace; font-size:1rem; letter-spacing:4px; color:var(--accent); }
+.gamereq-close { width:30px; height:30px; border-radius:50%; background:rgba(255,59,92,.15); border:1px solid rgba(255,59,92,.3); color:#ff8fa0; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.gamereq-close:hover { background:rgba(255,59,92,.3); color:#fff; transform:rotate(90deg); }
+.gamereq-body { flex:1; overflow:hidden; position:relative; min-height:480px; }
+.gamereq-body::before { content:'loading form...'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-size:.82rem; letter-spacing:3px; text-transform:uppercase; color:var(--text-dim); z-index:0; }
+.gamereq-body::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:24px; height:24px; margin-bottom:18px; border:2px solid rgba(var(--accent-rgb),.15); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; z-index:0; }
+#gamereq-frame { width:100%; height:100%; min-height:520px; border:none; position:relative; z-index:1; background:transparent; filter:invert(1) hue-rotate(180deg); }
+.gamereq-footer { padding:10px 26px; border-top:1px solid rgba(var(--accent-rgb),.08); background:rgba(var(--accent-rgb),.02); flex-shrink:0; display:flex; align-items:center; gap:8px; padding-bottom:max(10px,env(safe-area-inset-bottom)); }
+.gamereq-footer-dot { width:5px; height:5px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px var(--accent-glow); animation:dotpulse 2s ease-in-out infinite; flex-shrink:0; }
+.gamereq-footer-text { font-size:.68rem; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
+
+#sg-toast {
+  position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:rgba(13,13,31,.95); color:var(--accent);
+  border:1px solid rgba(var(--accent-rgb),.35); border-radius:10px;
+  padding:9px 22px; font-family:'Rajdhani',sans-serif; font-size:.85rem;
+  letter-spacing:2px; text-transform:uppercase; z-index:99999;
+  box-shadow:0 0 28px var(--accent-glow); opacity:0;
+  transition:opacity .3s, transform .3s; pointer-events:none;
+}
+
+@media(max-width:768px) {
+  :root { --sidebar-w:54px; }
+  #content { padding:16px 16px 60px; }
+  #topbar { padding:10px 14px; gap:8px; }
+  .game-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .bg-theme-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:480px) {
+  :root { --sidebar-w:0px; }
+  #sidebar { transform:translateX(-100%); transition:transform .3s, width .3s; }
+  #sidebar.mobile-open { transform:translateX(0); width:var(--sidebar-w-open); }
+  #main { margin-left:0 !important; }
+  #mobile-menu-btn { display:flex !important; }
+  .game-grid { grid-template-columns:1fr 1fr; gap:9px; }
+  .game-card { min-height:95px; padding:13px 11px 11px; }
+  .recent-card { width:140px; }
+  #cat-bar { gap:5px; }
+  .cat-chip { padding:5px 11px; font-size:.65rem; }
+  .bg-theme-grid { grid-template-columns:repeat(2,1fr); }
+}
+#mobile-menu-btn { display:none; padding:7px 9px; background:rgba(var(--accent-rgb),.08); border:1px solid rgba(var(--accent-rgb),.25); border-radius:7px; cursor:pointer; color:var(--accent); font-size:1rem; line-height:1; transition:all .2s; flex-shrink:0; }
+#mobile-menu-btn:hover { background:var(--accent-dim); }
+#mobile-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:99; backdrop-filter:blur(4px); }
+#mobile-overlay.show { display:block; }
+html.lowlag * {backdrop-filter: none !important; -webkit-backdrop-filter: none !important;}
+html.lowlag .scanlines {animation: none !important;}
+html.lowlag #game-bar {transition: none !important;}
+html.lowlag #exit-btn {animation: none !important;}
+html.lowlag .bar-dot {animation: none !important;}
+html.lowlag .badge-dot {animation: none !important;}
+html.lowlag .spinner-ring {animation: none !important;}
+html.lowlag #loader-greeting {animation: none !important;}
+html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;}
+</style>
+</head>
+<body>
+
+<div id="bg-svg-layer"></div>
+<div class="scanlines"></div>
+
+<div id="startup">
+  <h1>securly games</h1>
+  <div id="startup-sub">initializing system</div>
+  <div class="load-bar"><div id="startupfill" class="load-fill"></div></div>
+</div>
+
+<div id="mobile-overlay" onclick="closeMobileSidebar()"></div>
+
+<nav id="sidebar">
+  <div class="sidebar-logo" onclick="toggleSidebar()">
+    <div class="sidebar-logo-icon">SG</div>
+    <div class="sidebar-logo-text">securly tools</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="sidebar-section-label">site</div>
+    <div class="nav-item" onclick="location.href='index.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span class="nav-label">games</span>
+    </div>
+    <div class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span class="nav-label">tools</span>
+    </div>
+    <div class="nav-item" onclick="openlog()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="nav-label">update log</span>
+    </div>
+    <div class="nav-item" onclick="location.href='credits.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="nav-label">credits</span>
+    </div>
+    <div class="nav-item" onclick="location.href='bookmart.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      <span class="nav-label">blooket hacks</span>
+    </div>
+    <div class="nav-item" onclick="location.href='submit.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span class="nav-label">community links</span>
+    </div>
+    <div class="nav-item" onclick="openGameRequest()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span class="nav-label">request game</span>
+    </div>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="nav-item" onclick="openSettings()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="nav-label">settings</span>
+    </div>
+  </div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <button id="mobile-menu-btn" onclick="openMobileSidebar()">☰</button>
+    <div id="searchwrap">
+      <input id="searchbar" type="text" placeholder="search tools..." autocomplete="off" oninput="filterTools(this.value)"/>
+      <span class="search-icon">⌕</span>
+    </div>
+    <button id="lucky-btn" onclick="launchLuckyTool()"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" style="margin-right: 6px;"><rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="7" cy="7" r="1.5"/><circle cx="17" cy="7" r="1.5"/><circle cx="7" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg> lucky</button>
+  </div>
+
+  <div id="content">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">tools</span>
+        <div class="section-line"></div>
+        <span class="section-count" id="tools-count-label"></span>
+      </div>
+      <div class="game-grid" id="toolsGrid">
+        <div id="tools-loading">scanning tools folder</div>
+        <p id="noresults">no tools found</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="loader">
+  <h2>loading tool...</h2>
+  <div id="loaderMsg"></div>
+  <div class="load-bar"><div id="loaderfill" class="load-fill"></div></div>
+</div>
+
+
+
+
+<button id="exit-btn" onclick="exitgame()">
+  <span class="exit-x">✕</span>
+  exit
+</button>
+<div id="game-bar">
+  <div class="bar-label">
+    <span class="bar-dot"></span>
+    <span class="bar-name" id="bar-name-el">—</span>
+  </div>
+  <button class="bar-action" onclick="fullscreen()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    fullscreen
+  </button>
+</div>
+
+<div id="updatelog">
+  <div class="logbox">
+    <h2>update log — v3.0</h2>
+    <ul>
+      <li>3.0v — sidebar nav, favorites, recents, ratings, play tracker, categories, lucky button, SVG background themes</li>
+      <li>2.0.5v — fixed favicon cloak on iOS/iPad/mobile devices</li>
+      <li>2.0.4v — added game request form</li>
+      <li>2.0.3v — added community links and two new games</li>
+      <li>2.0.2v — bug fixes, more games, music player (beta)</li>
+      <li>2.0.1v — bug fixes, minecraft, brawl stars, removed securly checker</li>
+      <li>2.0v — auto game detection from games/ folder</li>
+      <li>1.9v — games.json support</li>
+      <li>1.8v — themes, favicon cloaks, mobile sheet UI</li>
+      <li>1.7v — settings panel, tab cloak, panic key</li>
+      <li>1.6v — added snowbattle.io</li>
+      <li>1.5v — search bar added</li>
+      <li>1.4v — improved ui</li>
+    </ul>
+    <button class="closebtn" onclick="closelog()">close</button>
+  </div>
+</div>
+
+<!-- Settings -->
+<div id="settings-overlay" onclick="handleOverlayClick(event)">
+  <div class="settings-panel">
+    <div class="settings-header">
+      <h2>⚙ settings</h2>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-tabs">
+      <button class="settings-tab active" onclick="switchSettingsTab('backgrounds',this)">🖼 backgrounds</button>
+      <button class="settings-tab" onclick="switchSettingsTab('cloak',this)">🕵 cloak</button>
+      <button class="settings-tab" onclick="switchSettingsTab('panic',this)">🚨 panic</button>
+      <button class="settings-tab" onclick="switchSettingsTab('display',this)">🖥 display</button>
+      <button class="settings-tab" onclick="switchSettingsTab('custom',this)">🎨 custom</button>
+    </div>
+    <div class="settings-body">
+
+      <div class="tab-pane active" id="tab-backgrounds">
+        <div class="settings-section">
+          <div class="settings-section-label">background theme</div>
+          <div class="bg-theme-grid" id="bg-theme-grid"></div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">effects</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">scanlines</div><div class="settings-row-sub">retro CRT effect</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-scanlines" onchange="toggleScanlines(this.checked)"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">button animations</div><div class="settings-row-sub">hover glow and slide effects</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-anims" onchange="toggleAnims(this.checked)"><div class="toggle-track"></div></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-cloak">
+        <div class="settings-section">
+          <div class="settings-section-label">tab title</div>
+          <input class="cloak-input" id="cloak-title" type="text" placeholder="e.g. Google Classroom"/>
+          <div class="settings-row-sub" style="margin-top:8px;margin-bottom:4px">presets:</div>
+          <div class="cloak-presets">
+            <button class="preset-btn" onclick="setCloakPreset('Google Classroom','classroom.google.com')">Classroom</button>
+            <button class="preset-btn" onclick="setCloakPreset('Khan Academy','khanacademy.org')">Khan Academy</button>
+            <button class="preset-btn" onclick="setCloakPreset('Desmos','desmos.com')">Desmos</button>
+            <button class="preset-btn" onclick="setCloakPreset('Google Docs','docs.google.com')">Docs</button>
+            <button class="preset-btn" onclick="setCloakPreset('Quizlet','quizlet.com')">Quizlet</button>
+            <button class="preset-btn" onclick="setCloakPreset('Wikipedia','wikipedia.org')">Wikipedia</button>
+            <button class="preset-btn" onclick="setCloakPreset('Schoology','app.schoology.com')">Schoology</button>
+            <button class="preset-btn" onclick="setCloakPreset('Canvas LMS','canvas.instructure.com')">Canvas</button>
+            <button class="preset-btn" onclick="setCloakPreset('IXL','ixl.com')">IXL</button>
+            <button class="preset-btn" onclick="setCloakPreset('Kahoot!','kahoot.com')">Kahoot</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">favicon</div>
+          <div class="favicon-grid" id="faviconGrid"></div>
+        </div>
+        <button class="apply-btn" onclick="applyCloak()">apply cloak</button>
+        <button class="preset-btn" style="margin-top:10px;display:block;" onclick="resetCloak()">reset to default</button>
+      </div>
+
+      <div class="tab-pane" id="tab-panic">
+        <div class="settings-section">
+          <div class="settings-section-label">panic key</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">enabled</div><div class="settings-row-sub">press key to hide page instantly</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-panic" onchange="savePanicSettings()"><div class="toggle-track"></div></label>
+          </div>
+          <div style="margin-top:14px">
+            <div class="settings-row-label" style="margin-bottom:8px">current key</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <div class="key-display" id="panic-key-display">Escape</div>
+              <button class="key-set-btn" id="set-key-btn" onclick="startKeyListen()">set new key</button>
+            </div>
+            <div style="font-size:.75rem;color:var(--text-dim);margin-top:6px;letter-spacing:1px" id="panic-status-msg">press any key</div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">redirect url</div>
+          <input class="cloak-input" id="panic-url" type="text" placeholder="https://classroom.google.com"/>
+          <div class="settings-row-sub" style="margin-top:6px">leave blank to blank the tab</div>
+          <button class="apply-btn" style="margin-top:12px" onclick="savePanicSettings()">save</button>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">test</div>
+          <button class="preset-btn" onclick="testPanic()">⚡ test panic now</button>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-display">
+        <div class="settings-section">
+          <div class="settings-section-label">game launcher</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">loading screen</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-loader" onchange="saveDisplaySettings()"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">funny messages</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-msgs" onchange="saveDisplaySettings()"><div class="toggle-track"></div></label>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">page</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">startup animation</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-startup" onchange="saveDisplaySettings()"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">scanlines</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-scanlines2" onchange="toggleScanlines(this.checked)"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">low lag mode</div><div class="settings-row-sub">disables blur & heavy effects</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-lowlag" onchange="applyLowLagMode()"><div class="toggle-track"></div></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-custom">
+        <div class="settings-section">
+          <div class="settings-section-label">custom css</div>
+          <textarea class="cloak-input" id="custom-css-input" rows="10" placeholder="Enter your custom CSS here... It will only apply to your browser."></textarea>
+          <button class="apply-btn" onclick="applyCustomCSS()">apply css</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="settings-footer">
+      <span class="footer-version">securly games v3.0</span>
+      <button class="reset-btn" onclick="resetAllSettings()">reset all</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game Request -->
+<div id="gamereq-overlay" onclick="handleGameReqOverlayClick(event)">
+  <div class="gamereq-panel">
+    <div class="gamereq-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:32px;height:32px;background:rgba(var(--accent-rgb),.12);border:1px solid rgba(var(--accent-rgb),.3);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem">🎮</div>
+        <div><h2>game request</h2><div style="font-size:.65rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-top:2px">suggest a game to add</div></div>
+      </div>
+      <button class="gamereq-close" onclick="closeGameRequest()">✕</button>
+    </div>
+    <div class="gamereq-body">
+      <iframe id="gamereq-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSfLutYdSKZAI3adehagWMbOQw-enyWtLcdZkSrPrifLQZO9jA/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Game Request Form">Loading…</iframe>
+    </div>
+    <div class="gamereq-footer">
+      <span class="gamereq-footer-dot"></span>
+      <span class="gamereq-footer-text">every request is reviewed by the admin</span>
+    </div>
+  </div>
+</div>
+
+<div id="sg-toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   CONSTANTS & DEFAULTS
+═══════════════════════════════════════════ */
+const TOOLS_FOLDER = 'tools/';
+
+let settings = { bgTheme: 'cyber', scanlines: true, anims: true, loader: true, msgs: true, startup: true, panicEnabled: true, panicKey: 'Escape', panicUrl: '' };
+let allTools = [];
+let currentSearch = '';
+let currentToolFile = '';
+let currentToolName = '';
+let sidebarOpen = false;
+
+/* ═══════════════════════════════════════════
+   BG THEMES — full list carried from index.html
+═══════════════════════════════════════════ */
+const BG_THEMES = [
+  { id:'cyber', name:'Cyber', accent:'#00f5ff', accentDim:'rgba(0,245,255,0.12)', accentGlow:'rgba(0,245,255,0.35)', accentRgb:'0,245,255', gradB:'#7b2fff',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cg1" cx="20%" cy="30%" r="60%"><stop offset="0%" stop-color="#0d1a2e"/><stop offset="100%" stop-color="#060612"/></radialGradient><radialGradient id="cg2" cx="80%" cy="70%" r="50%"><stop offset="0%" stop-color="#0a1f1a"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cg1)"/><rect width="1440" height="900" fill="url(#cg2)"/><g stroke="#00f5ff" stroke-opacity="0.06" stroke-width="1"><line x1="0" y1="100" x2="1440" y2="100"/><line x1="0" y1="200" x2="1440" y2="200"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="400" x2="1440" y2="400"/><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="700" x2="1440" y2="700"/><line x1="0" y1="800" x2="1440" y2="800"/></g><g stroke="#00f5ff" stroke-opacity="0.06" stroke-width="1"><line x1="120" y1="0" x2="120" y2="900"/><line x1="240" y1="0" x2="240" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="480" y1="0" x2="480" y2="900"/><line x1="600" y1="0" x2="600" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="840" y1="0" x2="840" y2="900"/><line x1="960" y1="0" x2="960" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1200" y1="0" x2="1200" y2="900"/><line x1="1320" y1="0" x2="1320" y2="900"/></g><g fill="#00f5ff" fill-opacity="0.3"><circle cx="120" cy="100" r="1.5"/><circle cx="360" cy="300" r="1.5"/><circle cx="600" cy="200" r="1.5"/><circle cx="840" cy="400" r="1.5"/><circle cx="1080" cy="100" r="1.5"/><circle cx="1320" cy="500" r="1.5"/><circle cx="240" cy="500" r="1.5"/><circle cx="720" cy="700" r="1.5"/><circle cx="960" cy="600" r="1.5"/></g><circle cx="200" cy="200" r="180" fill="none" stroke="#00f5ff" stroke-opacity="0.04" stroke-width="60"/><circle cx="1200" cy="650" r="220" fill="none" stroke="#7b2fff" stroke-opacity="0.05" stroke-width="80"/><g fill="#00f5ff"><circle cx="50" cy="50" r="1" opacity="0.5"/><circle cx="380" cy="130" r="1.2" opacity="0.6"/><circle cx="750" cy="80" r="1" opacity="0.4"/><circle cx="1100" cy="200" r="1.5" opacity="0.7"/><circle cx="1380" cy="90" r="1" opacity="0.5"/><circle cx="200" cy="400" r="1" opacity="0.3"/><circle cx="900" cy="350" r="1.2" opacity="0.5"/><circle cx="1250" cy="750" r="1" opacity="0.4"/><circle cx="450" cy="800" r="1.5" opacity="0.6"/><circle cx="680" cy="600" r="1" opacity="0.3"/></g></svg>`
+  },
+  { id:'nebula', name:'Nebula', accent:'#ff6b9d', accentDim:'rgba(255,107,157,0.12)', accentGlow:'rgba(255,107,157,0.35)', accentRgb:'255,107,157', gradB:'#c44569',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="n1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#1a0a2a"/><stop offset="100%" stop-color="#0a001a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#n1)"/><g fill="#ff6b9d" opacity="0.6"><ellipse cx="300" cy="300" rx="200" ry="150"/><ellipse cx="700" cy="400" rx="250" ry="180"/><ellipse cx="1100" cy="350" rx="220" ry="160"/></g><g fill="#c44569" opacity="0.4"><ellipse cx="300" cy="250" rx="100" ry="75"/><ellipse cx="700" cy="350" rx="120" ry="90"/><ellipse cx="1100" cy="300" rx="110" ry="80"/></g><g fill="white"><circle cx="150" cy="150" r="1"/><circle cx="450" cy="170" r="1.2"/><circle cx="750" cy="140" r="1"/><circle cx="1050" cy="160" r="1.5"/><circle cx="1350" cy="130" r="1"/></g></svg>`
+  },
+  { id:'matrix', name:'Matrix', accent:'#00ff41', accentDim:'rgba(0,255,65,0.12)', accentGlow:'rgba(0,255,65,0.35)', accentRgb:'0,255,65', gradB:'#008f11',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="m1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#000a00"/><stop offset="100%" stop-color="#000000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#m1)"/><g fill="#00ff41" opacity="0.15"><rect x="0" y="0" width="1440" height="900"/></g><g fill="white"><circle cx="200" cy="50" r="1"/><circle cx="500" cy="70" r="1.2"/><circle cx="800" cy="40" r="1"/><circle cx="1100" cy="60" r="1.5"/><circle cx="1400" cy="30" r="1"/><circle cx="300" cy="200" r="0.8"/><circle cx="700" cy="150" r="1"/><circle cx="1000" cy="300" r="0.8"/><circle cx="600" cy="400" r="1"/><circle cx="900" cy="500" r="0.8"/><circle cx="200" cy="600" r="1"/><circle cx="1300" cy="700" r="0.8"/><circle cx="400" cy="800" r="1"/></g><g stroke="#00ff41" stroke-opacity="0.08" stroke-width="1"><line x1="0" y1="0" x2="1440" y2="0"/><line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="750" x2="1440" y2="750"/><line x1="0" y1="900" x2="1440" y2="900"/></g></svg>`
+  },
+  { id:'synthwave', name:'Synthwave', accent:'#ff1493', accentDim:'rgba(255,20,147,0.12)', accentGlow:'rgba(255,20,147,0.35)', accentRgb:'255,20,147', gradB:'#00ffff',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sw1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2a0a2a"/><stop offset="50%" stop-color="#1a001a"/><stop offset="100%" stop-color="#0a000a"/></linearGradient></defs><rect width="1440" height="900" fill="url(#sw1)"/><g stroke="#ff1493" stroke-opacity="0.15" stroke-width="1"><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="550" x2="1440" y2="550"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="650" x2="1440" y2="650"/><line x1="0" y1="700" x2="1440" y2="700"/><line x1="0" y1="750" x2="1440" y2="750"/><line x1="0" y1="800" x2="1440" y2="800"/></g><circle cx="720" cy="300" r="120" fill="none" stroke="#ff1493" stroke-opacity="0.2" stroke-width="2"/><circle cx="720" cy="300" r="80" fill="#2a0014" opacity="0.8"/><g fill="white"><circle cx="150" cy="50" r="1"/><circle cx="450" cy="70" r="1.2"/><circle cx="750" cy="40" r="1"/><circle cx="1050" cy="60" r="1.5"/><circle cx="1350" cy="30" r="1"/></g></svg>`
+  },
+  { id:'volcanic', name:'Volcanic', accent:'#ff4500', accentDim:'rgba(255,69,0,0.12)', accentGlow:'rgba(255,69,0,0.35)', accentRgb:'255,69,0', gradB:'#8b0000',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="v1" cx="50%" cy="100%" r="80%"><stop offset="0%" stop-color="#2a0a00"/><stop offset="100%" stop-color="#1a0000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#v1)"/><g fill="#ff4500" opacity="0.2"><ellipse cx="300" cy="700" rx="100" ry="200"/><ellipse cx="700" cy="650" rx="120" ry="240"/><ellipse cx="1100" cy="700" rx="100" ry="200"/></g><g fill="white"><circle cx="200" cy="100" r="1"/><circle cx="500" cy="120" r="1.2"/><circle cx="800" cy="90" r="1"/><circle cx="1100" cy="110" r="1.5"/><circle cx="1400" cy="80" r="1"/></g></svg>`
+  },
+  { id:'arctic', name:'Arctic', accent:'#87ceeb', accentDim:'rgba(135,206,235,0.12)', accentGlow:'rgba(135,206,235,0.35)', accentRgb:'135,206,235', gradB:'#4682b4',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="arc1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#0a1520"/><stop offset="100%" stop-color="#050a12"/></radialGradient></defs><rect width="1440" height="900" fill="url(#arc1)"/><g stroke="#87ceeb" stroke-opacity="0.08" stroke-width="1"><line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="750" x2="1440" y2="750"/></g><g fill="#87ceeb" fill-opacity="0.15"><polygon points="300,400 400,200 500,400"/><polygon points="700,350 820,120 940,350"/><polygon points="1050,420 1150,180 1250,420"/></g><g fill="white"><circle cx="100" cy="50" r="1"/><circle cx="400" cy="70" r="1.2"/><circle cx="700" cy="40" r="1"/><circle cx="1000" cy="60" r="1.5"/><circle cx="1300" cy="30" r="1"/></g></svg>`
+  },
+  { id:'deep-space', name:'Deep Space', accent:'#9932cc', accentDim:'rgba(153,50,204,0.12)', accentGlow:'rgba(153,50,204,0.35)', accentRgb:'153,50,204', gradB:'#4b0082',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="ds1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0a001a"/><stop offset="100%" stop-color="#00000a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#ds1)"/><g fill="#9932cc" opacity="0.1"><ellipse cx="720" cy="450" rx="400" ry="300"/></g><g fill="white"><circle cx="200" cy="200" r="1"/><circle cx="500" cy="180" r="1.2"/><circle cx="800" cy="220" r="1"/><circle cx="1100" cy="190" r="1.5"/><circle cx="1400" cy="210" r="1"/><circle cx="350" cy="500" r="0.8"/><circle cx="650" cy="350" r="1"/><circle cx="950" cy="600" r="0.8"/><circle cx="1250" cy="400" r="1"/><circle cx="100" cy="700" r="0.8"/></g></svg>`
+  },
+  { id:'ocean', name:'Ocean', accent:'#00ced1', accentDim:'rgba(0,206,209,0.12)', accentGlow:'rgba(0,206,209,0.35)', accentRgb:'0,206,209', gradB:'#008b8b',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="oc1" cx="50%" cy="0%" r="100%"><stop offset="0%" stop-color="#001a1a"/><stop offset="100%" stop-color="#000808"/></radialGradient></defs><rect width="1440" height="900" fill="url(#oc1)"/><g fill="#00ced1" opacity="0.08"><ellipse cx="300" cy="300" rx="150" ry="100"/><ellipse cx="700" cy="400" rx="180" ry="120"/><ellipse cx="1100" cy="350" rx="160" ry="110"/></g><g stroke="#00ced1" stroke-opacity="0.08" stroke-width="1.5" fill="none"><path d="M0 600 Q360 560 720 600 Q1080 640 1440 600"/><path d="M0 650 Q360 610 720 650 Q1080 690 1440 650"/><path d="M0 700 Q360 660 720 700 Q1080 740 1440 700"/></g><g fill="white"><circle cx="100" cy="100" r="1"/><circle cx="400" cy="120" r="1.2"/><circle cx="700" cy="90" r="1"/><circle cx="1000" cy="110" r="1.5"/><circle cx="1300" cy="80" r="1"/></g></svg>`
+  },
+  { id:'galaxy', name:'Galaxy', accent:'#9932cc', accentDim:'rgba(153,50,204,0.12)', accentGlow:'rgba(153,50,204,0.35)', accentRgb:'153,50,204', gradB:'#8a2be2',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="gal1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0a001a"/><stop offset="100%" stop-color="#00000a"/></radialGradient><radialGradient id="gal2" cx="50%" cy="50%" r="30%"><stop offset="0%" stop-color="#9932cc" stop-opacity="0.08"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs><rect width="1440" height="900" fill="url(#gal1)"/><ellipse cx="720" cy="450" rx="500" ry="320" fill="url(#gal2)"/><g fill="white"><circle cx="200" cy="200" r="1"/><circle cx="500" cy="180" r="1.2"/><circle cx="800" cy="220" r="1"/><circle cx="1100" cy="190" r="1.5"/><circle cx="1400" cy="210" r="1"/><circle cx="350" cy="600" r="0.8"/><circle cx="650" cy="400" r="1"/><circle cx="1000" cy="700" r="0.8"/><circle cx="150" cy="450" r="1"/><circle cx="1250" cy="550" r="0.8"/></g></svg>`
+  },
+  { id:'sunset', name:'Sunset', accent:'#ff6347', accentDim:'rgba(255,99,71,0.12)', accentGlow:'rgba(255,99,71,0.35)', accentRgb:'255,99,71', gradB:'#ff4500',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sun1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a0a00"/><stop offset="50%" stop-color="#3a1500"/><stop offset="100%" stop-color="#0a0000"/></linearGradient></defs><rect width="1440" height="900" fill="url(#sun1)"/><circle cx="720" cy="500" r="150" fill="#ff6347" opacity="0.15"/><circle cx="720" cy="500" r="80" fill="#ffd700" opacity="0.08"/><g stroke="#ff6347" stroke-opacity="0.06" stroke-width="1"><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="560" x2="1440" y2="560"/><line x1="0" y1="620" x2="1440" y2="620"/><line x1="0" y1="680" x2="1440" y2="680"/></g><g fill="white"><circle cx="150" cy="100" r="1"/><circle cx="450" cy="120" r="1.2"/><circle cx="750" cy="90" r="1"/><circle cx="1050" cy="110" r="1.5"/><circle cx="1350" cy="80" r="1"/></g></svg>`
+  },
+  { id:'storm', name:'Storm', accent:'#4682b4', accentDim:'rgba(70,130,180,0.12)', accentGlow:'rgba(70,130,180,0.35)', accentRgb:'70,130,180', gradB:'#5f9ea0',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="st1" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#0a0f1a"/><stop offset="100%" stop-color="#020508"/></radialGradient></defs><rect width="1440" height="900" fill="url(#st1)"/><g fill="#4682b4" opacity="0.08"><ellipse cx="200" cy="250" rx="300" ry="200"/><ellipse cx="900" cy="200" rx="350" ry="220"/><ellipse cx="1300" cy="300" rx="280" ry="180"/></g><g stroke="#4682b4" stroke-opacity="0.12" stroke-width="1.5" fill="none"><line x1="600" y1="0" x2="580" y2="200"/><line x1="750" y1="0" x2="720" y2="180"/><line x1="900" y1="50" x2="870" y2="250"/></g><g fill="white"><circle cx="100" cy="100" r="1"/><circle cx="400" cy="120" r="1.2"/><circle cx="700" cy="90" r="1"/><circle cx="1000" cy="110" r="1.5"/><circle cx="1300" cy="80" r="1"/></g></svg>`
+  },
+  { id:'neon-city', name:'Neon City', accent:'#00ff00', accentDim:'rgba(0,255,0,0.12)', accentGlow:'rgba(0,255,0,0.35)', accentRgb:'0,255,0', gradB:'#ff00ff',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="nc1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#0a0a0a"/><stop offset="100%" stop-color="#000000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#nc1)"/><g fill="#001400" opacity="1"><rect x="50" y="500" width="60" height="400"/><rect x="150" y="420" width="80" height="480"/><rect x="280" y="380" width="70" height="520"/><rect x="500" y="300" width="90" height="600"/><rect x="650" y="250" width="100" height="650"/><rect x="800" y="200" width="80" height="700"/><rect x="950" y="350" width="70" height="550"/><rect x="1100" y="150" width="110" height="750"/><rect x="1270" y="280" width="90" height="620"/></g><g fill="#00ff00" opacity="0.7"><rect x="60" y="498" width="60" height="2"/><rect x="160" y="418" width="80" height="2"/><rect x="290" y="378" width="70" height="2"/><rect x="510" y="298" width="90" height="2"/><rect x="660" y="248" width="100" height="2"/><rect x="810" y="198" width="80" height="2"/><rect x="960" y="348" width="70" height="2"/><rect x="1110" y="148" width="110" height="2"/><rect x="1280" y="278" width="90" height="2"/></g><g fill="#ff00ff" opacity="0.5"><circle cx="90" cy="490" r="2"/><circle cx="200" cy="410" r="2"/><circle cx="325" cy="370" r="2"/><circle cx="555" cy="290" r="2"/><circle cx="710" cy="240" r="2"/></g><g fill="white"><circle cx="150" cy="50" r="1"/><circle cx="450" cy="70" r="1.2"/><circle cx="750" cy="40" r="1"/><circle cx="1050" cy="60" r="1.5"/><circle cx="1350" cy="30" r="1"/></g></svg>`
+  },
+];
+
+/* ═══════════════════════════════════════════
+   LOCAL STORAGE HELPERS
+═══════════════════════════════════════════ */
+function lsGet(k, def) { try { const v=localStorage.getItem(k); return v!==null?JSON.parse(v):def; } catch(e){ return def; } }
+function lsSet(k,v) { try { localStorage.setItem(k,JSON.stringify(v)); } catch(e){} }
+
+/* ═══════════════════════════════════════════
+   BG THEME ENGINE  ← THE FIX
+═══════════════════════════════════════════ */
+function applyBgTheme(id) {
+  const theme = BG_THEMES.find(t => t.id === id) || BG_THEMES[0];
+  document.documentElement.style.setProperty('--accent', theme.accent);
+  document.documentElement.style.setProperty('--accent-dim', theme.accentDim);
+  document.documentElement.style.setProperty('--accent-glow', theme.accentGlow);
+  document.documentElement.style.setProperty('--accent-rgb', theme.accentRgb);
+  document.documentElement.style.setProperty('--grad-b', theme.gradB);
+  document.getElementById('bg-svg-layer').innerHTML = theme.svg;
+}
+
+function buildBgThemeGrid() {
+  const grid = document.getElementById('bg-theme-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  BG_THEMES.forEach(theme => {
+    const card = document.createElement('div');
+    card.className = 'bg-theme-card' + (settings.bgTheme === theme.id ? ' active' : '');
+    card.innerHTML = theme.svg + '<div class="bg-theme-label">' + theme.name + '</div>';
+    card.addEventListener('click', () => {
+      settings.bgTheme = theme.id;
+      lsSet('sg_settings', settings);
+      applyBgTheme(theme.id);
+      grid.querySelectorAll('.bg-theme-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   APPLY SETTINGS  ← FIXED (no more hardcoded SVG)
+═══════════════════════════════════════════ */
+function applySettings() {
+  applyBgTheme(settings.bgTheme || 'cyber');
+  document.querySelector('.scanlines').style.display = settings.scanlines !== false ? 'block' : 'none';
+  document.body.classList.toggle('no-anims', !settings.anims);
+  if (settings.lowlag) document.documentElement.classList.add('lowlag');
+  const lowlagToggle = document.getElementById('toggle-lowlag');
+  if (lowlagToggle) lowlagToggle.checked = settings.lowlag === true;
+}
+
+function applyLowLagMode() {
+  const enabled = document.getElementById('toggle-lowlag').checked;
+  settings.lowlag = enabled;
+  saveSettings();
+  if (enabled) {
+    document.documentElement.classList.add('lowlag');
+  } else {
+    document.documentElement.classList.remove('lowlag');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SETTINGS PANEL  ← FIXED (openSettings now defined)
+═══════════════════════════════════════════ */
+function openSettings() {
+  document.getElementById('settings-overlay').classList.add('show');
+  // Sync toggles to current settings
+  document.getElementById('toggle-scanlines').checked = settings.scanlines !== false;
+  document.getElementById('toggle-scanlines2').checked = settings.scanlines !== false;
+  document.getElementById('toggle-anims').checked = settings.anims !== false;
+  document.getElementById('toggle-loader').checked = settings.loader !== false;
+  document.getElementById('toggle-msgs').checked = settings.msgs !== false;
+  document.getElementById('toggle-startup').checked = settings.startup !== false;
+  document.getElementById('toggle-lowlag').checked = settings.lowlag === true;
+  document.getElementById('toggle-panic').checked = settings.panicEnabled !== false;
+  document.getElementById('panic-key-display').textContent = settings.panicKey || 'Escape';
+  document.getElementById('panic-url').value = settings.panicUrl || '';
+  document.getElementById('cloak-title').value = settings.cloakTitle || '';
+  document.getElementById('custom-css-input').value = settings.customCss || '';
+  // Reset to first tab
+  switchSettingsTab('backgrounds', document.querySelector('.settings-tab'));
+  buildBgThemeGrid();
+}
+
+function closeSettings() { document.getElementById('settings-overlay').classList.remove('show'); }
+function handleOverlayClick(e) { if (e.target.id === 'settings-overlay') closeSettings(); }
+
+function switchSettingsTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.settings-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function toggleScanlines(v) {
+  settings.scanlines = v;
+  document.getElementById('toggle-scanlines').checked = v;
+  document.getElementById('toggle-scanlines2').checked = v;
+  document.querySelector('.scanlines').style.display = v ? 'block' : 'none';
+  lsSet('sg_settings', settings);
+}
+
+function toggleAnims(v) {
+  settings.anims = v;
+  document.body.classList.toggle('no-anims', !v);
+  lsSet('sg_settings', settings);
+}
+
+function saveDisplaySettings() {
+  settings.loader = document.getElementById('toggle-loader').checked;
+  settings.msgs = document.getElementById('toggle-msgs').checked;
+  settings.startup = document.getElementById('toggle-startup').checked;
+  settings.lowlag = document.getElementById('toggle-lowlag').checked;
+  lsSet('sg_settings', settings);
+}
+
+function savePanicSettings() {
+  settings.panicEnabled = document.getElementById('toggle-panic').checked;
+  settings.panicUrl = document.getElementById('panic-url').value.trim();
+  lsSet('sg_settings', settings);
+}
+
+function applyCloak() {
+  const title = document.getElementById('cloak-title').value.trim();
+  if (title) { document.title = title; settings.cloakTitle = title; }
+  lsSet('sg_settings', settings);
+  showToast('✓ cloak applied');
+}
+
+function resetCloak() {
+  document.title = 'securly tools';
+  settings.cloakTitle = '';
+  document.getElementById('cloak-title').value = '';
+  lsSet('sg_settings', settings);
+  showToast('cloak reset');
+}
+
+function setCloakPreset(title, domain) {
+  document.getElementById('cloak-title').value = title;
+  settings.cloakTitle = title;
+}
+
+function applyCustomCSS() {
+  const css = document.getElementById('custom-css-input').value;
+  document.getElementById('custom-css').textContent = css;
+  settings.customCss = css;
+  lsSet('sg_settings', settings);
+  showToast('✓ css applied');
+}
+
+function resetAllSettings() {
+  if (!confirm('Reset all settings to default?')) return;
+  localStorage.removeItem('sg_settings');
+  settings = { bgTheme: 'cyber', scanlines: true, anims: true, loader: true, msgs: true, startup: true, panicEnabled: true, panicKey: 'Escape', panicUrl: '' };
+  applySettings();
+  closeSettings();
+  showToast('settings reset');
+}
+
+let keyListening = false;
+function startKeyListen() {
+  keyListening = true;
+  const btn = document.getElementById('set-key-btn');
+  btn.classList.add('listening');
+  btn.textContent = 'press a key...';
+  document.getElementById('panic-status-msg').textContent = 'waiting for key press...';
+}
+
+function testPanic() {
+  const url = settings.panicUrl;
+  if (url) { window.location.href = url; } else { document.body.innerHTML = ''; }
+}
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════ */
+function fileToDisplayName(filename){return filename.replace(/\.html?$/i,'').replace(/[_\-+]/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/\s+/g,' ').trim().toLowerCase();}
+
+/* ═══════════════════════════════════════════
+   LOAD TOOLS
+═══════════════════════════════════════════ */
+async function loadToolsFromFolder(){
+  try {
+    const res=await fetch('tools.json?v='+Date.now());
+    if(!res.ok) throw new Error('not found');
+    const data=await res.json();
+    const files=Array.isArray(data)?data:(data.tools||[]);
+    if(!files.length) throw new Error('empty');
+    files.sort((a,b)=>fileToDisplayName(a).localeCompare(fileToDisplayName(b)));
+    allTools=files.map(f=>({file:f, name:fileToDisplayName(f)}));
+    renderTools();
+  } catch(e) {
+    const loadingEl = document.getElementById('tools-loading');
+    if(loadingEl) loadingEl.remove();
+    document.getElementById('noresults').style.display='block';
+  }
+}
+
+function renderTools() {
+  const grid=document.getElementById('toolsGrid');
+  grid.querySelectorAll('.game-card').forEach(c=>c.remove());
+  document.getElementById('tools-loading').style.display='none';
+  let tools=[...allTools];
+  if(currentSearch) tools=tools.filter(t=>t.name.includes(currentSearch.toLowerCase()));
+  document.getElementById('tools-count-label').textContent=tools.length ? tools.length+' tools' : '';
+  document.getElementById('noresults').style.display=tools.length===0?'block':'none';
+  tools.forEach((t,i)=>{ const card=makeToolCard(t,i); grid.insertBefore(card,document.getElementById('noresults')); });
+}
+
+function makeToolCard(t, delay=0) {
+  const card=document.createElement('div');
+  card.className='game-card';
+  card.dataset.file=t.file;
+  card.style.transitionDelay=(delay*0.04)+'s';
+  card.innerHTML=`
+    <div class="card-name">${t.name}</div>
+    <div class="card-meta">
+      <span class="card-plays">tool</span>
+    </div>
+  `;
+  card.addEventListener('click',()=>launchtool(t.file));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.add('visible')));
+  return card;
+}
+
+/* ═══════════════════════════════════════════
+   FILTER / SEARCH / LUCKY
+═══════════════════════════════════════════ */
+function filterTools(q) { currentSearch=q.trim(); renderTools(); }
+function launchLuckyTool() {
+  if(!allTools.length) return;
+  const t=allTools[Math.floor(Math.random()*allTools.length)];
+  showToast('🎲 loading: '+t.name);
+  setTimeout(()=>launchtool(t.file),600);
+}
+
+/* ═══════════════════════════════════════════
+   TOOL LAUNCHER
+═══════════════════════════════════════════ */
+const loaderMessages=["school can't stop me","securly tools","hold on...","bypassing the firewall...","shh, don't tell your teacher","sneaking past securly...","initializing fun...","booting up chaos...","don't get caught","loading pixels...","this is totally a math tool","connecting to fun servers...","teacher is not looking...","tool time activated","securly? more like insecurely lmao","your school's firewall is shaking rn","the IT department has LEFT the chat","ctrl + alt + tools activated 🎮","wifi filter said: i give up","tell your teacher it's for research","loading 100% educational content 😇","they can't stop all of us","unblocked. unbothered. unstoppable.","you're literally a genius for finding this"];
+let currentLoadInterval=null,currentMsgInterval=null,barHideTimer=null;
+
+function launchtool(file) {
+  const t=allTools.find(x=>x.file===file);
+  currentToolFile=file;
+  currentToolName=t?t.name:fileToDisplayName(file);
+  const path=TOOLS_FOLDER+file;
+  window.location.href = path;
+}
+
+/* ═══════════════════════════════════════════
+   UI CONTROLS
+═══════════════════════════════════════════ */
+function toggleSidebar(){sidebarOpen?collapseSidebar():expandSidebar();}
+function expandSidebar(){document.getElementById('sidebar').classList.add('expanded');sidebarOpen=true;}
+function collapseSidebar(){document.getElementById('sidebar').classList.remove('expanded');sidebarOpen=false;}
+function openMobileSidebar(){document.getElementById('sidebar').classList.add('mobile-open');document.getElementById('mobile-overlay').classList.add('show');}
+function closeMobileSidebar(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('mobile-overlay').classList.remove('show');}
+function showToast(msg){ const t=document.getElementById('sg-toast'); t.textContent=msg; t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';},3000); }
+function exitgame(){ window.location.href = 'tools.html'; }
+function fullscreen(){}
+function openlog(){ document.getElementById('updatelog').classList.add('show'); }
+function closelog(){ document.getElementById('updatelog').classList.remove('show'); }
+function openGameRequest(){ document.getElementById('gamereq-overlay').classList.add('show'); }
+function closeGameRequest(){ document.getElementById('gamereq-overlay').classList.remove('show'); }
+function handleGameReqOverlayClick(e){ if(e.target.id==='gamereq-overlay')closeGameRequest(); }
+
+/* ═══════════════════════════════════════════
+   KEY LISTENER (panic + key set)
+═══════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (keyListening) {
+    keyListening = false;
+    const btn = document.getElementById('set-key-btn');
+    settings.panicKey = e.key;
+    document.getElementById('panic-key-display').textContent = e.key;
+    btn.classList.remove('listening');
+    btn.textContent = 'set new key';
+    document.getElementById('panic-status-msg').textContent = 'key saved!';
+    lsSet('sg_settings', settings);
+    return;
+  }
+  if (settings.panicEnabled && e.key === settings.panicKey) {
+    const url = settings.panicUrl;
+    if (url) { window.location.href = url; } else { document.body.innerHTML = ''; }
+  }
+});
+
+/* ═══════════════════════════════════════════
+   STARTUP
+═══════════════════════════════════════════ */
+let startprogress=0;
+const startinterval=setInterval(()=>{
+  startprogress+=5;
+  document.getElementById('startupfill').style.width=startprogress+'%';
+  if(startprogress>=100){
+    clearInterval(startinterval);
+    const s=document.getElementById('startup');
+    s.style.transition='opacity 0.5s';
+    s.style.opacity='0';
+    setTimeout(()=>{s.style.display='none';},500);
+  }
+},50);
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+settings = { ...settings, ...lsGet('sg_settings', {}) };
+applySettings();
+loadToolsFromFolder();
+</script>
+
+</body>
+</html>

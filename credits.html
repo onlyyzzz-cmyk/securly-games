@@ -1,0 +1,452 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>securly games - credits</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --accent: #00f5ff;
+  --accent-dim: rgba(0,245,255,0.12);
+  --accent-glow: rgba(0,245,255,0.35);
+  --accent-rgb: 0,245,255;
+  --grad-b: #7b2fff;
+  --text: #e8eaf6;
+  --text-dim: rgba(232,234,246,0.5);
+  --text-muted: rgba(232,234,246,0.3);
+  --border: rgba(0,245,255,0.10);
+  --border-active: rgba(0,245,255,0.5);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: #060612;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#bg-svg-layer {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+#bg-svg-layer svg { width: 100%; height: 100%; position: absolute; inset: 0; }
+
+.scanlines {
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+  pointer-events: none; z-index: 1;
+}
+
+#backbtn {
+  position: fixed; top: 14px; left: 14px; z-index: 100;
+  padding: 8px 18px;
+  font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  background: rgba(0,245,255,0.07); color: var(--accent);
+  border: 1px solid rgba(0,245,255,0.3); border-radius: 6px;
+  cursor: pointer; transition: all 0.25s;
+}
+#backbtn:hover {
+  background: var(--accent-dim); border-color: var(--accent);
+  box-shadow: 0 0 18px var(--accent-glow); transform: translateY(-2px);
+}
+
+.header {
+  text-align: center; margin-bottom: 16px;
+  animation: fadeDown 0.6s ease both;
+}
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.header h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.6rem,4vw,2.4rem); font-weight: 900; letter-spacing: 6px;
+  color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); margin-bottom: 8px;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%,100% { text-shadow: 0 0 20px var(--accent-glow); }
+  50%      { text-shadow: 0 0 40px var(--accent-glow), 0 0 80px rgba(0,245,255,0.18); }
+}
+.header-sub {
+  font-size: 0.8rem; letter-spacing: 5px; color: var(--text-dim); text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.header-thanks {
+  font-size: 0.95rem; color: var(--text-dim); letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+.divider {
+  width: 100px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin: 16px auto 0; box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.page {
+  position: relative; z-index: 2;
+  max-width: 860px; margin: 0 auto;
+  padding: 90px 24px 80px;
+}
+
+.tabs {
+  display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 32px;
+  animation: fadeUp 0.5s 0.15s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.tab-btn {
+  padding: 9px 24px;
+  font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  background: rgba(255,255,255,0.03); color: var(--text-dim);
+  border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; transition: all 0.22s;
+  position: relative; overflow: hidden;
+}
+.tab-btn::after {
+  content: ''; position: absolute; bottom:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--accent), var(--grad-b));
+  transform: scaleX(0); transition: transform 0.25s;
+}
+.tab-btn:hover { background: var(--accent-dim); color: var(--text); border-color: rgba(0,245,255,0.3); }
+.tab-btn.active {
+  background: var(--accent-dim); color: var(--accent);
+  border-color: var(--border-active); box-shadow: 0 0 18px rgba(0,245,255,0.12);
+}
+.tab-btn.active::after { transform: scaleX(1); }
+
+.tab-panel { display: none; animation: panelIn 0.35s ease both; }
+.tab-panel.active { display: block; }
+@keyframes panelIn {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.section-block {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+}
+
+.section-heading {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+  color: var(--text); letter-spacing: 2px;
+  margin-bottom: 24px;
+}
+.section-heading .icon { font-size: 1.1rem; }
+
+.contrib-table { width: 100%; border-collapse: collapse; }
+.contrib-table thead tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
+.contrib-table thead th {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted);
+  padding: 0 16px 14px 0; text-align: left;
+}
+.contrib-table thead th:last-child { text-align: right; padding-right: 0; }
+.contrib-table thead th.col-avatar { width: 70px; }
+
+.contrib-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.2s;
+}
+.contrib-table tbody tr:last-child { border-bottom: none; }
+.contrib-table tbody tr:hover { background: rgba(0,245,255,0.03); }
+
+.contrib-table tbody td { padding: 16px 16px 16px 0; vertical-align: middle; }
+.contrib-table tbody td:last-child { text-align: right; padding-right: 0; }
+
+.td-avatar { width: 70px; }
+.avatar-img {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0,245,255,0.15), rgba(123,47,255,0.2));
+  border: 1.5px solid rgba(0,245,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 900;
+  color: var(--accent); box-shadow: 0 0 14px rgba(0,245,255,0.1);
+  overflow: hidden;
+}
+.avatar-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+.td-name {
+  font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700;
+  color: var(--text); letter-spacing: 1px; min-width: 140px;
+}
+
+.td-role { font-size: 0.92rem; color: var(--text-dim); letter-spacing: 0.5px; }
+.role-icon { margin-right: 6px; font-size: 0.85rem; }
+
+.visit-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 600;
+  letter-spacing: 1px; color: var(--text-dim);
+  text-decoration: none; transition: color 0.2s;
+  white-space: nowrap;
+}
+.visit-link:hover { color: var(--accent); }
+.visit-link svg { width: 13px; height: 13px; opacity: 0.7; }
+
+.thanks-box {
+  background: rgba(0,245,255,0.03);
+  border: 1px solid rgba(0,245,255,0.1);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 12px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.thanks-box:hover {
+  border-color: rgba(0,245,255,0.22);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+.thanks-title {
+  font-size: 1rem; font-weight: 700; color: var(--text); letter-spacing: 1px;
+  margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+}
+.thanks-title .ticon { color: var(--accent); }
+.thanks-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; }
+.thanks-link {
+  color: var(--accent); text-decoration: none; font-weight: 600;
+  transition: opacity 0.2s;
+}
+.thanks-link:hover { opacity: 0.75; }
+
+@media (max-width: 540px) {
+  .page { padding: 80px 14px 60px; }
+  .section-block { padding: 20px 16px; }
+  .contrib-table thead th, .contrib-table tbody td { padding-left: 0; padding-right: 10px; }
+  .td-name { min-width: 90px; }
+  .avatar-img { width: 36px; height: 36px; font-size: 0.8rem; }
+  .td-avatar { width: 50px; }
+}
+</style>
+</head>
+<body>
+
+<div id="bg-svg-layer"></div>
+<div class="scanlines"></div>
+<button id="backbtn" onclick="location.href='index.html'">← Back</button>
+
+<div class="page">
+
+  <div class="header">
+    <h1>Credits</h1>
+    <div class="header-sub">Securly Games</div>
+    <p class="header-thanks">Thank you to everyone who has contributed to making Securly Games possible.</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('contributors', this)">Contributors</button>
+    <button class="tab-btn" onclick="switchTab('partners', this)">Partners</button>
+    <button class="tab-btn" onclick="switchTab('thanks', this)">Special Thanks</button>
+  </div>
+
+  <!-- Contributors -->
+  <div id="tab-contributors" class="tab-panel active">
+    <div class="section-block">
+      <div class="section-heading">
+        <span class="icon">🏅</span> Contributors
+      </div>
+      <table class="contrib-table">
+        <thead>
+          <tr>
+            <th class="col-avatar">Avatar</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-avatar">
+              <div class="avatar-img">A</div>
+            </td>
+            <td class="td-name">Acearooni10</td>
+            <td class="td-role"><span class="role-icon">👑</span> Founder &amp; Lead Developer</td>
+            <td>
+              <a class="visit-link" href="https://www.instagram.com/24k_onlyy/" target="_blank" rel="noopener">
+                Visit
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Partners -->
+  <div id="tab-partners" class="tab-panel">
+    <div class="section-block">
+      <div class="section-heading">
+        <span class="icon">🤝</span> Partners
+      </div>
+      <table class="contrib-table">
+        <thead>
+          <tr>
+            <th class="col-avatar">Avatar</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-avatar">
+              <div class="avatar-img" style="font-size:0.7rem;letter-spacing:0;">GN</div>
+            </td>
+            <td class="td-name">gn-math.dev</td>
+            <td class="td-role"><span class="role-icon">🌐</span> Game Hosting &amp; Resources</td>
+            <td>
+              <a class="visit-link" href="https://gn-math.dev" target="_blank" rel="noopener">
+                Visit
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td class="td-avatar">
+              <div class="avatar-img" style="font-size:0.7rem;letter-spacing:0;">FA</div>
+            </td>
+            <td class="td-name">frogiesarcade</td>
+            <td class="td-role"><span class="role-icon">🎮</span> Game Content &amp; Support</td>
+            <td>
+              <a class="visit-link" href="https://frogiesarcade.win/" target="_blank" rel="noopener">
+                Visit
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Special Thanks -->
+  <div id="tab-thanks" class="tab-panel">
+    <div class="section-block">
+      <div class="section-heading">
+        <span class="icon">✨</span> Special Thanks
+      </div>
+
+      <div class="thanks-box">
+        <div class="thanks-title"><span class="ticon">💙</span> You — yes, you</div>
+        <div class="thanks-desc">
+          A huge thank you to everyone using Securly Games during school hours. You're the reason this site exists. Stay sneaky, keep playing, and don't get caught.
+        </div>
+      </div>
+
+      <div class="thanks-box">
+        <div class="thanks-title"><span class="ticon">🌐</span> gn-math.dev</div>
+        <div class="thanks-desc">
+          For providing game hosting and resources that make the site possible.
+          <a class="thanks-link" href="https://gn-math.dev" target="_blank" rel="noopener"> Visit →</a>
+        </div>
+      </div>
+
+      <div class="thanks-box">
+        <div class="thanks-title"><span class="ticon">🎮</span> frogiesarcade</div>
+        <div class="thanks-desc">
+          For game content, support, and keeping the arcade spirit alive.
+          <a class="thanks-link" href="https://frogiesarcade.win/" target="_blank" rel="noopener"> Visit →</a>
+        </div>
+      </div>
+
+      <div class="thanks-box">
+        <div class="thanks-title"><span class="ticon">🏆</span> The Community</div>
+        <div class="thanks-desc">
+          Everyone who tested, gave feedback, and spread the word. Securly Games wouldn't be what it is without you.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── Background theme — reads from the same localStorage key as index/tools ── */
+const BG_THEMES = [
+  { id:'cyber', accent:'#00f5ff', accentRgb:'0,245,255',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cg1" cx="20%" cy="30%" r="60%"><stop offset="0%" stop-color="#0d1a2e"/><stop offset="100%" stop-color="#060612"/></radialGradient><radialGradient id="cg2" cx="80%" cy="70%" r="50%"><stop offset="0%" stop-color="#0a1f1a"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cg1)"/><rect width="1440" height="900" fill="url(#cg2)"/><g stroke="#00f5ff" stroke-opacity="0.06" stroke-width="1"><line x1="0" y1="100" x2="1440" y2="100"/><line x1="0" y1="200" x2="1440" y2="200"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="400" x2="1440" y2="400"/><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="700" x2="1440" y2="700"/><line x1="0" y1="800" x2="1440" y2="800"/></g><g stroke="#00f5ff" stroke-opacity="0.06" stroke-width="1"><line x1="120" y1="0" x2="120" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="600" y1="0" x2="600" y2="900"/><line x1="840" y1="0" x2="840" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1320" y1="0" x2="1320" y2="900"/></g><g fill="#00f5ff" fill-opacity="0.3"><circle cx="120" cy="100" r="1.5"/><circle cx="360" cy="300" r="1.5"/><circle cx="600" cy="200" r="1.5"/><circle cx="840" cy="400" r="1.5"/><circle cx="1080" cy="100" r="1.5"/><circle cx="1320" cy="500" r="1.5"/></g><circle cx="200" cy="200" r="180" fill="none" stroke="#00f5ff" stroke-opacity="0.04" stroke-width="60"/><circle cx="1200" cy="650" r="220" fill="none" stroke="#7b2fff" stroke-opacity="0.05" stroke-width="80"/></svg>`
+  },
+  { id:'nebula', accent:'#ff6b9d', accentRgb:'255,107,157',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="n1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#1a0a2a"/><stop offset="100%" stop-color="#0a001a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#n1)"/><g fill="#ff6b9d" opacity="0.18"><ellipse cx="300" cy="300" rx="200" ry="150"/><ellipse cx="700" cy="400" rx="250" ry="180"/><ellipse cx="1100" cy="350" rx="220" ry="160"/></g><g fill="white"><circle cx="150" cy="150" r="1"/><circle cx="450" cy="170" r="1.2"/><circle cx="750" cy="140" r="1"/><circle cx="1050" cy="160" r="1.5"/><circle cx="1350" cy="130" r="1"/></g></svg>`
+  },
+  { id:'matrix', accent:'#00ff41', accentRgb:'0,255,65',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="m1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#000a00"/><stop offset="100%" stop-color="#000000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#m1)"/><g stroke="#00ff41" stroke-opacity="0.05" stroke-width="1"><line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="750" x2="1440" y2="750"/></g><g fill="white"><circle cx="200" cy="50" r="1"/><circle cx="500" cy="70" r="1.2"/><circle cx="800" cy="40" r="1"/><circle cx="1100" cy="60" r="1.5"/><circle cx="1400" cy="30" r="1"/></g></svg>`
+  },
+  { id:'synthwave', accent:'#ff1493', accentRgb:'255,20,147',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sw1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2a0a2a"/><stop offset="50%" stop-color="#1a001a"/><stop offset="100%" stop-color="#0a000a"/></linearGradient></defs><rect width="1440" height="900" fill="url(#sw1)"/><circle cx="720" cy="300" r="120" fill="none" stroke="#ff1493" stroke-opacity="0.12" stroke-width="2"/><g stroke="#ff1493" stroke-opacity="0.06" stroke-width="1"><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="700" x2="1440" y2="700"/></g><g fill="white"><circle cx="150" cy="50" r="1"/><circle cx="450" cy="70" r="1.2"/><circle cx="750" cy="40" r="1"/><circle cx="1050" cy="60" r="1.5"/><circle cx="1350" cy="30" r="1"/></g></svg>`
+  },
+  { id:'volcanic', accent:'#ff4500', accentRgb:'255,69,0',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="v1" cx="50%" cy="100%" r="80%"><stop offset="0%" stop-color="#2a0a00"/><stop offset="100%" stop-color="#1a0000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#v1)"/><g fill="#ff4500" opacity="0.08"><ellipse cx="300" cy="700" rx="100" ry="200"/><ellipse cx="700" cy="650" rx="120" ry="240"/><ellipse cx="1100" cy="700" rx="100" ry="200"/></g><g fill="white"><circle cx="200" cy="100" r="1"/><circle cx="500" cy="120" r="1.2"/><circle cx="800" cy="90" r="1"/><circle cx="1100" cy="110" r="1.5"/><circle cx="1400" cy="80" r="1"/></g></svg>`
+  },
+  { id:'arctic', accent:'#87ceeb', accentRgb:'135,206,235',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="arc1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#0a1520"/><stop offset="100%" stop-color="#050a12"/></radialGradient></defs><rect width="1440" height="900" fill="url(#arc1)"/><g fill="#87ceeb" fill-opacity="0.08"><polygon points="300,400 400,200 500,400"/><polygon points="700,350 820,120 940,350"/><polygon points="1050,420 1150,180 1250,420"/></g><g fill="white"><circle cx="100" cy="50" r="1"/><circle cx="400" cy="70" r="1.2"/><circle cx="700" cy="40" r="1"/><circle cx="1000" cy="60" r="1.5"/><circle cx="1300" cy="30" r="1"/></g></svg>`
+  },
+  { id:'deep-space', accent:'#9932cc', accentRgb:'153,50,204',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="ds1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0a001a"/><stop offset="100%" stop-color="#00000a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#ds1)"/><g fill="#9932cc" opacity="0.06"><ellipse cx="720" cy="450" rx="400" ry="300"/></g><g fill="white"><circle cx="200" cy="200" r="1"/><circle cx="500" cy="180" r="1.2"/><circle cx="800" cy="220" r="1"/><circle cx="1100" cy="190" r="1.5"/><circle cx="1400" cy="210" r="1"/><circle cx="350" cy="500" r="0.8"/><circle cx="950" cy="600" r="0.8"/></g></svg>`
+  },
+  { id:'ocean', accent:'#00ced1', accentRgb:'0,206,209',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="oc1" cx="50%" cy="0%" r="100%"><stop offset="0%" stop-color="#001a1a"/><stop offset="100%" stop-color="#000808"/></radialGradient></defs><rect width="1440" height="900" fill="url(#oc1)"/><g stroke="#00ced1" stroke-opacity="0.06" stroke-width="1.5" fill="none"><path d="M0 600 Q360 560 720 600 Q1080 640 1440 600"/><path d="M0 650 Q360 610 720 650 Q1080 690 1440 650"/><path d="M0 700 Q360 660 720 700 Q1080 740 1440 700"/></g><g fill="white"><circle cx="100" cy="100" r="1"/><circle cx="400" cy="120" r="1.2"/><circle cx="700" cy="90" r="1"/><circle cx="1000" cy="110" r="1.5"/><circle cx="1300" cy="80" r="1"/></g></svg>`
+  },
+  { id:'galaxy', accent:'#9932cc', accentRgb:'153,50,204',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="gal1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0a001a"/><stop offset="100%" stop-color="#00000a"/></radialGradient><radialGradient id="gal2" cx="50%" cy="50%" r="30%"><stop offset="0%" stop-color="#9932cc" stop-opacity="0.07"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs><rect width="1440" height="900" fill="url(#gal1)"/><ellipse cx="720" cy="450" rx="500" ry="320" fill="url(#gal2)"/><g fill="white"><circle cx="200" cy="200" r="1"/><circle cx="500" cy="180" r="1.2"/><circle cx="800" cy="220" r="1"/><circle cx="1100" cy="190" r="1.5"/><circle cx="1400" cy="210" r="1"/><circle cx="350" cy="600" r="0.8"/><circle cx="1000" cy="700" r="0.8"/></g></svg>`
+  },
+  { id:'sunset', accent:'#ff6347', accentRgb:'255,99,71',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sun1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a0a00"/><stop offset="50%" stop-color="#3a1500"/><stop offset="100%" stop-color="#0a0000"/></linearGradient></defs><rect width="1440" height="900" fill="url(#sun1)"/><circle cx="720" cy="500" r="150" fill="#ff6347" opacity="0.08"/><g stroke="#ff6347" stroke-opacity="0.05" stroke-width="1"><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="560" x2="1440" y2="560"/><line x1="0" y1="620" x2="1440" y2="620"/><line x1="0" y1="680" x2="1440" y2="680"/></g><g fill="white"><circle cx="150" cy="100" r="1"/><circle cx="450" cy="120" r="1.2"/><circle cx="750" cy="90" r="1"/><circle cx="1050" cy="110" r="1.5"/><circle cx="1350" cy="80" r="1"/></g></svg>`
+  },
+  { id:'storm', accent:'#4682b4', accentRgb:'70,130,180',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="st1" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#0a0f1a"/><stop offset="100%" stop-color="#020508"/></radialGradient></defs><rect width="1440" height="900" fill="url(#st1)"/><g fill="#4682b4" opacity="0.05"><ellipse cx="200" cy="250" rx="300" ry="200"/><ellipse cx="900" cy="200" rx="350" ry="220"/></g><g fill="white"><circle cx="100" cy="100" r="1"/><circle cx="400" cy="120" r="1.2"/><circle cx="700" cy="90" r="1"/><circle cx="1000" cy="110" r="1.5"/><circle cx="1300" cy="80" r="1"/></g></svg>`
+  },
+  { id:'neon-city', accent:'#00ff00', accentRgb:'0,255,0',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="1440" height="900" fill="#050505"/><g fill="#001400"><rect x="50" y="500" width="60" height="400"/><rect x="150" y="420" width="80" height="480"/><rect x="500" y="300" width="90" height="600"/><rect x="1100" y="150" width="110" height="750"/></g><g fill="#00ff00" opacity="0.7"><rect x="60" y="498" width="60" height="2"/><rect x="160" y="418" width="80" height="2"/><rect x="510" y="298" width="90" height="2"/><rect x="1110" y="148" width="110" height="2"/></g><g fill="white"><circle cx="150" cy="50" r="1"/><circle cx="450" cy="70" r="1.2"/><circle cx="750" cy="40" r="1"/><circle cx="1350" cy="30" r="1"/></g></svg>`
+  },
+];
+
+function applyBgTheme(id) {
+  const theme = BG_THEMES.find(t => t.id === id) || BG_THEMES[0];
+  document.documentElement.style.setProperty('--accent', theme.accent);
+  document.documentElement.style.setProperty('--accent-rgb', theme.accentRgb);
+  document.getElementById('bg-svg-layer').innerHTML = theme.svg;
+}
+
+// Read the same settings key used by index.html / tools.html
+try {
+  const saved = JSON.parse(localStorage.getItem('sg_settings') || '{}');
+  applyBgTheme(saved.bgTheme || 'cyber');
+  if (saved.lowlag) document.documentElement.classList.add('lowlag');
+} catch(e) {
+  applyBgTheme('cyber');
+}
+</script>
+<style>
+html.lowlag * {backdrop-filter: none !important; -webkit-backdrop-filter: none !important;}
+html.lowlag .scanlines {animation: none !important;}
+</style>
+
+</body>
+</html>

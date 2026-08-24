@@ -1,0 +1,16 @@
+{
+  "name": "express-9482-app",
+  "version": "1.0.0",
+  "description": "Simple Express server serving index.html on port 9482",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": ["express", "node", "server"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
