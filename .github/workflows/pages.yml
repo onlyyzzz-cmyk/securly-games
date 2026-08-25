@@ -23,6 +23,12 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
+        env:
+          # Enable Pages here if it is not already on. Requires the token
+          # to hold administration:write + pages:write (see configure-pages docs).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
