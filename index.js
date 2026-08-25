@@ -4,15 +4,16 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 9482;
 
-// Serve static files
 app.use(express.static(__dirname));
 
-// Route for homepage
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+app.get('/', (_request, response) => {
+  response.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.use((_request, response) => {
+  response.status(404).sendFile(path.join(__dirname, '404.html'));
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Preview server running at http://localhost:${PORT}`);
 });

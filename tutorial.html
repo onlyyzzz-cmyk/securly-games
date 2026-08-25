@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#060612">
+  <title>how to play | securly games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#060612; --panel:#0d1020; --line:rgba(0,245,255,.18); --cyan:#00f5ff; --pink:#ff4fd8; --text:#e8f7ff; --muted:#8ca6b8; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:radial-gradient(circle at 50% -10%,rgba(0,245,255,.12),transparent 38%),var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .shell { width:min(980px,calc(100% - 32px)); margin:0 auto; padding:28px 0 56px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:20px; border-bottom:1px solid var(--line); padding-bottom:20px; }
+    .brand { display:flex; align-items:center; gap:12px; font-family:Orbitron,monospace; font-size:.82rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
+    .brand-mark { display:grid; place-items:center; width:34px; height:34px; border:1px solid var(--cyan); border-radius:8px; color:#001014; background:var(--cyan); box-shadow:0 0 18px rgba(0,245,255,.32); font-size:.72rem; }
+    .back { color:var(--cyan); font-size:.9rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+    .back:hover { color:#fff; }
+    .eyebrow { margin:64px 0 10px; color:var(--cyan); font-family:Orbitron,monospace; font-size:.7rem; letter-spacing:3px; text-transform:uppercase; }
+    h1 { max-width:700px; margin:0; font-family:Orbitron,monospace; font-size:clamp(2rem,6vw,4.4rem); line-height:1.06; letter-spacing:1px; text-transform:uppercase; }
+    .intro { max-width:600px; margin:18px 0 42px; color:var(--muted); font-size:1.12rem; line-height:1.5; }
+    .steps { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .step { min-height:190px; padding:22px; border:1px solid var(--line); border-radius:8px; background:linear-gradient(145deg,rgba(0,245,255,.08),rgba(13,16,32,.92) 50%); }
+    .number { color:var(--pink); font-family:Orbitron,monospace; font-size:.78rem; font-weight:900; letter-spacing:2px; }
+    h2 { margin:22px 0 8px; color:var(--cyan); font-family:Orbitron,monospace; font-size:1rem; letter-spacing:1px; text-transform:uppercase; }
+    .step p { margin:0; color:var(--muted); font-size:1rem; line-height:1.5; }
+    .tip { margin-top:14px; padding:20px 22px; border-left:3px solid var(--pink); background:rgba(255,79,216,.07); color:var(--text); line-height:1.5; }
+    .tip strong { color:var(--pink); }
+    .cta { display:inline-flex; align-items:center; margin-top:30px; padding:12px 18px; border:1px solid var(--cyan); border-radius:6px; color:#001014; background:var(--cyan); font-family:Orbitron,monospace; font-size:.72rem; font-weight:900; letter-spacing:1px; text-transform:uppercase; }
+    .cta:hover { background:#fff; border-color:#fff; }
+    @media (max-width:620px) { .shell { width:min(100% - 24px,980px); padding-top:18px; } .topbar { align-items:flex-start; } .brand { font-size:.68rem; } .eyebrow { margin-top:44px; } .steps { grid-template-columns:1fr; } .step { min-height:0; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">SG</span><span>securly games</span></a>
+      <a class="back" href="index.html">back to games</a>
+    </header>
+
+    <p class="eyebrow">beginner tutorial</p>
+    <h1>start playing in seconds</h1>
+    <p class="intro">New here? Follow these quick steps to find a game, launch it, and keep your favorites close.</p>
+
+    <section class="steps" aria-label="How to use securly games">
+      <article class="step"><span class="number">01 / FIND</span><h2>Browse or search</h2><p>Scroll through the game grid, or type a title into the search box at the top. The list filters as you type.</p></article>
+      <article class="step"><span class="number">02 / PLAY</span><h2>Choose a game</h2><p>Click any game card to open it. Wait for the game to load, then use your keyboard, mouse, or touch controls.</p></article>
+      <article class="step"><span class="number">03 / SAVE</span><h2>Keep favorites</h2><p>Use the star control on a game card to save it. Open favorites in the sidebar whenever you want to find it again.</p></article>
+      <article class="step"><span class="number">04 / RETURN</span><h2>Go back safely</h2><p>Use the back button in the game view or your browser's back button to return to the game library.</p></article>
+    </section>
+
+    <p class="tip"><strong>Quick tip:</strong> Try the <strong>lucky</strong> button when you cannot decide what to play. It picks a game for you.</p>
+    <a class="cta" href="index.html">open the game library</a>
+  </main>
+</body>
+</html>
