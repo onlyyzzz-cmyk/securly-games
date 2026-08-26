@@ -7,10 +7,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#060612">
-<title>securly games</title>
-<link rel="icon" id="main-favicon" href="">
-<link rel="apple-touch-icon" id="apple-touch-icon" href="">
-<link rel="apple-touch-icon-precomposed" id="apple-touch-icon-pre" href="">
+<title>pizza</title>
+<link rel="icon" id="main-favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+<link rel="apple-touch-icon" id="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+<link rel="apple-touch-icon-precomposed" id="apple-touch-icon-pre" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style id="custom-css"></style>
 <style>
@@ -1015,10 +1015,12 @@ function resetAllSettings(){settings={...DEFAULTS};saveSettings();applySettings(
 ═══════════════════════════════════════════ */
 function setCloakPreset(title,domain){document.getElementById('cloak-title').value=title;document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.toggle('active',el.dataset.domain===domain));settings.cloakFavicon=domain;applyRealFavicon(domain);saveSettings();}
 function applyCloak(){const title=document.getElementById('cloak-title').value.trim();if(title){document.title=title;settings.cloakTitle=title;}if(settings.cloakFavicon)applyRealFavicon(settings.cloakFavicon);saveSettings();showToast('tab cloaked');}
-function resetCloak(){document.title='securly games';['main-favicon','apple-touch-icon','apple-touch-icon-pre'].forEach(id=>{const el=document.getElementById(id);if(el)el.href='';});settings.cloakTitle='';settings.cloakFavicon='';document.getElementById('cloak-title').value='';document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.remove('active'));saveSettings();showToast('cloak removed');}
+function resetCloak(){document.title='pizza';applyDefaultFavicon();settings.cloakTitle='';settings.cloakFavicon='';document.getElementById('cloak-title').value='';document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.remove('active'));const pz=document.getElementById('favicon-pizza');if(pz)pz.classList.add('active');saveSettings();showToast('cloak removed');}
+const PIZZA_FAVICON='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>🍕</text></svg>';
+function applyDefaultFavicon(){['main-favicon','apple-touch-icon','apple-touch-icon-pre'].forEach(id=>{const el=document.getElementById(id);if(el)el.href=PIZZA_FAVICON;});}
 function applyRealFavicon(domain){const url=`https://www.google.com/s2/favicons?domain=${domain}&sz=32`;['main-favicon','apple-touch-icon','apple-touch-icon-pre'].forEach(id=>{const el=document.getElementById(id);if(el)el.href=url;});}
 const FAVICON_SITES=[{domain:'classroom.google.com',name:'Classroom'},{domain:'khanacademy.org',name:'Khan Academy'},{domain:'desmos.com',name:'Desmos'},{domain:'docs.google.com',name:'Docs'},{domain:'quizlet.com',name:'Quizlet'},{domain:'wikipedia.org',name:'Wikipedia'},{domain:'app.schoology.com',name:'Schoology'},{domain:'canvas.instructure.com',name:'Canvas'},{domain:'slides.google.com',name:'Slides'},{domain:'duolingo.com',name:'Duolingo'},{domain:'ixl.com',name:'IXL'},{domain:'kahoot.com',name:'Kahoot'},{domain:'gimkit.com',name:'Gimkit'},{domain:'nearpod.com',name:'Nearpod'},{domain:'quizizz.com',name:'Quizizz'},{domain:'scratch.mit.edu',name:'Scratch'}];
-function buildFaviconGrid(){const grid=document.getElementById('faviconGrid');if(!grid)return;grid.innerHTML='';FAVICON_SITES.forEach(site=>{const el=document.createElement('div');el.className='favicon-opt';el.dataset.domain=site.domain;if(settings.cloakFavicon===site.domain)el.classList.add('active');el.innerHTML=`<img class="fav-img" src="https://www.google.com/s2/favicons?domain=${site.domain}&sz=32" alt="${site.name}" onerror="this.style.display='none'"><span>${site.name}</span>`;el.addEventListener('click',()=>{settings.cloakFavicon=site.domain;saveSettings();applyRealFavicon(site.domain);document.querySelectorAll('.favicon-opt').forEach(e=>e.classList.remove('active'));el.classList.add('active');});grid.appendChild(el);});}
+function buildFaviconGrid(){const grid=document.getElementById('faviconGrid');if(!grid)return;grid.innerHTML='';const pizza=document.createElement('div');pizza.className='favicon-opt';pizza.id='favicon-pizza';if(!settings.cloakFavicon)pizza.classList.add('active');pizza.innerHTML=`<span style="font-size:1.15rem;line-height:1">🍕</span><span>pizza</span>`;pizza.addEventListener('click',()=>{settings.cloakFavicon='';saveSettings();applyDefaultFavicon();document.querySelectorAll('.favicon-opt').forEach(e=>e.classList.remove('active'));pizza.classList.add('active');});grid.appendChild(pizza);FAVICON_SITES.forEach(site=>{const el=document.createElement('div');el.className='favicon-opt';el.dataset.domain=site.domain;if(settings.cloakFavicon===site.domain)el.classList.add('active');el.innerHTML=`<img class="fav-img" src="https://www.google.com/s2/favicons?domain=${site.domain}&sz=32" alt="${site.name}" onerror="this.style.display='none'"><span>${site.name}</span>`;el.addEventListener('click',()=>{settings.cloakFavicon=site.domain;saveSettings();applyRealFavicon(site.domain);document.querySelectorAll('.favicon-opt').forEach(e=>e.classList.remove('active'));el.classList.add('active');});grid.appendChild(el);});}
 
 /* ═══════════════════════════════════════════
    PANIC
