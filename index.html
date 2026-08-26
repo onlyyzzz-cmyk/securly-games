@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#060612">
-<title>pizza</title>
+<title>Pizza Arcade</title>
 <link rel="icon" id="main-favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
 <link rel="apple-touch-icon" id="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
 <link rel="apple-touch-icon-precomposed" id="apple-touch-icon-pre" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
@@ -473,8 +473,8 @@ html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;
 <!-- Sidebar -->
 <nav id="sidebar">
   <div class="sidebar-logo" onclick="toggleSidebar()">
-    <div class="sidebar-logo-icon">SG</div>
-    <span class="sidebar-logo-text">securly games</span>
+    <div class="sidebar-logo-icon" aria-label="Pizza Arcade logo">🍕</div>
+    <span class="sidebar-logo-text">pizza arcade</span>
   </div>
   <div class="sidebar-nav">
     <div class="sidebar-section-label">browse</div>
@@ -549,8 +549,8 @@ html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;
   </div>
   <div id="content">
     <div id="hero">
-      <h1>securly games</h1>
-      <div class="hero-tagline">play. escape. repeat.</div>
+      <h1>pizza arcade</h1>
+      <div class="hero-tagline">small games · good breaks · no fuss</div>
       <div id="game-count-badge"><span class="badge-dot"></span><span id="badge-text">loading games...</span></div>
     </div>
     <div class="section" id="section-recents-home" style="display:none">
@@ -631,9 +631,12 @@ html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;
 <!-- Update Log -->
 <div id="updatelog">
   <div class="logbox">
-    <h2>update log — v3.2</h2>
+    <h2>what's new — v3.3</h2>
     <ul>
-      <li>3.2v — fixed CSS variable bug, 28 SVG backgrounds, performance boost for gameplay</li>
+      <li><strong>3.3</strong> — fresh Pizza Arcade identity, clearer navigation, and a friendlier home screen</li>
+      <li><strong>3.3</strong> — improved game loading and a local pizza favicon that works offline</li>
+      <li><strong>3.3</strong> — games and tools lists now refresh automatically when files are added</li>
+      <li><strong>3.2</strong> — fixed CSS variable bug, 28 SVG backgrounds, performance boost for gameplay</li>
       <li>3.1v — 20 SVG backgrounds, fixed fullscreen, improved mobile/PC exit controls</li>
       <li>3.0v — V3 beta launched, major UI overhaul</li>
       <li>2.0.5v — fixed favicon cloak on iOS/iPad/mobile</li>
@@ -1015,7 +1018,7 @@ function resetAllSettings(){settings={...DEFAULTS};saveSettings();applySettings(
 ═══════════════════════════════════════════ */
 function setCloakPreset(title,domain){document.getElementById('cloak-title').value=title;document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.toggle('active',el.dataset.domain===domain));settings.cloakFavicon=domain;applyRealFavicon(domain);saveSettings();}
 function applyCloak(){const title=document.getElementById('cloak-title').value.trim();if(title){document.title=title;settings.cloakTitle=title;}if(settings.cloakFavicon)applyRealFavicon(settings.cloakFavicon);saveSettings();showToast('tab cloaked');}
-function resetCloak(){document.title='pizza';applyDefaultFavicon();settings.cloakTitle='';settings.cloakFavicon='';document.getElementById('cloak-title').value='';document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.remove('active'));const pz=document.getElementById('favicon-pizza');if(pz)pz.classList.add('active');saveSettings();showToast('cloak removed');}
+function resetCloak(){document.title='Pizza Arcade';applyDefaultFavicon();settings.cloakTitle='';settings.cloakFavicon='';document.getElementById('cloak-title').value='';document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.remove('active'));const pz=document.getElementById('favicon-pizza');if(pz)pz.classList.add('active');saveSettings();showToast('cloak removed');}
 const PIZZA_FAVICON='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>🍕</text></svg>';
 function applyDefaultFavicon(){['main-favicon','apple-touch-icon','apple-touch-icon-pre'].forEach(id=>{const el=document.getElementById(id);if(el)el.href=PIZZA_FAVICON;});}
 function applyRealFavicon(domain){const url=`https://www.google.com/s2/favicons?domain=${domain}&sz=32`;['main-favicon','apple-touch-icon','apple-touch-icon-pre'].forEach(id=>{const el=document.getElementById(id);if(el)el.href=url;});}
