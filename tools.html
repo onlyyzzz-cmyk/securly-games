@@ -11,19 +11,19 @@
 <style id="custom-css"></style>
 <style>
 :root {
-  --accent: #e8552f;
-  --accent-dim: rgba(232,85,47,0.12);
-  --accent-glow: rgba(232,85,47,0.35);
-  --accent-rgb: 232,85,47;
-  --bg-deep: #1c1410;
-  --bg-mid: #251a14;
-  --bg-card: rgba(255,255,255,0.03);
-  --bg-sidebar: rgba(24,17,13,0.97);
-  --text: #f7ece1;
-  --text-dim: rgba(247,236,225,0.45);
-  --red: #ff3b5c;
-  --red-glow: rgba(255,59,92,0.4);
-  --grad-b: #e0a024;
+  --accent: #fc2651;
+  --accent-dim: rgba(252,38,81,0.12);
+  --accent-glow: rgba(252,38,81,0.22);
+  --accent-rgb: 252,38,81;
+  --bg-deep: #0f172a;
+  --bg-mid: #1e293b;
+  --bg-card: rgba(30,41,59,0.6);
+  --bg-sidebar: rgba(11,18,33,0.97);
+  --text: #f1f5f9;
+  --text-dim: rgba(241,245,249,0.55);
+  --red: #fc2651;
+  --red-glow: rgba(252,38,81,0.3);
+  --grad-b: #8b5cf6;
   --sidebar-w: 64px;
   --sidebar-w-open: 220px;
 }
@@ -59,7 +59,7 @@ body {
 
 .scanlines {
   position: fixed; inset: 0;
-  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,.07) 3px, rgba(0,0,0,.07) 4px);
+  background: none;
   pointer-events: none; z-index: 1;
   animation: scanmove 10s linear infinite;
 }
@@ -76,7 +76,7 @@ body {
   font-size: clamp(1.8rem,5vw,2.8rem);
   font-weight: 900; letter-spacing: 6px;
   color: var(--accent);
-  text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent-glow);
+  text-shadow: 0 2px 14px rgba(0,0,0,.35);
   animation: pulse-text 2s ease-in-out infinite;
 }
 #startup-sub { font-size: .8rem; letter-spacing: 4px; color: var(--text-dim); text-transform: uppercase; animation: blink 1.5s step-end infinite; }
@@ -117,9 +117,8 @@ body {
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   font-size: .9rem; font-weight: 900;
-  color: #000;
+  color: #fff;
   font-family: 'Baloo 2', 'Nunito', sans-serif;
-  box-shadow: 0 0 16px var(--accent-glow);
   transition: box-shadow .3s;
 }
 .sidebar-logo-text {
@@ -189,10 +188,10 @@ body {
   position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; gap: 10px;
   padding: 12px 24px;
-  background: rgba(28,20,16,.85);
+  background: rgba(15,23,42,.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(var(--accent-rgb),.07);
+  border-bottom: 1px solid rgba(148,163,184,.12);
 }
 #searchwrap { position: relative; flex: 1; max-width: 420px; }
 #searchbar {
@@ -227,7 +226,7 @@ body {
   padding: 6px 12px; border-radius: 8px; flex-shrink: 0;
   font-family: 'Nunito', 'Baloo 2', sans-serif; font-size: .75rem; font-weight: 700;
   letter-spacing: 1.5px; text-transform: uppercase;
-  background: linear-gradient(135deg, rgba(var(--accent-rgb),.12), rgba(224,160,36,.12));
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),.12), rgba(139,92,246,.12));
   color: var(--accent);
   border: 1px solid rgba(var(--accent-rgb),.3);
   cursor: pointer; white-space: nowrap;
@@ -240,7 +239,7 @@ body {
   transform: translateX(-150%); transition: transform .5s;
 }
 #lucky-btn:hover::before { transform: translateX(150%); }
-#lucky-btn:hover { background: linear-gradient(135deg, rgba(var(--accent-rgb),.22), rgba(224,160,36,.22)); box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent); }
+#lucky-btn:hover { background: linear-gradient(135deg, rgba(var(--accent-rgb),.22), rgba(139,92,246,.22)); box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent); }
 
 #content { flex: 1; padding: 24px 24px 60px; }
 
@@ -248,7 +247,7 @@ body {
 .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .section-title {
   font-family: 'Baloo 2', 'Nunito', sans-serif;
-  font-size: .75rem; font-weight: 700; letter-spacing: 4px;
+  font-size: .75rem; font-weight: 700; letter-spacing: 2px;
   color: var(--accent); text-transform: uppercase;
 }
 .section-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(var(--accent-rgb),.3), transparent); }
@@ -284,7 +283,7 @@ body {
   transform: scaleX(0); transition: transform .3s cubic-bezier(.34,1.56,.64,1);
   transform-origin: left;
 }
-.game-card:hover { transform: translateY(-5px) scale(1.02) !important; border-color: rgba(var(--accent-rgb),.42); box-shadow: 0 12px 36px rgba(0,0,0,.5), 0 0 20px rgba(var(--accent-rgb),.12); }
+.game-card:hover { transform: translateY(-5px) scale(1.02) !important; border-color: rgba(var(--accent-rgb),.5); box-shadow: 0 14px 34px rgba(0,0,0,.4); }
 .game-card:hover::before { opacity: 1; }
 .game-card:hover::after { transform: scaleX(1); }
 .game-card:active { transform: translateY(-1px) scale(.98) !important; }
@@ -294,8 +293,8 @@ body.no-anims .game-card::after { display: none; }
 .card-name {
   font-family: 'Nunito', 'Baloo 2', sans-serif;
   font-size: clamp(.85rem,1.8vw,.98rem);
-  font-weight: 700; letter-spacing: 1.5px;
-  text-transform: uppercase; color: var(--text);
+  font-weight: 700; letter-spacing: .5px;
+  ; color: var(--text);
   position: relative; z-index: 1; flex: 1;
   line-height: 1.3;
   margin-top: 10px;
@@ -405,7 +404,7 @@ body.no-anims .game-card::after { display: none; }
 .logbox h2 { font-family:'Baloo 2','Nunito',sans-serif; font-size:clamp(1rem,3vw,1.2rem); letter-spacing:4px; color:var(--accent); margin-bottom:18px; text-shadow:0 0 16px var(--accent-glow); }
 .logbox ul { padding-left:0; line-height:2; font-size:clamp(.9rem,2vw,1rem); color:var(--text-dim); list-style:none; }
 .logbox ul li::before { content:'▸ '; color:var(--accent); margin-right:4px; }
-.closebtn { margin-top:22px; padding:10px 28px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.9rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; background:var(--accent); color:#000; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 0 20px var(--accent-glow); display:block; }
+.closebtn { margin-top:22px; padding:10px 28px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.9rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 4px 14px rgba(0,0,0,.25); display:block; }
 .closebtn:hover { background:#fff; transform:translateY(-2px); }
 
 #settings-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; align-items:center; justify-content:center; z-index:30001; backdrop-filter:blur(10px); padding:20px; }
@@ -473,7 +472,7 @@ body.no-anims .game-card::after { display: none; }
 .cloak-presets { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
 .preset-btn { padding:5px 12px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.68rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; background:rgba(var(--accent-rgb),.07); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.2); border-radius:6px; cursor:pointer; transition:all .2s; }
 .preset-btn:hover { background:var(--accent-dim); border-color:var(--accent); }
-.apply-btn { margin-top:12px; padding:10px 22px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.82rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; background:linear-gradient(90deg,var(--accent),var(--grad-b)); color:#000; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 0 18px var(--accent-glow); }
+.apply-btn { margin-top:12px; padding:10px 22px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.82rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 4px 14px rgba(0,0,0,.25); }
 .apply-btn:hover { opacity:.9; transform:translateY(-2px); }
 .key-display { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); border-radius:6px; font-family:'Baloo 2','Nunito',sans-serif; font-size:.7rem; color:var(--text-dim); letter-spacing:2px; }
 .key-set-btn { padding:7px 14px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.75rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; background:rgba(var(--accent-rgb),.08); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.25); border-radius:6px; cursor:pointer; transition:all .2s; }
@@ -662,6 +661,7 @@ html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;
     <h2>update log — v3.0</h2>
     <ul>
       <li>3.0v — tools open in a built-in player with fullscreen and exit buttons</li>
+      <li>3.0v — cleaner dashboard and a small hand-picked theme gallery</li>
       <li>3.0v — sidebar nav, favorites, recents, ratings, play tracker, categories, lucky button, SVG background themes</li>
       <li>2.0.5v — fixed favicon cloak on iOS/iPad/mobile devices</li>
       <li>2.0.4v — added game request form</li>
@@ -841,7 +841,7 @@ html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;
 ═══════════════════════════════════════════ */
 const TOOLS_FOLDER = 'tools/';
 
-let settings = { bgTheme: 'cyber', scanlines: true, anims: true, loader: true, msgs: true, startup: true, panicEnabled: true, panicKey: 'Escape', panicUrl: '' };
+let settings = { bgTheme: 'classic', scanlines: true, anims: true, loader: true, msgs: true, startup: true, panicEnabled: true, panicKey: 'Escape', panicUrl: '' };
 let allTools = [];
 let currentSearch = '';
 let currentToolFile = '';
@@ -852,43 +852,28 @@ let sidebarOpen = false;
    BG THEMES — full list carried from index.html
 ═══════════════════════════════════════════ */
 const BG_THEMES = [
-  { id:'cyber', name:'Cyber', accent:'#e8552f', accentDim:'rgba(232,85,47,0.12)', accentGlow:'rgba(232,85,47,0.35)', accentRgb:'232,85,47', gradB:'#e0a024',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cg1" cx="20%" cy="30%" r="60%"><stop offset="0%" stop-color="#0d1a2e"/><stop offset="100%" stop-color="#1c1410"/></radialGradient><radialGradient id="cg2" cx="80%" cy="70%" r="50%"><stop offset="0%" stop-color="#0a1f1a"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cg1)"/><rect width="1440" height="900" fill="url(#cg2)"/><g stroke="#e8552f" stroke-opacity="0.06" stroke-width="1"><line x1="0" y1="100" x2="1440" y2="100"/><line x1="0" y1="200" x2="1440" y2="200"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="400" x2="1440" y2="400"/><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="700" x2="1440" y2="700"/><line x1="0" y1="800" x2="1440" y2="800"/></g><g stroke="#e8552f" stroke-opacity="0.06" stroke-width="1"><line x1="120" y1="0" x2="120" y2="900"/><line x1="240" y1="0" x2="240" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="480" y1="0" x2="480" y2="900"/><line x1="600" y1="0" x2="600" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="840" y1="0" x2="840" y2="900"/><line x1="960" y1="0" x2="960" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1200" y1="0" x2="1200" y2="900"/><line x1="1320" y1="0" x2="1320" y2="900"/></g><g fill="#e8552f" fill-opacity="0.3"><circle cx="120" cy="100" r="1.5"/><circle cx="360" cy="300" r="1.5"/><circle cx="600" cy="200" r="1.5"/><circle cx="840" cy="400" r="1.5"/><circle cx="1080" cy="100" r="1.5"/><circle cx="1320" cy="500" r="1.5"/><circle cx="240" cy="500" r="1.5"/><circle cx="720" cy="700" r="1.5"/><circle cx="960" cy="600" r="1.5"/></g><circle cx="200" cy="200" r="180" fill="none" stroke="#e8552f" stroke-opacity="0.04" stroke-width="60"/><circle cx="1200" cy="650" r="220" fill="none" stroke="#e0a024" stroke-opacity="0.05" stroke-width="80"/><g fill="#e8552f"><circle cx="50" cy="50" r="1" opacity="0.5"/><circle cx="380" cy="130" r="1.2" opacity="0.6"/><circle cx="750" cy="80" r="1" opacity="0.4"/><circle cx="1100" cy="200" r="1.5" opacity="0.7"/><circle cx="1380" cy="90" r="1" opacity="0.5"/><circle cx="200" cy="400" r="1" opacity="0.3"/><circle cx="900" cy="350" r="1.2" opacity="0.5"/><circle cx="1250" cy="750" r="1" opacity="0.4"/><circle cx="450" cy="800" r="1.5" opacity="0.6"/><circle cx="680" cy="600" r="1" opacity="0.3"/></g></svg>`
+  {
+    id:'classic', name:'Classic', accent:'#fc2651', accentDim:'rgba(252,38,81,0.12)', accentGlow:'rgba(252,38,81,0.22)', accentRgb:'252,38,81', gradB:'#8b5cf6',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cl1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#17233b"/><stop offset="100%" stop-color="#0f172a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cl1)"/></svg>`
   },
-  { id:'nebula', name:'Nebula', accent:'#ff6b9d', accentDim:'rgba(255,107,157,0.12)', accentGlow:'rgba(255,107,157,0.35)', accentRgb:'255,107,157', gradB:'#c44569',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="n1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#1a0a2a"/><stop offset="100%" stop-color="#0a001a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#n1)"/><g fill="#ff6b9d" opacity="0.6"><ellipse cx="300" cy="300" rx="200" ry="150"/><ellipse cx="700" cy="400" rx="250" ry="180"/><ellipse cx="1100" cy="350" rx="220" ry="160"/></g><g fill="#c44569" opacity="0.4"><ellipse cx="300" cy="250" rx="100" ry="75"/><ellipse cx="700" cy="350" rx="120" ry="90"/><ellipse cx="1100" cy="300" rx="110" ry="80"/></g><g fill="white"><circle cx="150" cy="150" r="1"/><circle cx="450" cy="170" r="1.2"/><circle cx="750" cy="140" r="1"/><circle cx="1050" cy="160" r="1.5"/><circle cx="1350" cy="130" r="1"/></g></svg>`
+  {
+    id:'pizza', name:'Pizza Kitchen', accent:'#e8552f', accentDim:'rgba(232,85,47,0.12)', accentGlow:'rgba(232,85,47,0.22)', accentRgb:'232,85,47', gradB:'#e0a024',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="pz1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#2e1e13"/><stop offset="100%" stop-color="#1c1410"/></radialGradient></defs><rect width="1440" height="900" fill="url(#pz1)"/><ellipse cx="330" cy="240" rx="440" ry="300" fill="#e8552f" fill-opacity="0.04"/><ellipse cx="1150" cy="660" rx="400" ry="260" fill="#e0a024" fill-opacity="0.04"/></svg>`
   },
-  { id:'matrix', name:'Matrix', accent:'#00ff41', accentDim:'rgba(0,255,65,0.12)', accentGlow:'rgba(0,255,65,0.35)', accentRgb:'0,255,65', gradB:'#008f11',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="m1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#000a00"/><stop offset="100%" stop-color="#000000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#m1)"/><g fill="#00ff41" opacity="0.15"><rect x="0" y="0" width="1440" height="900"/></g><g fill="white"><circle cx="200" cy="50" r="1"/><circle cx="500" cy="70" r="1.2"/><circle cx="800" cy="40" r="1"/><circle cx="1100" cy="60" r="1.5"/><circle cx="1400" cy="30" r="1"/><circle cx="300" cy="200" r="0.8"/><circle cx="700" cy="150" r="1"/><circle cx="1000" cy="300" r="0.8"/><circle cx="600" cy="400" r="1"/><circle cx="900" cy="500" r="0.8"/><circle cx="200" cy="600" r="1"/><circle cx="1300" cy="700" r="0.8"/><circle cx="400" cy="800" r="1"/></g><g stroke="#00ff41" stroke-opacity="0.08" stroke-width="1"><line x1="0" y1="0" x2="1440" y2="0"/><line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="750" x2="1440" y2="750"/><line x1="0" y1="900" x2="1440" y2="900"/></g></svg>`
+  {
+    id:'midnight', name:'Midnight', accent:'#a78bfa', accentDim:'rgba(167,139,250,0.12)', accentGlow:'rgba(167,139,250,0.22)', accentRgb:'167,139,250', gradB:'#6d28d9',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="mn1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#141b30"/><stop offset="100%" stop-color="#0b0f1a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#mn1)"/></svg>`
   },
-  { id:'synthwave', name:'Synthwave', accent:'#ff1493', accentDim:'rgba(255,20,147,0.12)', accentGlow:'rgba(255,20,147,0.35)', accentRgb:'255,20,147', gradB:'#00ffff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sw1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2a0a2a"/><stop offset="50%" stop-color="#1a001a"/><stop offset="100%" stop-color="#0a000a"/></linearGradient></defs><rect width="1440" height="900" fill="url(#sw1)"/><g stroke="#ff1493" stroke-opacity="0.15" stroke-width="1"><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="550" x2="1440" y2="550"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="650" x2="1440" y2="650"/><line x1="0" y1="700" x2="1440" y2="700"/><line x1="0" y1="750" x2="1440" y2="750"/><line x1="0" y1="800" x2="1440" y2="800"/></g><circle cx="720" cy="300" r="120" fill="none" stroke="#ff1493" stroke-opacity="0.2" stroke-width="2"/><circle cx="720" cy="300" r="80" fill="#2a0014" opacity="0.8"/><g fill="white"><circle cx="150" cy="50" r="1"/><circle cx="450" cy="70" r="1.2"/><circle cx="750" cy="40" r="1"/><circle cx="1050" cy="60" r="1.5"/><circle cx="1350" cy="30" r="1"/></g></svg>`
+  {
+    id:'forest', name:'Forest', accent:'#34d399', accentDim:'rgba(52,211,153,0.12)', accentGlow:'rgba(52,211,153,0.22)', accentRgb:'52,211,153', gradB:'#0ea5e9',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="fr1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#12251b"/><stop offset="100%" stop-color="#0a1710"/></radialGradient></defs><rect width="1440" height="900" fill="url(#fr1)"/></svg>`
   },
-  { id:'volcanic', name:'Volcanic', accent:'#ff4500', accentDim:'rgba(255,69,0,0.12)', accentGlow:'rgba(255,69,0,0.35)', accentRgb:'255,69,0', gradB:'#8b0000',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="v1" cx="50%" cy="100%" r="80%"><stop offset="0%" stop-color="#2a0a00"/><stop offset="100%" stop-color="#1a0000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#v1)"/><g fill="#ff4500" opacity="0.2"><ellipse cx="300" cy="700" rx="100" ry="200"/><ellipse cx="700" cy="650" rx="120" ry="240"/><ellipse cx="1100" cy="700" rx="100" ry="200"/></g><g fill="white"><circle cx="200" cy="100" r="1"/><circle cx="500" cy="120" r="1.2"/><circle cx="800" cy="90" r="1"/><circle cx="1100" cy="110" r="1.5"/><circle cx="1400" cy="80" r="1"/></g></svg>`
-  },
-  { id:'arctic', name:'Arctic', accent:'#87ceeb', accentDim:'rgba(135,206,235,0.12)', accentGlow:'rgba(135,206,235,0.35)', accentRgb:'135,206,235', gradB:'#4682b4',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="arc1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#0a1520"/><stop offset="100%" stop-color="#050a12"/></radialGradient></defs><rect width="1440" height="900" fill="url(#arc1)"/><g stroke="#87ceeb" stroke-opacity="0.08" stroke-width="1"><line x1="0" y1="150" x2="1440" y2="150"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="750" x2="1440" y2="750"/></g><g fill="#87ceeb" fill-opacity="0.15"><polygon points="300,400 400,200 500,400"/><polygon points="700,350 820,120 940,350"/><polygon points="1050,420 1150,180 1250,420"/></g><g fill="white"><circle cx="100" cy="50" r="1"/><circle cx="400" cy="70" r="1.2"/><circle cx="700" cy="40" r="1"/><circle cx="1000" cy="60" r="1.5"/><circle cx="1300" cy="30" r="1"/></g></svg>`
-  },
-  { id:'deep-space', name:'Deep Space', accent:'#9932cc', accentDim:'rgba(153,50,204,0.12)', accentGlow:'rgba(153,50,204,0.35)', accentRgb:'153,50,204', gradB:'#4b0082',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="ds1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0a001a"/><stop offset="100%" stop-color="#00000a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#ds1)"/><g fill="#9932cc" opacity="0.1"><ellipse cx="720" cy="450" rx="400" ry="300"/></g><g fill="white"><circle cx="200" cy="200" r="1"/><circle cx="500" cy="180" r="1.2"/><circle cx="800" cy="220" r="1"/><circle cx="1100" cy="190" r="1.5"/><circle cx="1400" cy="210" r="1"/><circle cx="350" cy="500" r="0.8"/><circle cx="650" cy="350" r="1"/><circle cx="950" cy="600" r="0.8"/><circle cx="1250" cy="400" r="1"/><circle cx="100" cy="700" r="0.8"/></g></svg>`
-  },
-  { id:'ocean', name:'Ocean', accent:'#00ced1', accentDim:'rgba(0,206,209,0.12)', accentGlow:'rgba(0,206,209,0.35)', accentRgb:'0,206,209', gradB:'#008b8b',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="oc1" cx="50%" cy="0%" r="100%"><stop offset="0%" stop-color="#001a1a"/><stop offset="100%" stop-color="#000808"/></radialGradient></defs><rect width="1440" height="900" fill="url(#oc1)"/><g fill="#00ced1" opacity="0.08"><ellipse cx="300" cy="300" rx="150" ry="100"/><ellipse cx="700" cy="400" rx="180" ry="120"/><ellipse cx="1100" cy="350" rx="160" ry="110"/></g><g stroke="#00ced1" stroke-opacity="0.08" stroke-width="1.5" fill="none"><path d="M0 600 Q360 560 720 600 Q1080 640 1440 600"/><path d="M0 650 Q360 610 720 650 Q1080 690 1440 650"/><path d="M0 700 Q360 660 720 700 Q1080 740 1440 700"/></g><g fill="white"><circle cx="100" cy="100" r="1"/><circle cx="400" cy="120" r="1.2"/><circle cx="700" cy="90" r="1"/><circle cx="1000" cy="110" r="1.5"/><circle cx="1300" cy="80" r="1"/></g></svg>`
-  },
-  { id:'galaxy', name:'Galaxy', accent:'#9932cc', accentDim:'rgba(153,50,204,0.12)', accentGlow:'rgba(153,50,204,0.35)', accentRgb:'153,50,204', gradB:'#8a2be2',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="gal1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0a001a"/><stop offset="100%" stop-color="#00000a"/></radialGradient><radialGradient id="gal2" cx="50%" cy="50%" r="30%"><stop offset="0%" stop-color="#9932cc" stop-opacity="0.08"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs><rect width="1440" height="900" fill="url(#gal1)"/><ellipse cx="720" cy="450" rx="500" ry="320" fill="url(#gal2)"/><g fill="white"><circle cx="200" cy="200" r="1"/><circle cx="500" cy="180" r="1.2"/><circle cx="800" cy="220" r="1"/><circle cx="1100" cy="190" r="1.5"/><circle cx="1400" cy="210" r="1"/><circle cx="350" cy="600" r="0.8"/><circle cx="650" cy="400" r="1"/><circle cx="1000" cy="700" r="0.8"/><circle cx="150" cy="450" r="1"/><circle cx="1250" cy="550" r="0.8"/></g></svg>`
-  },
-  { id:'sunset', name:'Sunset', accent:'#ff6347', accentDim:'rgba(255,99,71,0.12)', accentGlow:'rgba(255,99,71,0.35)', accentRgb:'255,99,71', gradB:'#ff4500',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sun1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a0a00"/><stop offset="50%" stop-color="#3a1500"/><stop offset="100%" stop-color="#0a0000"/></linearGradient></defs><rect width="1440" height="900" fill="url(#sun1)"/><circle cx="720" cy="500" r="150" fill="#ff6347" opacity="0.15"/><circle cx="720" cy="500" r="80" fill="#ffd700" opacity="0.08"/><g stroke="#ff6347" stroke-opacity="0.06" stroke-width="1"><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="560" x2="1440" y2="560"/><line x1="0" y1="620" x2="1440" y2="620"/><line x1="0" y1="680" x2="1440" y2="680"/></g><g fill="white"><circle cx="150" cy="100" r="1"/><circle cx="450" cy="120" r="1.2"/><circle cx="750" cy="90" r="1"/><circle cx="1050" cy="110" r="1.5"/><circle cx="1350" cy="80" r="1"/></g></svg>`
-  },
-  { id:'storm', name:'Storm', accent:'#4682b4', accentDim:'rgba(70,130,180,0.12)', accentGlow:'rgba(70,130,180,0.35)', accentRgb:'70,130,180', gradB:'#5f9ea0',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="st1" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#0a0f1a"/><stop offset="100%" stop-color="#020508"/></radialGradient></defs><rect width="1440" height="900" fill="url(#st1)"/><g fill="#4682b4" opacity="0.08"><ellipse cx="200" cy="250" rx="300" ry="200"/><ellipse cx="900" cy="200" rx="350" ry="220"/><ellipse cx="1300" cy="300" rx="280" ry="180"/></g><g stroke="#4682b4" stroke-opacity="0.12" stroke-width="1.5" fill="none"><line x1="600" y1="0" x2="580" y2="200"/><line x1="750" y1="0" x2="720" y2="180"/><line x1="900" y1="50" x2="870" y2="250"/></g><g fill="white"><circle cx="100" cy="100" r="1"/><circle cx="400" cy="120" r="1.2"/><circle cx="700" cy="90" r="1"/><circle cx="1000" cy="110" r="1.5"/><circle cx="1300" cy="80" r="1"/></g></svg>`
-  },
-  { id:'neon-city', name:'Neon City', accent:'#00ff00', accentDim:'rgba(0,255,0,0.12)', accentGlow:'rgba(0,255,0,0.35)', accentRgb:'0,255,0', gradB:'#ff00ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="nc1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#0a0a0a"/><stop offset="100%" stop-color="#000000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#nc1)"/><g fill="#001400" opacity="1"><rect x="50" y="500" width="60" height="400"/><rect x="150" y="420" width="80" height="480"/><rect x="280" y="380" width="70" height="520"/><rect x="500" y="300" width="90" height="600"/><rect x="650" y="250" width="100" height="650"/><rect x="800" y="200" width="80" height="700"/><rect x="950" y="350" width="70" height="550"/><rect x="1100" y="150" width="110" height="750"/><rect x="1270" y="280" width="90" height="620"/></g><g fill="#00ff00" opacity="0.7"><rect x="60" y="498" width="60" height="2"/><rect x="160" y="418" width="80" height="2"/><rect x="290" y="378" width="70" height="2"/><rect x="510" y="298" width="90" height="2"/><rect x="660" y="248" width="100" height="2"/><rect x="810" y="198" width="80" height="2"/><rect x="960" y="348" width="70" height="2"/><rect x="1110" y="148" width="110" height="2"/><rect x="1280" y="278" width="90" height="2"/></g><g fill="#ff00ff" opacity="0.5"><circle cx="90" cy="490" r="2"/><circle cx="200" cy="410" r="2"/><circle cx="325" cy="370" r="2"/><circle cx="555" cy="290" r="2"/><circle cx="710" cy="240" r="2"/></g><g fill="white"><circle cx="150" cy="50" r="1"/><circle cx="450" cy="70" r="1.2"/><circle cx="750" cy="40" r="1"/><circle cx="1050" cy="60" r="1.5"/><circle cx="1350" cy="30" r="1"/></g></svg>`
+  {
+    id:'ocean', name:'Ocean', accent:'#38bdf8', accentDim:'rgba(56,189,248,0.12)', accentGlow:'rgba(56,189,248,0.22)', accentRgb:'56,189,248', gradB:'#6366f1',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="oc1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#132438"/><stop offset="100%" stop-color="#0a1524"/></radialGradient></defs><rect width="1440" height="900" fill="url(#oc1)"/></svg>`
   },
 ];
+
 
 /* ═══════════════════════════════════════════
    LOCAL STORAGE HELPERS
@@ -932,7 +917,7 @@ function buildBgThemeGrid() {
    APPLY SETTINGS  ← FIXED (no more hardcoded SVG)
 ═══════════════════════════════════════════ */
 function applySettings() {
-  applyBgTheme(settings.bgTheme || 'cyber');
+  applyBgTheme(settings.bgTheme || 'classic');
   document.querySelector('.scanlines').style.display = settings.scanlines !== false ? 'block' : 'none';
   document.body.classList.toggle('no-anims', !settings.anims);
   if (settings.lowlag) document.documentElement.classList.add('lowlag');
@@ -1043,7 +1028,7 @@ function applyCustomCSS() {
 function resetAllSettings() {
   if (!confirm('Reset all settings to default?')) return;
   localStorage.removeItem('sg_settings');
-  settings = { bgTheme: 'cyber', scanlines: true, anims: true, loader: true, msgs: true, startup: true, panicEnabled: true, panicKey: 'Escape', panicUrl: '' };
+  settings = { bgTheme: 'classic', scanlines: true, anims: true, loader: true, msgs: true, startup: true, panicEnabled: true, panicKey: 'Escape', panicUrl: '' };
   applySettings();
   closeSettings();
   showToast('settings reset');

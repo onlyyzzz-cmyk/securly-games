@@ -15,19 +15,19 @@
 <style id="custom-css"></style>
 <style>
 :root {
-  --accent: #e8552f;
-  --accent-dim: rgba(232,85,47,0.12);
-  --accent-glow: rgba(232,85,47,0.35);
-  --accent-rgb: 232,85,47;
-  --bg-deep: #1c1410;
-  --bg-mid: #251a14;
-  --bg-card: rgba(255,244,232,0.045);
-  --bg-sidebar: rgba(24,17,13,0.97);
-  --text: #f7ece1;
-  --text-dim: rgba(247,236,225,0.45);
-  --red: #ff3b5c;
-  --red-glow: rgba(255,59,92,0.4);
-  --grad-b: #e0a024;
+  --accent: #fc2651;
+  --accent-dim: rgba(252,38,81,0.12);
+  --accent-glow: rgba(252,38,81,0.22);
+  --accent-rgb: 252,38,81;
+  --bg-deep: #0f172a;
+  --bg-mid: #1e293b;
+  --bg-card: rgba(30,41,59,0.6);
+  --bg-sidebar: rgba(11,18,33,0.97);
+  --text: #f1f5f9;
+  --text-dim: rgba(241,245,249,0.55);
+  --red: #fc2651;
+  --red-glow: rgba(252,38,81,0.3);
+  --grad-b: #8b5cf6;
   --sidebar-w: 64px;
   --sidebar-w-open: 220px;
 }
@@ -61,11 +61,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(232,85,47,0.06), transparent 55%),
-    radial-gradient(ellipse at 50% 110%, rgba(224,160,36,0.05), transparent 60%),
-    repeating-linear-gradient(to bottom, transparent 0px, transparent 7px, rgba(0,0,0,0.028) 7px, rgba(0,0,0,0.028) 8px);
-  background-attachment: fixed;
+  background: none;
 }
 @keyframes scanmove { 0%{transform: translateY(0)} 100%{transform: translateY(90px)} }
 
@@ -77,7 +73,7 @@ body.game-active .badge-dot { animation-play-state: paused; }
 /* ── Startup ── */
 #startup {
   position: fixed; inset: 0;
-  background: linear-gradient(160deg, #2b1c12 0%, #1c1410 45%, #301c10 100%);
+  background: linear-gradient(160deg, #101a2c 0%, #0f172a 45%, #121d33 100%);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 99999; gap: 32px; padding: 20px; text-align: center;
   pointer-events: auto; overflow: hidden; opacity: 1; transition: opacity 0.8s ease-out;
@@ -85,13 +81,13 @@ body.game-active .badge-dot { animation-play-state: paused; }
 #startup.fade-out { opacity: 0; pointer-events: none; }
 #startup::before {
   content: ''; position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(232,85,47,0.08) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(252,38,81,0.06) 0%, transparent 70%);
   pointer-events: none; animation: pulseGlow 3s ease-in-out infinite;
 }
 @keyframes pulseGlow { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
 #startup h1 {
   font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: clamp(1.8rem,5vw,2.8rem); font-weight: 900;
-  letter-spacing: 6px; color: var(--accent); text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent-glow);
+  letter-spacing: 6px; color: var(--accent); text-shadow: 0 2px 14px rgba(0,0,0,.35);
   margin: 0; position: relative; z-index: 2; animation: titleFade 0.8s ease-out;
 }
 @keyframes titleFade { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
@@ -100,18 +96,18 @@ body.game-active .badge-dot { animation-play-state: paused; }
 .startup-spinner { position:relative; width:100%; height:100%; }
 .spinner-line { position:absolute; width:100%; height:100%; border:3px solid transparent; border-top-color:var(--accent); border-right-color:rgba(232,85,47,0.5); border-radius:50%; }
 .spinner-line:nth-child(1) { animation:spin1 2s linear infinite; }
-.spinner-line:nth-child(2) { animation:spin1 1.5s linear infinite reverse; border-top-color:rgba(224,160,36,0.6); border-right-color:rgba(224,160,36,0.3); }
+.spinner-line:nth-child(2) { animation:spin1 1.5s linear infinite reverse; border-top-color:rgba(139,92,246,0.6); border-right-color:rgba(139,92,246,0.3); }
 .spinner-line:nth-child(3) { animation:spin1 1s linear infinite; scale:0.65; border-right-color:transparent; }
 @keyframes spin1 { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 .startup-bar-container { position:relative; z-index:2; width:100%; max-width:300px; }
 .startup-bar-track { width:100%; height:4px; background:rgba(232,85,47,0.1); border-radius:10px; overflow:hidden; border:1px solid rgba(232,85,47,0.2); position:relative; }
-#startupfill { height:100%; width:0%; background:linear-gradient(90deg,var(--accent),#e0a024); border-radius:10px; box-shadow:0 0 15px rgba(232,85,47,0.6); transition:width 0.15s cubic-bezier(0.25,0.46,0.45,0.94); }
+#startupfill { height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--grad-b)); border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.3); transition:width 0.15s cubic-bezier(0.25,0.46,0.45,0.94); }
 .startup-status { font-size:.7rem; letter-spacing:2px; color:rgba(232,85,47,0.6); text-transform:uppercase; margin-top:8px; }
 
 /* ── Onboarding ── */
 .onboarding-overlay { position:fixed; inset:0; background:rgba(0,0,0,.95); display:flex; align-items:center; justify-content:center; z-index:19999; padding:20px; backdrop-filter:blur(8px); }
 .onboarding-overlay.hidden { display:none !important; }
-.onboarding-panel { background:linear-gradient(135deg,rgba(var(--accent-rgb),.08),rgba(224,160,36,.06)); border:1px solid rgba(var(--accent-rgb),.2); border-radius:16px; padding:48px 40px; max-width:420px; width:100%; box-shadow:0 0 60px rgba(var(--accent-rgb),.15),inset 0 0 40px rgba(var(--accent-rgb),.05); text-align:center; animation:onboardingIn 0.6s ease-out; }
+.onboarding-panel { background:linear-gradient(135deg,rgba(var(--accent-rgb),.08),rgba(139,92,246,.06)); border:1px solid rgba(var(--accent-rgb),.2); border-radius:16px; padding:48px 40px; max-width:420px; width:100%; box-shadow:0 0 60px rgba(var(--accent-rgb),.15),inset 0 0 40px rgba(var(--accent-rgb),.05); text-align:center; animation:onboardingIn 0.6s ease-out; }
 @keyframes onboardingIn { from{opacity:0;transform:scale(0.95) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
 .onboarding-content { display:flex; flex-direction:column; gap:20px; }
 .onboarding-icon { font-size:3.5rem; animation:float 3s ease-in-out infinite; }
@@ -121,8 +117,8 @@ body.game-active .badge-dot { animation-play-state: paused; }
 .onboarding-input { padding:12px 16px; font-size:1rem; font-family:'Nunito','Baloo 2',sans-serif; background:rgba(var(--accent-rgb),.05); border:1px solid rgba(var(--accent-rgb),.2); border-radius:8px; color:var(--text); letter-spacing:1px; outline:none; transition:all 0.3s; caret-color:var(--accent); }
 .onboarding-input::placeholder { color:var(--text-dim); }
 .onboarding-input:focus { border-color:var(--accent); background:rgba(var(--accent-rgb),.1); box-shadow:0 0 20px var(--accent-glow); }
-.onboarding-btn { padding:12px 28px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.9rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; background:linear-gradient(135deg,var(--accent),var(--grad-b)); color:#000; border:none; border-radius:8px; cursor:pointer; transition:all 0.3s; box-shadow:0 0 20px var(--accent-glow); }
-.onboarding-btn:hover { transform:translateY(-2px); box-shadow:0 0 30px var(--accent-glow); }
+.onboarding-btn { padding:12px 28px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.9rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 14px rgba(0,0,0,.3); }
+.onboarding-btn:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.35); }
 .onboarding-footer { font-size:.7rem; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase; }
 .onboarding-footer-dot { display:inline-block; width:4px; height:4px; background:var(--accent); border-radius:50%; margin-right:8px; animation:pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
@@ -132,7 +128,7 @@ body.game-active .badge-dot { animation-play-state: paused; }
 #sidebar { position:fixed; left:0; top:0; bottom:0; width:var(--sidebar-w); background:var(--bg-sidebar); border-right:1px solid rgba(var(--accent-rgb),.1); display:flex; flex-direction:column; align-items:center; padding:0; z-index:100; transition:width .3s cubic-bezier(.4,0,.2,1); overflow:hidden; contain: strict; }
 #sidebar.expanded { width:var(--sidebar-w-open); }
 .sidebar-logo { width:100%; padding:18px 0 16px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid rgba(var(--accent-rgb),.08); flex-shrink:0; gap:10px; overflow:hidden; cursor:pointer; }
-.sidebar-logo-icon { width:32px; height:32px; flex-shrink:0; background:linear-gradient(135deg,var(--accent),var(--grad-b)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:900; color:#000; font-family:'Baloo 2','Nunito',sans-serif; box-shadow:0 0 16px var(--accent-glow); }
+.sidebar-logo-icon { width:32px; height:32px; flex-shrink:0; background:linear-gradient(135deg,var(--accent),var(--grad-b)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:900; color:#fff; font-family:'Baloo 2','Nunito',sans-serif; }
 .sidebar-logo-text { font-family:'Baloo 2','Nunito',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:2px; color:var(--accent); white-space:nowrap; opacity:0; transform:translateX(-8px); transition:opacity .25s,transform .25s; }
 #sidebar.expanded .sidebar-logo-text { opacity:1; transform:translateX(0); }
 .sidebar-nav { flex:1; width:100%; padding:12px 0; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
@@ -155,7 +151,7 @@ body.game-active .badge-dot { animation-play-state: paused; }
 #main::-webkit-scrollbar-thumb { background:rgba(var(--accent-rgb),.25); border-radius:4px; }
 
 /* ── Top bar ── */
-#topbar { position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:10px; padding:12px 24px; background:rgba(28,20,16,.85); border-bottom:1px solid rgba(var(--accent-rgb),.07); contain: layout style; }
+#topbar { position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:10px; padding:12px 24px; background:rgba(15,23,42,.92); border-bottom:1px solid rgba(148,163,184,.12); contain: layout style; }
 #searchwrap { position:relative; flex:1; max-width:420px; }
 #searchbar { width:100%; padding:9px 40px 9px 16px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.9rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text); background:rgba(var(--accent-rgb),.05); border:1px solid rgba(var(--accent-rgb),.18); border-radius:8px; outline:none; caret-color:var(--accent); transition:border-color .25s,box-shadow .25s; }
 #searchbar::placeholder { color:var(--text-dim); letter-spacing:2px; }
@@ -163,21 +159,21 @@ body.game-active .badge-dot { animation-play-state: paused; }
 .search-icon { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--accent); opacity:.5; font-size:1.1rem; pointer-events:none; }
 
 
-#lucky-btn { padding:6px 12px; border-radius:8px; flex-shrink:0; font-family:'Nunito','Baloo 2',sans-serif; font-size:.75rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; background:linear-gradient(135deg,rgba(var(--accent-rgb),.12),rgba(224,160,36,.12)); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.3); cursor:pointer; white-space:nowrap; transition:all .25s; display:flex; align-items:center; }
-#lucky-btn:hover { background:linear-gradient(135deg,rgba(var(--accent-rgb),.22),rgba(224,160,36,.22)); box-shadow:0 0 20px var(--accent-glow); border-color:var(--accent); }
+#lucky-btn { padding:6px 12px; border-radius:8px; flex-shrink:0; font-family:'Nunito','Baloo 2',sans-serif; font-size:.75rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; background:linear-gradient(135deg,rgba(var(--accent-rgb),.12),rgba(139,92,246,.12)); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.3); cursor:pointer; white-space:nowrap; transition:all .25s; display:flex; align-items:center; }
+#lucky-btn:hover { background:linear-gradient(135deg,rgba(var(--accent-rgb),.22),rgba(139,92,246,.22)); box-shadow:0 0 20px var(--accent-glow); border-color:var(--accent); }
 
 /* ── Content ── */
 #content { flex:1; padding:24px 24px 60px; }
 .section { margin-bottom:36px; }
 .section-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-.section-title { font-family:'Baloo 2','Nunito',sans-serif; font-size:.75rem; font-weight:700; letter-spacing:4px; color:var(--accent); text-transform:uppercase; }
+.section-title { font-family:'Baloo 2','Nunito',sans-serif; font-size:.75rem; font-weight:700; letter-spacing:2px; color:var(--accent); text-transform:uppercase; }
 .section-line { flex:1; height:1px; background:linear-gradient(90deg,rgba(var(--accent-rgb),.3),transparent); }
 .section-count { font-size:.65rem; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; }
 #hero { padding:32px 24px 20px; position:relative; }
-#hero h1 { font-family:'Baloo 2','Nunito',sans-serif; font-size:clamp(1.6rem,4vw,2.4rem); font-weight:900; letter-spacing:5px; color:var(--accent); text-shadow:0 0 30px var(--accent-glow); animation:pulse-text 3s ease-in-out infinite; margin-bottom:6px; }
+#hero h1 { font-family:'Baloo 2','Nunito',sans-serif; font-size:clamp(1.6rem,4vw,2.4rem); font-weight:900; letter-spacing:1px; color:var(--text); text-shadow:0 2px 14px rgba(0,0,0,.35); margin-bottom:6px; }
 @keyframes pulse-text { 0%,100%{text-shadow:0 0 20px var(--accent-glow),0 0 40px var(--accent-glow)} 50%{text-shadow:0 0 40px var(--accent-glow),0 0 80px var(--accent-glow)} }
-.hero-tagline { font-size:.75rem; letter-spacing:5px; color:var(--text-dim); text-transform:uppercase; margin-bottom:12px; }
-#game-count-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--accent); background:rgba(var(--accent-rgb),.08); border:1px solid rgba(var(--accent-rgb),.2); font-family:'Nunito','Baloo 2',sans-serif; font-weight:700; }
+.hero-tagline { font-size:.82rem; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase; margin-bottom:14px; }
+#game-count-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:.65rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); background:rgba(var(--accent-rgb),.1); border:1px solid rgba(var(--accent-rgb),.28); font-family:'Nunito','Baloo 2',sans-serif; font-weight:700; }
 .badge-dot { width:5px; height:5px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px var(--accent); animation:dotpulse 2s ease-in-out infinite; }
 @keyframes dotpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
 
@@ -187,13 +183,13 @@ body.game-active .badge-dot { animation-play-state: paused; }
 .game-card.visible { opacity:1; transform:translateY(0); }
 .game-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(var(--accent-rgb),.07) 0%,transparent 60%); opacity:0; transition:opacity .25s; }
 .game-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--grad-b)); transform:scaleX(0); transition:transform .3s cubic-bezier(.34,1.56,.64,1); transform-origin:left; }
-.game-card:hover { transform:translateY(-5px) scale(1.02) !important; border-color:rgba(var(--accent-rgb),.42); box-shadow:0 12px 36px rgba(0,0,0,.5),0 0 20px rgba(var(--accent-rgb),.12); }
+.game-card:hover { transform:translateY(-5px) scale(1.02) !important; border-color:rgba(var(--accent-rgb),.5); box-shadow:0 14px 34px rgba(0,0,0,.4); }
 .game-card:hover::before { opacity:1; }
 .game-card:hover::after { transform:scaleX(1); }
 .game-card:active { transform:translateY(-1px) scale(.98) !important; }
 body.no-anims .game-card:hover { transform:none !important; box-shadow:none !important; }
 body.no-anims .game-card::after { display:none; }
-.card-name { font-family:'Nunito','Baloo 2',sans-serif; font-size:clamp(.85rem,1.8vw,.98rem); font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text); position:relative; z-index:1; flex:1; line-height:1.3; margin-top:10px; }
+.card-name { font-family:'Nunito','Baloo 2',sans-serif; font-size:clamp(.85rem,1.8vw,.98rem); font-weight:700; letter-spacing:.5px; color:var(--text); position:relative; z-index:1; flex:1; line-height:1.3; margin-top:10px; }
 .card-meta { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
 .card-plays { font-size:.62rem; letter-spacing:1.5px; color:var(--text-dim); text-transform:uppercase; }
 .card-actions { display:flex; align-items:center; gap:6px; }
@@ -319,12 +315,12 @@ body.no-anims .game-card::after { display:none; }
 .spinner-ring:nth-child(2) { animation-delay:.2s; }
 .spinner-ring:nth-child(3) { animation-delay:.4s; }
 @keyframes spinnerBounce { 0%,80%,100%{transform:scale(1);opacity:1} 40%{transform:scale(0.5);opacity:0.4} }
-#loader-greeting { font-family:'Baloo 2','Nunito',sans-serif; font-size:clamp(1.8rem,6vw,2.8rem); letter-spacing:3px; color:var(--accent); text-shadow:0 0 40px rgba(var(--accent-rgb),0.8),0 0 80px rgba(var(--accent-rgb),0.4); margin:0 0 12px 0; animation:glowPulse 2s ease-in-out infinite; }
+#loader-greeting { font-family:'Baloo 2','Nunito',sans-serif; font-size:clamp(1.8rem,6vw,2.8rem); letter-spacing:1.5px; color:var(--text); text-shadow:0 2px 14px rgba(0,0,0,.35); margin:0 0 12px 0; }
 @keyframes glowPulse { 0%,100%{text-shadow:0 0 40px rgba(var(--accent-rgb),0.8),0 0 80px rgba(var(--accent-rgb),0.4)} 50%{text-shadow:0 0 60px rgba(var(--accent-rgb),1),0 0 120px rgba(var(--accent-rgb),0.6)} }
 .loader-message { font-family:'Nunito','Baloo 2',sans-serif; font-size:clamp(0.9rem,2.5vw,1.1rem); letter-spacing:2px; color:var(--text); min-height:1.8em; margin-bottom:32px; font-weight:500; text-transform:uppercase; transition:opacity .15s; }
 .progress-section { display:flex; flex-direction:column; gap:12px; margin-bottom:36px; }
 .progress-bar-track { position:relative; width:100%; height:6px; background:rgba(var(--accent-rgb),0.1); border-radius:10px; overflow:hidden; border:1px solid rgba(var(--accent-rgb),0.2); }
-#loaderfill { position:absolute; height:100%; background:linear-gradient(90deg,var(--accent),rgba(var(--accent-rgb),0.7)); border-radius:10px; width:0%; transition:width .15s cubic-bezier(0.25,0.46,0.45,0.94); box-shadow:0 0 20px rgba(var(--accent-rgb),0.8); }
+#loaderfill { position:absolute; height:100%; background:linear-gradient(90deg,var(--accent),rgba(var(--accent-rgb),0.7)); border-radius:10px; width:0%; transition:width .15s cubic-bezier(0.25,0.46,0.45,0.94); box-shadow:0 1px 4px rgba(0,0,0,.3); }
 .progress-percent { font-family:'Nunito','Baloo 2',sans-serif; font-size:.75rem; letter-spacing:3px; color:rgba(var(--accent-rgb),0.7); text-transform:uppercase; text-align:center; }
 .loader-hints { display:flex; flex-direction:column; gap:10px; opacity:.9; }
 .hint-item { display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.85rem; letter-spacing:1px; color:var(--text-dim); }
@@ -338,7 +334,7 @@ body.no-anims .game-card::after { display:none; }
 .logbox h2 { font-family:'Baloo 2','Nunito',sans-serif; font-size:clamp(1rem,3vw,1.2rem); letter-spacing:4px; color:var(--accent); margin-bottom:18px; }
 .logbox ul { padding-left:0; line-height:2; font-size:clamp(.9rem,2vw,1rem); color:var(--text-dim); list-style:none; }
 .logbox ul li::before { content:'▸ '; color:var(--accent); margin-right:4px; }
-.closebtn { margin-top:22px; padding:10px 28px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.9rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; background:var(--accent); color:#000; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 0 20px var(--accent-glow); display:block; }
+.closebtn { margin-top:22px; padding:10px 28px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.9rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 4px 14px rgba(0,0,0,.25); display:block; }
 .closebtn:hover { background:#fff; transform:translateY(-2px); }
 
 /* ── Settings ── */
@@ -383,7 +379,7 @@ body.no-anims .game-card::after { display:none; }
 .cloak-presets { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
 .preset-btn { padding:5px 12px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.68rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; background:rgba(var(--accent-rgb),.07); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.2); border-radius:6px; cursor:pointer; transition:all .2s; }
 .preset-btn:hover { background:var(--accent-dim); border-color:var(--accent); }
-.apply-btn { margin-top:12px; padding:10px 22px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.82rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; background:linear-gradient(90deg,var(--accent),var(--grad-b)); color:#000; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 0 18px var(--accent-glow); }
+.apply-btn { margin-top:12px; padding:10px 22px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.82rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; transition:all .2s; box-shadow:0 4px 14px rgba(0,0,0,.25); }
 .apply-btn:hover { opacity:.9; transform:translateY(-2px); }
 .key-display { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); border-radius:6px; font-family:'Baloo 2','Nunito',sans-serif; font-size:.7rem; color:var(--text-dim); letter-spacing:2px; }
 .key-set-btn { padding:7px 14px; font-family:'Nunito','Baloo 2',sans-serif; font-size:.75rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; background:rgba(var(--accent-rgb),.08); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.25); border-radius:6px; cursor:pointer; transition:all .2s; }
@@ -645,6 +641,7 @@ html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;
     <h2>what's new — v3.3</h2>
     <ul>
       <li><strong>3.3</strong> — games and tools now open in a built-in player with fullscreen and exit buttons</li>
+      <li><strong>3.3</strong> — cleaner dashboard inspired by classic arcade hubs, with a small hand-picked theme gallery</li>
       <li><strong>3.3</strong> — fresh Pizza Arcade identity, clearer navigation, and a friendlier home screen</li>
       <li><strong>3.3</strong> — improved game loading and a local pizza favicon that works offline</li>
       <li><strong>3.3</strong> — games and tools lists now refresh automatically when files are added</li>
@@ -818,133 +815,34 @@ html.lowlag .startup-spinner .spinner-line {animation-duration: 0.8s !important;
 ═══════════════════════════════════════════ */
 const BG_THEMES = [
   {
-    id:'pizza', name:'Pizza Kitchen', accent:'#e8552f', accentDim:'rgba(232,85,47,0.12)', accentGlow:'rgba(232,85,47,0.32)', accentRgb:'232,85,47', gradB:'#e0a024',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="pz1" cx="50%" cy="32%" r="85%"><stop offset="0%" stop-color="#2b1c12"/><stop offset="100%" stop-color="#150d08"/></radialGradient><filter id="pzBlur"><feGaussianBlur stdDeviation="70"/></filter></defs><rect width="1440" height="900" fill="url(#pz1)"/><ellipse cx="330" cy="240" rx="440" ry="300" fill="#e8552f" fill-opacity="0.05" filter="url(#pzBlur)"/><ellipse cx="1150" cy="660" rx="400" ry="260" fill="#e0a024" fill-opacity="0.05" filter="url(#pzBlur)"/><g stroke="#f7ece1" stroke-opacity="0.035" stroke-width="1"><line x1="0" y1="113" x2="1440" y2="113"/><line x1="0" y1="226" x2="1440" y2="226"/><line x1="0" y1="339" x2="1440" y2="339"/><line x1="0" y1="452" x2="1440" y2="452"/><line x1="0" y1="565" x2="1440" y2="565"/><line x1="0" y1="678" x2="1440" y2="678"/><line x1="0" y1="791" x2="1440" y2="791"/><line x1="120" y1="0" x2="120" y2="900"/><line x1="240" y1="0" x2="240" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="480" y1="0" x2="480" y2="900"/><line x1="600" y1="0" x2="600" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="840" y1="0" x2="840" y2="900"/><line x1="960" y1="0" x2="960" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1200" y1="0" x2="1200" y2="900"/><line x1="1320" y1="0" x2="1320" y2="900"/></g><g fill="#f7ece1" fill-opacity="0.13"><circle cx="180" cy="120" r="1.6"/><circle cx="430" cy="250" r="1.4"/><circle cx="900" cy="150" r="1.5"/><circle cx="1210" cy="310" r="1.3"/><circle cx="640" cy="520" r="1.5"/><circle cx="1060" cy="700" r="1.6"/><circle cx="320" cy="640" r="1.4"/></g></svg>`
+    id:'classic', name:'Classic', accent:'#fc2651', accentDim:'rgba(252,38,81,0.12)', accentGlow:'rgba(252,38,81,0.22)', accentRgb:'252,38,81', gradB:'#8b5cf6',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cl1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#17233b"/><stop offset="100%" stop-color="#0f172a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cl1)"/></svg>`
   },
   {
-    id:'cyber', name:'Cyber Grid', accent:'#00f5ff', accentDim:'rgba(0,245,255,0.12)', accentGlow:'rgba(0,245,255,0.35)', accentRgb:'0,245,255', gradB:'#7b2fff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cg1" cx="20%" cy="30%" r="60%"><stop offset="0%" stop-color="#0d1a2e"/><stop offset="100%" stop-color="#060612"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cg1)"/><g stroke="#00f5ff" stroke-opacity="0.06" stroke-width="1"><line x1="0" y1="100" x2="1440" y2="100"/><line x1="0" y1="200" x2="1440" y2="200"/><line x1="0" y1="300" x2="1440" y2="300"/><line x1="0" y1="400" x2="1440" y2="400"/><line x1="0" y1="500" x2="1440" y2="500"/><line x1="0" y1="600" x2="1440" y2="600"/><line x1="0" y1="700" x2="1440" y2="700"/><line x1="0" y1="800" x2="1440" y2="800"/></g><g stroke="#00f5ff" stroke-opacity="0.06" stroke-width="1"><line x1="120" y1="0" x2="120" y2="900"/><line x1="240" y1="0" x2="240" y2="900"/><line x1="360" y1="0" x2="360" y2="900"/><line x1="480" y1="0" x2="480" y2="900"/><line x1="600" y1="0" x2="600" y2="900"/><line x1="720" y1="0" x2="720" y2="900"/><line x1="840" y1="0" x2="840" y2="900"/><line x1="960" y1="0" x2="960" y2="900"/><line x1="1080" y1="0" x2="1080" y2="900"/><line x1="1200" y1="0" x2="1200" y2="900"/><line x1="1320" y1="0" x2="1320" y2="900"/></g><g fill="#00f5ff" fill-opacity="0.3"><circle cx="120" cy="100" r="1.5"/><circle cx="360" cy="300" r="1.5"/><circle cx="600" cy="200" r="1.5"/><circle cx="840" cy="400" r="1.5"/><circle cx="1080" cy="100" r="1.5"/><circle cx="1320" cy="500" r="1.5"/><circle cx="240" cy="500" r="1.5"/><circle cx="720" cy="700" r="1.5"/><circle cx="960" cy="600" r="1.5"/></g><circle cx="200" cy="200" r="180" fill="none" stroke="#00f5ff" stroke-opacity="0.04" stroke-width="60"/><circle cx="1200" cy="650" r="220" fill="none" stroke="#7b2fff" stroke-opacity="0.05" stroke-width="80"/></svg>`
+    id:'pizza', name:'Pizza Kitchen', accent:'#e8552f', accentDim:'rgba(232,85,47,0.12)', accentGlow:'rgba(232,85,47,0.22)', accentRgb:'232,85,47', gradB:'#e0a024',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="pz1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#2e1e13"/><stop offset="100%" stop-color="#1c1410"/></radialGradient></defs><rect width="1440" height="900" fill="url(#pz1)"/><ellipse cx="330" cy="240" rx="440" ry="300" fill="#e8552f" fill-opacity="0.04"/><ellipse cx="1150" cy="660" rx="400" ry="260" fill="#e0a024" fill-opacity="0.04"/></svg>`
   },
   {
-    id:'nebula', name:'Nebula', accent:'#c084fc', accentDim:'rgba(192,132,252,0.12)', accentGlow:'rgba(192,132,252,0.45)', accentRgb:'192,132,252', gradB:'#7b2fff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="nb1" cx="30%" cy="40%" r="70%"><stop offset="0%" stop-color="#1a0a2e"/><stop offset="100%" stop-color="#06060f"/></radialGradient><filter id="blur2"><feGaussianBlur stdDeviation="60"/></filter></defs><rect width="1440" height="900" fill="url(#nb1)"/><ellipse cx="300" cy="350" rx="400" ry="250" fill="#c084fc" fill-opacity="0.04" filter="url(#blur2)"/><ellipse cx="1100" cy="500" rx="350" ry="200" fill="#7b2fff" fill-opacity="0.06" filter="url(#blur2)"/><g fill="white"><circle cx="45" cy="67" r="0.8" opacity="0.7"/><circle cx="189" cy="23" r="1.2" opacity="0.5"/><circle cx="367" cy="145" r="0.9" opacity="0.8"/><circle cx="789" cy="56" r="1.3" opacity="0.7"/><circle cx="1234" cy="167" r="0.9" opacity="0.4"/><circle cx="567" cy="234" r="1.1" opacity="0.6"/><circle cx="890" cy="189" r="0.8" opacity="0.5"/><circle cx="1100" cy="89" r="1.4" opacity="0.7"/></g><g fill="#c084fc" opacity="0.7"><circle cx="300" cy="200" r="1.5"/><circle cx="800" cy="150" r="1.8"/><circle cx="1200" cy="300" r="1.5"/></g></svg>`
+    id:'midnight', name:'Midnight', accent:'#a78bfa', accentDim:'rgba(167,139,250,0.12)', accentGlow:'rgba(167,139,250,0.22)', accentRgb:'167,139,250', gradB:'#6d28d9',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="mn1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#141b30"/><stop offset="100%" stop-color="#0b0f1a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#mn1)"/></svg>`
   },
   {
-    id:'synthwave', name:'Synthwave', accent:'#ff6eb4', accentDim:'rgba(255,110,180,0.12)', accentGlow:'rgba(255,110,180,0.45)', accentRgb:'255,110,180', gradB:'#a855f7',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sw1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0a0015"/><stop offset="50%" stop-color="#1a0030"/><stop offset="100%" stop-color="#0d0020"/></linearGradient></defs><rect width="1440" height="900" fill="url(#sw1)"/><circle cx="720" cy="490" r="100" fill="#ff6600" opacity="0.7"/><g stroke="#ff6eb4" stroke-opacity="0.15" stroke-width="1" fill="none"><line x1="0" y1="590" x2="1440" y2="590"/><line x1="0" y1="650" x2="1440" y2="650"/><line x1="0" y1="710" x2="1440" y2="710"/><line x1="0" y1="780" x2="1440" y2="780"/></g><g stroke="#a855f7" stroke-opacity="0.12" stroke-width="1" fill="none"><line x1="720" y1="490" x2="0" y2="900"/><line x1="720" y1="490" x2="480" y2="900"/><line x1="720" y1="490" x2="960" y2="900"/><line x1="720" y1="490" x2="1440" y2="900"/><line x1="720" y1="490" x2="240" y2="900"/><line x1="720" y1="490" x2="1200" y2="900"/></g><g fill="white"><circle cx="100" cy="80" r="1.2" opacity="0.8"/><circle cx="650" cy="60" r="1" opacity="0.9"/><circle cx="1300" cy="100" r="1" opacity="0.7"/><circle cx="350" cy="120" r="0.8" opacity="0.6"/><circle cx="1050" cy="90" r="1.1" opacity="0.8"/></g></svg>`
+    id:'forest', name:'Forest', accent:'#34d399', accentDim:'rgba(52,211,153,0.12)', accentGlow:'rgba(52,211,153,0.22)', accentRgb:'52,211,153', gradB:'#0ea5e9',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="fr1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#12251b"/><stop offset="100%" stop-color="#0a1710"/></radialGradient></defs><rect width="1440" height="900" fill="url(#fr1)"/></svg>`
   },
   {
-    id:'matrix', name:'Matrix', accent:'#00ff41', accentDim:'rgba(0,255,65,0.12)', accentGlow:'rgba(0,255,65,0.45)', accentRgb:'0,255,65', gradB:'#00aa00',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="mx1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#001a00"/><stop offset="100%" stop-color="#000800"/></radialGradient></defs><rect width="1440" height="900" fill="url(#mx1)"/><g fill="#00ff41"><rect x="30" y="0" width="1" height="80" opacity="0.6"/><rect x="90" y="100" width="1" height="60" opacity="0.7"/><rect x="150" y="50" width="1" height="40" opacity="0.8"/><rect x="270" y="0" width="1" height="70" opacity="0.65"/><rect x="390" y="80" width="1" height="65" opacity="0.6"/><rect x="510" y="20" width="1" height="45" opacity="0.7"/><rect x="630" y="60" width="1" height="50" opacity="0.8"/><rect x="750" y="0" width="1" height="88" opacity="0.7"/><rect x="870" y="350" width="1" height="95" opacity="0.65"/><rect x="990" y="200" width="1" height="80" opacity="0.6"/><rect x="1110" y="170" width="1" height="90" opacity="0.65"/><rect x="1230" y="290" width="1" height="85" opacity="0.55"/><rect x="1350" y="230" width="1" height="78" opacity="0.6"/><rect x="60" y="400" width="1" height="100" opacity="0.5"/><rect x="180" y="600" width="1" height="110" opacity="0.6"/><rect x="310" y="750" width="1" height="90" opacity="0.5"/><rect x="450" y="500" width="1" height="70" opacity="0.65"/></g></svg>`
+    id:'ocean', name:'Ocean', accent:'#38bdf8', accentDim:'rgba(56,189,248,0.12)', accentGlow:'rgba(56,189,248,0.22)', accentRgb:'56,189,248', gradB:'#6366f1',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="oc1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#132438"/><stop offset="100%" stop-color="#0a1524"/></radialGradient></defs><rect width="1440" height="900" fill="url(#oc1)"/></svg>`
   },
-  {
-    id:'arctic', name:'Arctic', accent:'#60efff', accentDim:'rgba(96,239,255,0.12)', accentGlow:'rgba(96,239,255,0.35)', accentRgb:'96,239,255', gradB:'#0080ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="ar1" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#051525"/><stop offset="100%" stop-color="#020810"/></radialGradient><linearGradient id="aurora1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00ffcc" stop-opacity="0"/><stop offset="30%" stop-color="#00ccff" stop-opacity="0.15"/><stop offset="60%" stop-color="#0080ff" stop-opacity="0.1"/><stop offset="100%" stop-color="#60efff" stop-opacity="0"/></linearGradient><filter id="ablur"><feGaussianBlur stdDeviation="20"/></filter></defs><rect width="1440" height="900" fill="url(#ar1)"/><rect x="0" y="80" width="1440" height="100" fill="url(#aurora1)" filter="url(#ablur)"/><rect x="0" y="200" width="1440" height="60" fill="url(#aurora1)" filter="url(#ablur)" opacity="0.5"/><g fill="white"><circle cx="60" cy="45" r="1" opacity="0.8"/><circle cx="320" cy="35" r="1.2" opacity="0.9"/><circle cx="650" cy="25" r="1" opacity="0.8"/><circle cx="980" cy="30" r="0.8" opacity="0.9"/><circle cx="1280" cy="40" r="1" opacity="0.8"/><circle cx="500" cy="60" r="0.9" opacity="0.7"/><circle cx="800" cy="50" r="1.1" opacity="0.6"/><circle cx="1100" cy="55" r="0.8" opacity="0.7"/></g></svg>`
-  },
-  {
-    id:'deep-space', name:'Deep Space', accent:'#ffd700', accentDim:'rgba(255,215,0,0.12)', accentGlow:'rgba(255,215,0,0.4)', accentRgb:'255,215,0', gradB:'#ff8c00',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="ds1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#08060e"/><stop offset="100%" stop-color="#02020a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#ds1)"/><g fill="white"><circle cx="45" cy="34" r="1.5" opacity="0.9"/><circle cx="234" cy="23" r="1.8" opacity="0.8"/><circle cx="456" cy="56" r="1.3" opacity="0.6"/><circle cx="678" cy="34" r="1.1" opacity="0.7"/><circle cx="890" cy="23" r="1.2" opacity="0.6"/><circle cx="1112" cy="45" r="1.1" opacity="0.7"/><circle cx="1334" cy="34" r="1.5" opacity="0.6"/><circle cx="300" cy="189" r="1" opacity="0.8"/><circle cx="600" cy="250" r="1.2" opacity="0.7"/><circle cx="900" cy="200" r="1.3" opacity="0.5"/><circle cx="150" cy="400" r="1" opacity="0.6"/><circle cx="750" cy="350" r="0.8" opacity="0.7"/><circle cx="1200" cy="280" r="1.1" opacity="0.5"/></g><g fill="#ffd700" opacity="0.7"><circle cx="350" cy="200" r="2"/><circle cx="900" cy="150" r="1.5"/><circle cx="1150" cy="350" r="2"/></g><g fill="none" stroke="white" stroke-opacity="0.06"><circle cx="720" cy="450" r="300"/><circle cx="720" cy="450" r="500"/></g></svg>`
-  },
-  {
-    id:'void', name:'Void', accent:'#a78bfa', accentDim:'rgba(167,139,250,0.12)', accentGlow:'rgba(167,139,250,0.45)', accentRgb:'167,139,250', gradB:'#f472b6',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="vd1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0d0515"/><stop offset="100%" stop-color="#030008"/></radialGradient></defs><rect width="1440" height="900" fill="url(#vd1)"/><g fill="none"><circle cx="720" cy="450" r="200" stroke="#a78bfa" stroke-opacity="0.06" stroke-width="1"/><circle cx="720" cy="450" r="300" stroke="#a78bfa" stroke-opacity="0.05" stroke-width="1"/><circle cx="720" cy="450" r="400" stroke="#f472b6" stroke-opacity="0.04" stroke-width="1"/><circle cx="720" cy="450" r="500" stroke="#a78bfa" stroke-opacity="0.03" stroke-width="1"/><circle cx="720" cy="450" r="600" stroke="#a78bfa" stroke-opacity="0.02" stroke-width="1"/></g><g fill="white"><circle cx="180" cy="30" r="1.2" opacity="0.7"/><circle cx="460" cy="45" r="1.1" opacity="0.6"/><circle cx="1100" cy="80" r="1.2" opacity="0.7"/><circle cx="1380" cy="120" r="0.9" opacity="0.6"/></g><g fill="#a78bfa" opacity="0.6"><circle cx="480" cy="250" r="1.5"/><circle cx="960" cy="250" r="1.5"/><circle cx="380" cy="600" r="1.5"/><circle cx="1060" cy="600" r="1.5"/><circle cx="720" cy="120" r="2"/></g></svg>`
-  },
-  {
-    id:'neon-tokyo', name:'Neon Tokyo', accent:'#00ffff', accentDim:'rgba(0,255,255,0.12)', accentGlow:'rgba(0,255,255,0.45)', accentRgb:'0,255,255', gradB:'#ff00ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="ntd" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0a0015"/><stop offset="50%" stop-color="#0f0020"/><stop offset="100%" stop-color="#050010"/></linearGradient></defs><rect width="1440" height="900" fill="url(#ntd)"/><g stroke="#00ffff" stroke-width="1.5" fill="none" opacity="0.25"><rect x="150" y="200" width="180" height="300" rx="4"/><rect x="450" y="150" width="200" height="350" rx="4"/><rect x="850" y="180" width="190" height="320" rx="4"/><rect x="1100" y="220" width="160" height="280" rx="4"/><rect x="50" y="300" width="80" height="200" rx="4"/></g><g stroke="#ff00ff" stroke-width="1" fill="none" opacity="0.15"><line x1="0" y1="550" x2="1440" y2="550"/><line x1="0" y1="620" x2="1440" y2="620"/></g><g fill="white" opacity="0.8"><circle cx="80" cy="50" r="1.5"/><circle cx="350" cy="60" r="1.2"/><circle cx="750" cy="40" r="1.3"/><circle cx="1050" cy="55" r="1.1"/><circle cx="1350" cy="65" r="1.4"/></g></svg>`
-  },
-  {
-    id:'volcanic', name:'Volcanic', accent:'#ff4466', accentDim:'rgba(255,68,102,0.12)', accentGlow:'rgba(255,68,102,0.45)', accentRgb:'255,68,102', gradB:'#ff8800',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="vl1" cx="50%" cy="90%" r="80%"><stop offset="0%" stop-color="#2a0800"/><stop offset="100%" stop-color="#080008"/></radialGradient></defs><rect width="1440" height="900" fill="url(#vl1)"/><g stroke="#ff4400" stroke-opacity="0.2" stroke-width="1.5" fill="none"><path d="M720 900 L680 750 L700 600 L650 450 L700 300"/><path d="M720 900 L760 780 L740 620 L790 480 L750 320"/><path d="M720 900 L620 700 L660 500"/><path d="M720 900 L820 720 L780 540"/></g><g fill="#ff6600"><circle cx="650" cy="420" r="2" opacity="0.7"/><circle cx="720" cy="380" r="1.5" opacity="0.5"/><circle cx="780" cy="400" r="2" opacity="0.6"/><circle cx="700" cy="280" r="1.5" opacity="0.4"/></g><rect x="0" y="800" width="1440" height="100" fill="#ff2200" opacity="0.05"/></svg>`
-  },
-  {
-    id:'hologram', name:'Hologram', accent:'#00ffe5', accentDim:'rgba(0,255,229,0.12)', accentGlow:'rgba(0,255,229,0.4)', accentRgb:'0,255,229', gradB:'#0055ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="hg1" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#001520"/><stop offset="100%" stop-color="#000508"/></radialGradient></defs><rect width="1440" height="900" fill="url(#hg1)"/><g stroke="#00ffe5" stroke-opacity="0.08" stroke-width="1" fill="none"><polygon points="720,50 1100,700 340,700"/><polygon points="720,150 1000,650 440,650"/><polygon points="720,250 900,600 540,600"/><polygon points="720,350 800,550 640,550"/></g><g stroke="#0055ff" stroke-opacity="0.05" stroke-width="1" fill="none"><circle cx="720" cy="450" r="350"/><circle cx="720" cy="450" r="250"/><circle cx="720" cy="450" r="150"/></g><g fill="#00ffe5"><circle cx="720" cy="50" r="2" opacity="0.6"/><circle cx="1100" cy="700" r="2" opacity="0.6"/><circle cx="340" cy="700" r="2" opacity="0.6"/></g><g fill="white"><circle cx="200" cy="100" r="1" opacity="0.5"/><circle cx="1300" cy="200" r="0.8" opacity="0.4"/><circle cx="500" cy="800" r="1" opacity="0.5"/></g></svg>`
-  },
-  {
-    id:'bloodmoon', name:'Blood Moon', accent:'#ff2244', accentDim:'rgba(255,34,68,0.12)', accentGlow:'rgba(255,34,68,0.45)', accentRgb:'255,34,68', gradB:'#880000',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="bm1" cx="50%" cy="0%" r="80%"><stop offset="0%" stop-color="#1a0005"/><stop offset="100%" stop-color="#050000"/></radialGradient><radialGradient id="moon" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff2244"/><stop offset="70%" stop-color="#880000"/><stop offset="100%" stop-color="#330000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#bm1)"/><circle cx="720" cy="300" r="120" fill="url(#moon)" opacity="0.85"/><circle cx="720" cy="300" r="130" fill="none" stroke="#ff2244" stroke-opacity="0.15" stroke-width="20"/><g fill="white"><circle cx="100" cy="80" r="1.5" opacity="0.7"/><circle cx="400" cy="50" r="1.2" opacity="0.8"/><circle cx="900" cy="70" r="1" opacity="0.6"/><circle cx="1200" cy="120" r="1.3" opacity="0.7"/></g></svg>`
-  },
-  {
-    id:'forest', name:'Dark Forest', accent:'#22ff88', accentDim:'rgba(34,255,136,0.12)', accentGlow:'rgba(34,255,136,0.35)', accentRgb:'34,255,136', gradB:'#00aa44',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="fg1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#010a03"/><stop offset="100%" stop-color="#000501"/></linearGradient></defs><rect width="1440" height="900" fill="url(#fg1)"/><g fill="#001a08"><rect x="0" y="500" width="60" height="400"/><rect x="80" y="450" width="50" height="450"/><rect x="160" y="520" width="45" height="380"/><rect x="230" y="480" width="55" height="420"/><rect x="310" y="510" width="40" height="390"/><rect x="1100" y="470" width="55" height="430"/><rect x="1180" y="500" width="50" height="400"/><rect x="1260" y="460" width="60" height="440"/><rect x="1340" y="490" width="55" height="410"/><rect x="1400" y="520" width="40" height="380"/></g><g fill="#003311" opacity="0.4"><polygon points="100,500 160,350 220,500"/><polygon points="300,480 380,300 460,480"/><polygon points="1000,470 1080,290 1160,470"/><polygon points="1200,490 1280,320 1360,490"/></g><g fill="#22ff88"><circle cx="200" cy="200" r="1.5" opacity="0.6"/><circle cx="600" cy="150" r="2" opacity="0.5"/><circle cx="1000" cy="180" r="1.5" opacity="0.6"/></g></svg>`
-  },
-  {
-    id:'desert', name:'Desert Dusk', accent:'#ffaa33', accentDim:'rgba(255,170,51,0.12)', accentGlow:'rgba(255,170,51,0.4)', accentRgb:'255,170,51', gradB:'#ff5500',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="dusk" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0d0500"/><stop offset="40%" stop-color="#1a0800"/><stop offset="100%" stop-color="#050200"/></linearGradient><radialGradient id="sun" cx="30%" cy="60%" r="30%"><stop offset="0%" stop-color="#ff8800"/><stop offset="50%" stop-color="#ff4400" stop-opacity="0.3"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs><rect width="1440" height="900" fill="url(#dusk)"/><rect width="1440" height="900" fill="url(#sun)"/><path d="M0 700 Q200 650 400 680 Q600 710 800 670 Q1000 630 1200 660 Q1350 680 1440 650 L1440 900 L0 900 Z" fill="#0a0300"/><path d="M0 750 Q300 720 600 740 Q900 760 1200 730 Q1350 720 1440 700 L1440 900 L0 900 Z" fill="#050100"/><g fill="white"><circle cx="900" cy="100" r="1.2" opacity="0.7"/><circle cx="1100" cy="80" r="1" opacity="0.8"/><circle cx="1300" cy="120" r="1.3" opacity="0.6"/></g></svg>`
-  },
-  {
-    id:'arctic-storm', name:'Arctic Storm', accent:'#88ddff', accentDim:'rgba(136,221,255,0.12)', accentGlow:'rgba(136,221,255,0.4)', accentRgb:'136,221,255', gradB:'#4488ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="storm" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#02080f"/><stop offset="100%" stop-color="#01050a"/></linearGradient><filter id="stBlur"><feGaussianBlur stdDeviation="30"/></filter></defs><rect width="1440" height="900" fill="url(#storm)"/><ellipse cx="300" cy="200" rx="500" ry="200" fill="#88ddff" fill-opacity="0.03" filter="url(#stBlur)"/><ellipse cx="1100" cy="700" rx="400" ry="180" fill="#4488ff" fill-opacity="0.04" filter="url(#stBlur)"/><g stroke="#88ddff" stroke-opacity="0.07" stroke-width="1" fill="none"><line x1="-100" y1="200" x2="1540" y2="500"/><line x1="-100" y1="300" x2="1540" y2="600"/><line x1="-100" y1="400" x2="1540" y2="700"/></g><g fill="white"><circle cx="80" cy="60" r="1.5" opacity="0.8"/><circle cx="400" cy="40" r="1" opacity="0.9"/><circle cx="800" cy="30" r="1.2" opacity="0.7"/><circle cx="1200" cy="55" r="1" opacity="0.8"/></g></svg>`
-  },
-  {
-    id:'glitch', name:'Glitch', accent:'#ff00cc', accentDim:'rgba(255,0,204,0.12)', accentGlow:'rgba(255,0,204,0.5)', accentRgb:'255,0,204', gradB:'#00ffcc',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="1440" height="900" fill="#040010"/><g fill="#ff00cc" opacity="0.12"><rect x="0" y="100" width="1440" height="3"/><rect x="0" y="200" width="1440" height="2"/><rect x="0" y="350" width="1440" height="4"/><rect x="0" y="500" width="1440" height="2"/><rect x="0" y="650" width="1440" height="3"/><rect x="0" y="800" width="1440" height="2"/></g><g fill="#00ffcc" opacity="0.08"><rect x="200" y="0" width="3" height="900"/><rect x="600" y="0" width="2" height="900"/><rect x="900" y="0" width="4" height="900"/><rect x="1300" y="0" width="2" height="900"/></g><g fill="#ff00cc" opacity="0.6"><rect x="0" y="200" width="300" height="2"/><rect x="400" y="450" width="200" height="2"/><rect x="1100" y="300" width="340" height="2"/><rect x="800" y="700" width="400" height="2"/></g><g fill="#00ffcc" opacity="0.4"><rect x="100" y="150" width="150" height="2"/><rect x="700" y="380" width="250" height="2"/><rect x="1200" y="600" width="200" height="2"/></g></svg>`
-  },
-  {
-    id:'ocean', name:'Ocean Deep', accent:'#00b4ff', accentDim:'rgba(0,180,255,0.12)', accentGlow:'rgba(0,180,255,0.4)', accentRgb:'0,180,255', gradB:'#0040ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="oc1" cx="50%" cy="0%" r="100%"><stop offset="0%" stop-color="#001428"/><stop offset="100%" stop-color="#000508"/></radialGradient></defs><rect width="1440" height="900" fill="url(#oc1)"/><g stroke="#00b4ff" stroke-opacity="0.06" fill="none" stroke-width="1.5"><path d="M0 400 Q360 360 720 400 Q1080 440 1440 400"/><path d="M0 500 Q360 460 720 500 Q1080 540 1440 500"/><path d="M0 600 Q360 560 720 600 Q1080 640 1440 600"/><path d="M0 700 Q360 660 720 700 Q1080 740 1440 700"/></g><g fill="#00b4ff" opacity="0.5"><circle cx="200" cy="400" r="2"/><circle cx="600" cy="430" r="2"/><circle cx="1000" cy="410" r="2"/><circle cx="700" cy="520" r="2"/></g><g fill="white"><circle cx="300" cy="100" r="1" opacity="0.6"/><circle cx="900" cy="80" r="1.2" opacity="0.5"/><circle cx="600" cy="50" r="0.8" opacity="0.7"/></g></svg>`
-  },
-  {
-    id:'infrared', name:'Infrared', accent:'#ff6600', accentDim:'rgba(255,102,0,0.12)', accentGlow:'rgba(255,102,0,0.45)', accentRgb:'255,102,0', gradB:'#ff0055',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="ir1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#1a0500"/><stop offset="100%" stop-color="#050000"/></radialGradient></defs><rect width="1440" height="900" fill="url(#ir1)"/><g stroke="#ff6600" stroke-opacity="0.08" stroke-width="1" fill="none"><circle cx="720" cy="450" r="100"/><circle cx="720" cy="450" r="200"/><circle cx="720" cy="450" r="300"/><circle cx="720" cy="450" r="400"/><circle cx="720" cy="450" r="500"/></g><g stroke="#ff0055" stroke-opacity="0.05" stroke-width="1" fill="none"><line x1="720" y1="0" x2="720" y2="900"/><line x1="0" y1="450" x2="1440" y2="450"/><line x1="0" y1="0" x2="1440" y2="900"/><line x1="1440" y1="0" x2="0" y2="900"/></g><g fill="#ff6600"><circle cx="720" cy="450" r="4" opacity="0.8"/><circle cx="720" cy="450" r="8" opacity="0.2"/></g></svg>`
-  },
-  {
-    id:'cyberpunk-rain', name:'Cyber Rain', accent:'#aaff00', accentDim:'rgba(170,255,0,0.12)', accentGlow:'rgba(170,255,0,0.4)', accentRgb:'170,255,0', gradB:'#00ffaa',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="cr1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#030a00"/><stop offset="100%" stop-color="#010500"/></linearGradient></defs><rect width="1440" height="900" fill="url(#cr1)"/><g stroke="#aaff00" stroke-opacity="0.15" stroke-width="1" stroke-linecap="round"><line x1="72" y1="0" x2="66" y2="80"/><line x1="215" y1="50" x2="209" y2="130"/><line x1="360" y1="0" x2="354" y2="60"/><line x1="504" y1="80" x2="498" y2="180"/><line x1="648" y1="20" x2="642" y2="100"/><line x1="792" y1="0" x2="786" y2="70"/><line x1="936" y1="40" x2="930" y2="130"/><line x1="1080" y1="10" x2="1074" y2="90"/><line x1="1224" y1="60" x2="1218" y2="140"/><line x1="1368" y1="0" x2="1362" y2="80"/><line x1="144" y1="600" x2="138" y2="680"/><line x1="432" y1="700" x2="426" y2="800"/><line x1="720" y1="650" x2="714" y2="750"/><line x1="1008" y1="600" x2="1002" y2="710"/><line x1="1296" y1="680" x2="1290" y2="780"/></g></svg>`
-  },
-  {
-    id:'pink-haze', name:'Pink Haze', accent:'#ff77cc', accentDim:'rgba(255,119,204,0.12)', accentGlow:'rgba(255,119,204,0.45)', accentRgb:'255,119,204', gradB:'#aa44ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="ph1" cx="30%" cy="40%" r="80%"><stop offset="0%" stop-color="#150010"/><stop offset="100%" stop-color="#060005"/></radialGradient><filter id="phBlur"><feGaussianBlur stdDeviation="80"/></filter></defs><rect width="1440" height="900" fill="url(#ph1)"/><ellipse cx="400" cy="300" rx="500" ry="350" fill="#ff44aa" fill-opacity="0.06" filter="url(#phBlur)"/><ellipse cx="1100" cy="600" rx="400" ry="300" fill="#aa44ff" fill-opacity="0.07" filter="url(#phBlur)"/><g fill="white"><circle cx="100" cy="80" r="1.2" opacity="0.6"/><circle cx="400" cy="50" r="1.5" opacity="0.7"/><circle cx="800" cy="30" r="1" opacity="0.8"/><circle cx="1200" cy="60" r="1.3" opacity="0.6"/></g><g fill="#ff77cc" opacity="0.7"><circle cx="350" cy="300" r="2"/><circle cx="1050" cy="450" r="2"/><circle cx="700" cy="600" r="1.5"/></g></svg>`
-  },
-  {
-    id:'crystalline', name:'Crystalline', accent:'#aaffee', accentDim:'rgba(170,255,238,0.12)', accentGlow:'rgba(170,255,238,0.4)', accentRgb:'170,255,238', gradB:'#44aaff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cry1" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#030d10"/><stop offset="100%" stop-color="#010508"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cry1)"/><g stroke="#aaffee" stroke-opacity="0.12" stroke-width="1" fill="none"><polygon points="720,100 820,300 720,500 620,300"/><polygon points="720,200 880,400 720,600 560,400"/><polygon points="720,0 960,400 720,800 480,400"/><polygon points="200,150 350,400 200,650 50,400"/><polygon points="1240,150 1390,400 1240,650 1090,400"/></g><g fill="#aaffee" opacity="0.5"><circle cx="720" cy="100" r="2"/><circle cx="820" cy="300" r="1.5"/><circle cx="720" cy="500" r="2"/><circle cx="620" cy="300" r="1.5"/><circle cx="200" cy="150" r="1.5"/><circle cx="1240" cy="150" r="1.5"/></g><g fill="white"><circle cx="100" cy="200" r="1" opacity="0.5"/><circle cx="500" cy="700" r="0.8" opacity="0.4"/><circle cx="1100" cy="100" r="1" opacity="0.5"/><circle cx="1350" cy="600" r="0.9" opacity="0.4"/></g></svg>`
-  },
-  {
-    id:'midnight', name:'Midnight', accent:'#6677ff', accentDim:'rgba(102,119,255,0.12)', accentGlow:'rgba(102,119,255,0.4)', accentRgb:'102,119,255', gradB:'#aa33ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="1440" height="900" fill="#010108"/><g fill="white"><circle cx="72" cy="45" r="1.8" opacity="0.9"/><circle cx="145" cy="123" r="1.2" opacity="0.7"/><circle cx="289" cy="67" r="1.5" opacity="0.8"/><circle cx="412" cy="34" r="1" opacity="0.6"/><circle cx="534" cy="89" r="1.3" opacity="0.7"/><circle cx="678" cy="23" r="0.9" opacity="0.8"/><circle cx="801" cy="112" r="1.4" opacity="0.6"/><circle cx="934" cy="56" r="1.1" opacity="0.7"/><circle cx="1067" cy="34" r="1.6" opacity="0.9"/><circle cx="1189" cy="78" r="1" opacity="0.6"/><circle cx="1312" cy="45" r="1.3" opacity="0.7"/><circle cx="223" cy="234" r="0.9" opacity="0.5"/><circle cx="567" cy="178" r="1.1" opacity="0.4"/><circle cx="890" cy="200" r="0.8" opacity="0.5"/><circle cx="1234" cy="189" r="1.2" opacity="0.4"/></g><g fill="#6677ff" opacity="0.6"><circle cx="400" cy="80" r="2"/><circle cx="900" cy="40" r="2.5"/><circle cx="1200" cy="120" r="2"/><circle cx="150" cy="60" r="1.5"/></g><ellipse cx="720" cy="900" rx="600" ry="200" fill="#6677ff" fill-opacity="0.03"/></svg>`
-  },
-  {
-    id:'quantum', name:'Quantum', accent:'#33ffaa', accentDim:'rgba(51,255,170,0.12)', accentGlow:'rgba(51,255,170,0.4)', accentRgb:'51,255,170', gradB:'#3366ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="1440" height="900" fill="#020a06"/><g stroke="#33ffaa" stroke-opacity="0.07" stroke-width="1" fill="none"><ellipse cx="720" cy="450" rx="600" ry="300"/><ellipse cx="720" cy="450" rx="400" ry="200"/><ellipse cx="720" cy="450" rx="200" ry="100"/><line x1="120" y1="450" x2="1320" y2="450"/><line x1="720" y1="150" x2="720" y2="750"/></g><g fill="#33ffaa"><circle cx="720" cy="450" r="3" opacity="0.8"/><circle cx="1320" cy="450" r="2" opacity="0.6"/><circle cx="120" cy="450" r="2" opacity="0.6"/><circle cx="720" cy="150" r="2" opacity="0.6"/><circle cx="720" cy="750" r="2" opacity="0.6"/><circle cx="1270" cy="253" r="1.5" opacity="0.5"/><circle cx="170" cy="647" r="1.5" opacity="0.5"/><circle cx="1270" cy="647" r="1.5" opacity="0.5"/><circle cx="170" cy="253" r="1.5" opacity="0.5"/></g><g fill="white"><circle cx="300" cy="150" r="1" opacity="0.4"/><circle cx="1100" cy="200" r="0.8" opacity="0.4"/><circle cx="500" cy="750" r="1" opacity="0.4"/><circle cx="1200" cy="700" r="0.9" opacity="0.4"/></g></svg>`
-  },
-  {
-    id:'toxic', name:'Toxic', accent:'#88ff22', accentDim:'rgba(136,255,34,0.12)', accentGlow:'rgba(136,255,34,0.45)', accentRgb:'136,255,34', gradB:'#22aa00',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="tox1" cx="50%" cy="80%" r="70%"><stop offset="0%" stop-color="#0a1500"/><stop offset="100%" stop-color="#030800"/></radialGradient><filter id="toxBlur"><feGaussianBlur stdDeviation="40"/></filter></defs><rect width="1440" height="900" fill="url(#tox1)"/><ellipse cx="720" cy="900" rx="800" ry="300" fill="#44aa00" fill-opacity="0.08" filter="url(#toxBlur)"/><ellipse cx="200" cy="700" rx="300" ry="150" fill="#88ff22" fill-opacity="0.04" filter="url(#toxBlur)"/><ellipse cx="1200" cy="650" rx="350" ry="180" fill="#22dd00" fill-opacity="0.05" filter="url(#toxBlur)"/><g fill="#88ff22" opacity="0.6"><circle cx="400" cy="600" r="2"/><circle cx="800" cy="700" r="1.5"/><circle cx="1100" cy="580" r="2"/><circle cx="600" cy="750" r="1.5"/></g><g fill="white"><circle cx="200" cy="100" r="1" opacity="0.4"/><circle cx="700" cy="80" r="0.9" opacity="0.3"/><circle cx="1300" cy="120" r="1" opacity="0.4"/></g></svg>`
-  },
-  {
-    id:'storm', name:'Storm Cloud', accent:'#bbaaff', accentDim:'rgba(187,170,255,0.12)', accentGlow:'rgba(187,170,255,0.4)', accentRgb:'187,170,255', gradB:'#5544cc',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sk1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#04020a"/><stop offset="100%" stop-color="#0a0818"/></linearGradient><filter id="cBlur"><feGaussianBlur stdDeviation="25"/></filter></defs><rect width="1440" height="900" fill="url(#sk1)"/><ellipse cx="300" cy="200" rx="400" ry="150" fill="#3322aa" fill-opacity="0.15" filter="url(#cBlur)"/><ellipse cx="900" cy="300" rx="500" ry="180" fill="#221188" fill-opacity="0.12" filter="url(#cBlur)"/><ellipse cx="600" cy="150" rx="350" ry="120" fill="#4433bb" fill-opacity="0.1" filter="url(#cBlur)"/><g stroke="#bbaaff" stroke-opacity="0.3" stroke-width="1.5" stroke-linecap="round"><line x1="680" y1="350" x2="660" y2="420"/><line x1="660" y1="420" x2="700" y2="420"/><line x1="700" y1="420" x2="675" y2="490"/><line x1="820" y1="300" x2="795" y2="385"/><line x1="795" y1="385" x2="835" y2="385"/><line x1="835" y1="385" x2="810" y2="460"/></g><g fill="white"><circle cx="100" cy="50" r="1" opacity="0.5"/><circle cx="500" cy="30" r="1.2" opacity="0.4"/><circle cx="1000" cy="60" r="1" opacity="0.5"/><circle cx="1400" cy="40" r="0.9" opacity="0.4"/></g></svg>`
-  },
-  {
-    id:'retrowave', name:'Retrowave', accent:'#ff44bb', accentDim:'rgba(255,68,187,0.12)', accentGlow:'rgba(255,68,187,0.5)', accentRgb:'255,68,187', gradB:'#ffaa00',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="rw1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#080018"/><stop offset="60%" stop-color="#1a0035"/><stop offset="100%" stop-color="#0a0010"/></linearGradient></defs><rect width="1440" height="900" fill="url(#rw1)"/><circle cx="720" cy="480" r="80" fill="#ffaa00" fill-opacity="0.9"/><rect x="0" y="480" width="1440" height="20" fill="#0a0010"/><rect x="0" y="520" width="1440" height="20" fill="#0a0010"/><rect x="0" y="560" width="1440" height="15" fill="#0a0010"/><rect x="0" y="595" width="1440" height="12" fill="#0a0010"/><rect x="0" y="627" width="1440" height="10" fill="#0a0010"/><g stroke="#ff44bb" stroke-opacity="0.18" stroke-width="1" fill="none"><line x1="720" y1="480" x2="0" y2="900"/><line x1="720" y1="480" x2="360" y2="900"/><line x1="720" y1="480" x2="1080" y2="900"/><line x1="720" y1="480" x2="1440" y2="900"/><line x1="720" y1="480" x2="180" y2="900"/><line x1="720" y1="480" x2="540" y2="900"/><line x1="720" y1="480" x2="900" y2="900"/><line x1="720" y1="480" x2="1260" y2="900"/></g><g fill="white"><circle cx="200" cy="100" r="1.3" opacity="0.8"/><circle cx="600" cy="60" r="1.1" opacity="0.9"/><circle cx="1000" cy="80" r="1.2" opacity="0.7"/><circle cx="1350" cy="100" r="1" opacity="0.8"/><circle cx="400" cy="150" r="0.9" opacity="0.6"/><circle cx="900" cy="130" r="0.8" opacity="0.5"/></g></svg>`
-  },
-  {
-    id:'prism', name:'Prism', accent:'#ff99ff', accentDim:'rgba(255,153,255,0.12)', accentGlow:'rgba(255,153,255,0.45)', accentRgb:'255,153,255', gradB:'#99ffff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="1440" height="900" fill="#08010a"/><g fill="none" stroke-width="1"><line x1="720" y1="0" x2="0" y2="900" stroke="#ff0088" stroke-opacity="0.08"/><line x1="720" y1="0" x2="240" y2="900" stroke="#ff4400" stroke-opacity="0.08"/><line x1="720" y1="0" x2="480" y2="900" stroke="#ffaa00" stroke-opacity="0.08"/><line x1="720" y1="0" x2="720" y2="900" stroke="#00ff88" stroke-opacity="0.08"/><line x1="720" y1="0" x2="960" y2="900" stroke="#00aaff" stroke-opacity="0.08"/><line x1="720" y1="0" x2="1200" y2="900" stroke="#4400ff" stroke-opacity="0.08"/><line x1="720" y1="0" x2="1440" y2="900" stroke="#ff00ff" stroke-opacity="0.08"/></g><g fill="white"><circle cx="180" cy="60" r="1.3" opacity="0.6"/><circle cx="560" cy="40" r="1" opacity="0.7"/><circle cx="900" cy="50" r="1.2" opacity="0.5"/><circle cx="1250" cy="70" r="1" opacity="0.6"/><circle cx="380" cy="100" r="0.8" opacity="0.4"/><circle cx="1050" cy="90" r="0.9" opacity="0.4"/></g><circle cx="720" cy="0" r="3" fill="#ff99ff" opacity="0.7"/></svg>`
-  },
-  {
-    id:'hex', name:'Hex Grid', accent:'#44ddff', accentDim:'rgba(68,221,255,0.12)', accentGlow:'rgba(68,221,255,0.4)', accentRgb:'68,221,255', gradB:'#0044ff',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="1440" height="900" fill="#020810"/><g stroke="#44ddff" stroke-opacity="0.07" stroke-width="1" fill="none"><polygon points="120,150 160,80 240,80 280,150 240,220 160,220"/><polygon points="360,150 400,80 480,80 520,150 480,220 400,220"/><polygon points="600,150 640,80 720,80 760,150 720,220 640,220"/><polygon points="840,150 880,80 960,80 1000,150 960,220 880,220"/><polygon points="1080,150 1120,80 1200,80 1240,150 1200,220 1120,220"/><polygon points="1320,150 1360,80 1440,80 1440,220 1360,220"/><polygon points="240,370 280,300 360,300 400,370 360,440 280,440"/><polygon points="480,370 520,300 600,300 640,370 600,440 520,440"/><polygon points="720,370 760,300 840,300 880,370 840,440 760,440"/><polygon points="960,370 1000,300 1080,300 1120,370 1080,440 1000,440"/><polygon points="1200,370 1240,300 1320,300 1360,370 1320,440 1240,440"/><polygon points="120,590 160,520 240,520 280,590 240,660 160,660"/><polygon points="360,590 400,520 480,520 520,590 480,660 400,660"/><polygon points="600,590 640,520 720,520 760,590 720,660 640,660"/><polygon points="840,590 880,520 960,520 1000,590 960,660 880,660"/><polygon points="1080,590 1120,520 1200,520 1240,590 1200,660 1120,660"/></g><g fill="#44ddff" opacity="0.5"><circle cx="120" cy="150" r="1.5"/><circle cx="720" cy="150" r="1.5"/><circle cx="1320" cy="150" r="1.5"/><circle cx="480" cy="370" r="1.5"/><circle cx="960" cy="370" r="1.5"/><circle cx="240" cy="590" r="1.5"/><circle cx="840" cy="590" r="1.5"/></g></svg>`
-  },
-  {
-    id:'blackhole', name:'Black Hole', accent:'#ff8800', accentDim:'rgba(255,136,0,0.12)', accentGlow:'rgba(255,136,0,0.45)', accentRgb:'255,136,0', gradB:'#ffdd00',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="1440" height="900" fill="#020100"/><g fill="none"><circle cx="720" cy="450" r="50" fill="#000"/><circle cx="720" cy="450" r="60" stroke="#ff8800" stroke-opacity="0.5" stroke-width="2"/><circle cx="720" cy="450" r="90" stroke="#ffaa00" stroke-opacity="0.25" stroke-width="3"/><circle cx="720" cy="450" r="130" stroke="#ff6600" stroke-opacity="0.15" stroke-width="6"/><circle cx="720" cy="450" r="180" stroke="#ff4400" stroke-opacity="0.1" stroke-width="10"/><circle cx="720" cy="450" r="250" stroke="#ff2200" stroke-opacity="0.07" stroke-width="15"/><circle cx="720" cy="450" r="340" stroke="#aa1100" stroke-opacity="0.05" stroke-width="20"/><circle cx="720" cy="450" r="450" stroke="#440400" stroke-opacity="0.04" stroke-width="30"/></g><g fill="white"><circle cx="100" cy="50" r="1.5" opacity="0.7"/><circle cx="350" cy="30" r="1" opacity="0.6"/><circle cx="900" cy="80" r="1.3" opacity="0.5"/><circle cx="1200" cy="40" r="1.1" opacity="0.7"/><circle cx="50" cy="200" r="0.9" opacity="0.5"/><circle cx="1400" cy="180" r="1" opacity="0.5"/><circle cx="250" cy="800" r="1.2" opacity="0.4"/><circle cx="1150" cy="820" r="1" opacity="0.4"/></g><g fill="#ff8800" opacity="0.6"><circle cx="500" cy="300" r="1.5"/><circle cx="940" cy="300" r="1.5"/><circle cx="500" cy="600" r="1.5"/><circle cx="940" cy="600" r="1.5"/></g></svg>`
-  },
-  {
-    id:'winter', name:'Winter', accent:'#cceeff', accentDim:'rgba(204,238,255,0.12)', accentGlow:'rgba(204,238,255,0.35)', accentRgb:'204,238,255', gradB:'#6699cc',
-    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="wint" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#040810"/><stop offset="100%" stop-color="#020408"/></linearGradient><filter id="snBlur"><feGaussianBlur stdDeviation="1.5"/></filter></defs><rect width="1440" height="900" fill="url(#wint)"/><g fill="white" filter="url(#snBlur)"><circle cx="72" cy="120" r="2.5" opacity="0.7"/><circle cx="216" cy="280" r="2" opacity="0.6"/><circle cx="380" cy="60" r="2.5" opacity="0.8"/><circle cx="540" cy="350" r="2" opacity="0.5"/><circle cx="700" cy="140" r="2.5" opacity="0.7"/><circle cx="860" cy="300" r="2" opacity="0.6"/><circle cx="1020" cy="80" r="2.5" opacity="0.8"/><circle cx="1180" cy="250" r="2" opacity="0.6"/><circle cx="1340" cy="180" r="2.5" opacity="0.7"/><circle cx="144" cy="500" r="2" opacity="0.5"/><circle cx="450" cy="600" r="2.5" opacity="0.6"/><circle cx="780" cy="480" r="2" opacity="0.5"/><circle cx="1100" cy="550" r="2.5" opacity="0.6"/><circle cx="1380" cy="420" r="2" opacity="0.5"/></g><g stroke="#cceeff" stroke-opacity="0.05" stroke-width="1" fill="none"><line x1="72" y1="120" x2="72" y2="90"/><line x1="62" y1="110" x2="82" y2="130"/><line x1="82" y1="110" x2="62" y2="130"/><line x1="700" y1="140" x2="700" y2="110"/><line x1="690" y1="130" x2="710" y2="150"/><line x1="710" y1="130" x2="690" y2="150"/></g><path d="M0 800 Q360 770 720 790 Q1080 810 1440 780 L1440 900 L0 900Z" fill="#cceeff" fill-opacity="0.04"/></svg>`
-  }
 ];
+
 
 /* ═══════════════════════════════════════════
    CONSTANTS & DEFAULTS
 ═══════════════════════════════════════════ */
 const GAMES_FOLDER = 'games/';
 const DEFAULTS = {
-  bgTheme:'pizza', scanlines:true, anims:true,
+  bgTheme:'classic', scanlines:true, anims:true,
   loader:true, msgs:true, startup:true, lowlag:false,
   panicEnabled:true, panicKey:'Escape', panicUrl:'',
   cloakTitle:'', cloakFavicon:'',
@@ -998,7 +896,7 @@ function buildBgThemeGrid(){
 }
 
 function applySettings(){
-  applyBgTheme(settings.bgTheme||'pizza');
+  applyBgTheme(settings.bgTheme||'classic');
   document.querySelector('.scanlines').style.display=settings.scanlines?'':'none';
   document.body.classList.toggle('no-anims',!settings.anims);
   if(settings.cloakTitle)document.title=settings.cloakTitle;
