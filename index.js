@@ -91,6 +91,20 @@ function sendJson(response, status, payload) {
   response.end(JSON.stringify(payload));
 }
 
+// Cloak-link helper: accept a raw http(s) URL or a base64-encoded one.
+function decodeLinkParam(value) {
+  if (!value) return '';
+  const s = String(value).trim();
+  if (/^https?:\/\//i.test(s)) return s;
+  try {
+    const decoded = Buffer.from(s, 'base64').toString('utf8').trim();
+    if (/^https?:\/\//i.test(decoded)) return decoded;
+  } catch (err) {
+    /* not valid base64 */
+  }
+  return '';
+}
+
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   let pathname = decodeURIComponent(url.pathname);
@@ -141,6 +155,72 @@ const server = http.createServer((request, response) => {
         sendJson(response, 200, { ok: true, report: report });
       })
       .catch(() => sendJson(response, 400, { ok: false, error: 'bad json' }));
+    return;
+  }
+
+  // CDN page loader — renders jsDelivr-hosted copies of the core pages.
+  // jsDelivr serves .html as text/plain + nosniff for security, so direct
+  // CDN links show raw code. Instead we fetch the CDN copy as text and
+  // inject it (layer-4 style, like the pizza.com trick) — the page renders
+  // on our domain, so relative links, CSS, games.json and the APIs all work.
+  //   /cdn?p=index|tools|credits|dashboard|tutorial|bookmart|submit|404
+  if (pathname === '/cdn') {
+    const CDN_BASE = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
+    const CDN_PAGES = {
+      index: 'index.html',
+      tools: 'tools.html',
+      credits: 'credits.html',
+      dashboard: 'dashboard.html',
+      tutorial: 'tutorial.html',
+      bookmart: 'bookmart.html',
+      submit: 'submit.html',
+      '404': '404.html',
+    };
+    const page = CDN_PAGES[String(url.searchParams.get('p') || 'index')] || 'index.html';
+    const cdnUrl = CDN_BASE + page;
+    const jsSafe = JSON.stringify(cdnUrl).replace(/<\//g, '<\\/');
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    response.end(
+      '<!doctype html><html><head><meta charset="utf-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<meta name="robots" content="noindex"><title>pizza arcade</title></head>' +
+      '<body style="margin:0;background:#0f172a"><script>' +
+      'var u=' + jsSafe + ';' +
+      'fetch(u).then(function(r){return r.text();}).then(function(t){document.open();document.write(t);document.close();})' +
+      ".catch(function(){location.replace('/" + page + "');});" +
+      '</script></body></html>'
+    );
+    return;
+  }
+
+  // Cloak link endpoints (the pizza.com trick, but on our own server).
+  //   /go?d=<url-or-base64>  -> 302 redirect to the target
+  //   /go?c=<url-or-base64>  -> serve a cloak page that loads the target's
+  //                             content (e.g. a jsDelivr/GitHub data.html)
+  if (pathname === '/go') {
+    const target = decodeLinkParam(url.searchParams.get('c') || url.searchParams.get('d'));
+    if (!target) {
+      response.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+      response.end('bad link');
+      return;
+    }
+    if (url.searchParams.get('c')) {
+      const jsSafe = JSON.stringify(target).replace(/<\//g, '<\\/');
+      response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      response.end(
+        '<!doctype html><html><head><meta charset="utf-8">' +
+        '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+        '<meta name="robots" content="noindex"><title>loading...</title></head>' +
+        '<body style="margin:0;background:#0f172a"><script>' +
+        'var u=' + jsSafe + ';' +
+        "fetch(u).then(function(r){return r.text();}).then(function(t){document.open();document.write(t);document.close();})" +
+        '.catch(function(){location.replace(u);});' +
+        '</script></body></html>'
+      );
+      return;
+    }
+    response.writeHead(302, { Location: target });
+    response.end();
     return;
   }
 
