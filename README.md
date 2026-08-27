@@ -13,7 +13,6 @@ Unblocked games site. Games auto-load from the `games/` folder, tools from `tool
 | `/tutorial.html` | How to play |
 | `/bookmart.html` | Blooket hacks |
 | `/submit.html` | Community links |
-| `/go.html` | Static cloak/redirect page (works on ANY host) |
 | `/404.html` | 404 page |
 
 ## Run it
@@ -22,46 +21,42 @@ Unblocked games site. Games auto-load from the `games/` folder, tools from `tool
 ```bash
 node index.js        # serves on PORT or 9482
 ```
-The server auto-generates `games.json` / `tools.json` from the folders, serves the report API, and the `/go` + `/cdn` routes.
+The server auto-generates `games.json` / `tools.json` from the folders, serves the report API, and the `/cdn` route.
 
 **Pure static host (GitHub Pages / Netlify / Cloudflare Pages):**
-Upload the files as-is. `games.json` / `tools.json` are committed for static hosts. The report API and `/go` + `/cdn` routes need the Node server — but `go.html` works everywhere.
+Upload the files as-is. `games.json` / `tools.json` are committed for static hosts. The report API and `/cdn` route need the Node server.
 
-## Share / cloak links (like pizza.com, but yours)
+## Add games / tools
 
-Links that show only your domain — the target is hidden in base64.
+Drop a `.html` file into the `games/` (or `tools/`) folder — the list updates automatically (the server regenerates `games.json` / `tools.json` on startup, and pages fetch the live list). The game name is derived from the filename (`escape road 3.html` → "escape road 3").
 
-| Link | What it does | Works on |
-|---|---|---|
-| `/?d=<base64>` | Redirect — works right on the home page, pizza-style | Any host |
-| `/?c=<base64>` | Cloak on the home page (fetch + `document.write`) | Any host |
-| `/go.html?d=<base64>` | Redirect to the decoded URL | Any host |
-| `/go.html?c=<base64>` | Cloak: fetch the target as text and render it (address bar stays on your domain) | Any host |
-| `/go?d=<base64>` | Same as go.html, server-side | Node server |
-| `/go?c=<base64>` | Same as go.html, server-side | Node server |
-| `/cdn?p=index` | Loads the jsDelivr copy of a page (`p=index\|tools\|credits\|dashboard\|tutorial\|bookmart\|submit\|404`) | Node server |
+## Features
 
-Raw `https://…` URLs work too — no base64 needed (`/go.html?d=https://example.com`).
+- **Built-in player** — games and tools open in a full-screen player with an **exit** button and a **fullscreen** button.
+- **Keyboard shortcuts** (desktop): `E` toggles fullscreen, `Q` exits the player (ignored while typing in inputs).
+- **Mobile controls** — one tap exits, two quick taps toggles fullscreen.
+- **Theme gallery** — pick from hand-picked background themes (Classic default, Pizza Kitchen, Midnight, Forest, Ocean) in Settings → Backgrounds.
+- **Cloak** — Settings → Cloak: change the tab title and favicon (pizza 🍕 or a site like Classroom).
+- **Panic mode** — Settings → Panic: a key that instantly hides the site.
+- **Favorites / Recents / Most played** — sidebar views, stored locally.
+- **Report broken** — every game card has a ⚠️ button; reports go to the dev dashboard.
 
-**Make your own links** — paste this in any browser's devtools console:
-```js
-btoa('https://whatever-you-want.com')
-```
+## CDN page loader (`/cdn`)
 
-Example (hides `https://gn-math.dev`):
-```
-https://<your-domain>/go.html?d=aHR0cHM6Ly9nbi1tYXRoLmRldg==
-```
-
-## jsDelivr CDN
-
-The site and its pages are also available through the jsDelivr GitHub CDN:
+jsDelivr serves `.html` files as `text/plain` for security reasons, so a raw `cdn.jsdelivr.net/gh/…/*.html` link shows code instead of rendering. The `/cdn` route fixes that — it fetches the jsDelivr copy of a page as text and renders it on your domain:
 
 ```
-https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/<file>
+/cdn?p=index       -> https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/index.html
+/cdn?p=tools       -> tools.html
+/cdn?p=credits     -> credits.html
+/cdn?p=dashboard   -> dashboard.html
+/cdn?p=tutorial    -> tutorial.html
+/cdn?p=bookmart    -> bookmart.html
+/cdn?p=submit      -> submit.html
+/cdn?p=404         -> 404.html
 ```
 
-⚠️ **jsDelivr serves `.html` files as `text/plain` for security reasons** — a raw CDN link to a page shows code instead of rendering. Never share raw CDN links. Use the cloak links above (`/go.html?c=`, `/go?c=`, `/cdn?p=…`) — they fetch the CDN copy as text and render it on your domain.
+Unknown page names fall back to `index.html`. If the CDN fetch fails, it redirects to the real page.
 
 CDN copies update after you push to GitHub; jsDelivr caches them for up to ~12 hours (you can purge a file early at jsdelivr.com).
 
