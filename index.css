@@ -1,23 +1,23 @@
 :root {
-  --accent: #00f5ff;
-  --accent-dim: rgba(0,245,255,0.12);
-  --accent-glow: rgba(0,245,255,0.35);
-  --accent-rgb: 0,245,255;
-  --grad-b: #7b2fff;
-  --text: #e8eaf6;
-  --text-dim: rgba(232,234,246,0.5);
-  --text-muted: rgba(232,234,246,0.3);
-  --border: rgba(0,245,255,0.10);
-  --border-active: rgba(0,245,255,0.5);
+  --accent: #fc2651;
+  --accent-dim: rgba(252,38,81,0.12);
+  --accent-glow: rgba(252,38,81,0.22);
+  --accent-rgb: 252,38,81;
+  --grad-b: #8b5cf6;
+  --text: #f8fafc;
+  --text-dim: rgba(248,250,252,0.65);
+  --text-muted: rgba(248,250,252,0.4);
+  --border: rgba(148,163,184,0.18);
+  --border-active: rgba(252,38,81,0.55);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: #060612;
+  background: #0f172a;
   color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Nunito', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -40,7 +40,7 @@ body {
 #backbtn {
   position: fixed; top: 14px; left: 14px; z-index: 100;
   padding: 8px 18px;
-  font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
+  font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 600;
   letter-spacing: 2px; text-transform: uppercase;
   background: rgba(0,245,255,0.07); color: var(--accent);
   border: 1px solid rgba(0,245,255,0.3); border-radius: 6px;
@@ -60,7 +60,7 @@ body {
   to   { opacity:1; transform:translateY(0); }
 }
 .header h1 {
-  font-family: 'Orbitron', monospace;
+  font-family: 'Baloo 2', sans-serif;
   font-size: clamp(1.6rem,4vw,2.4rem); font-weight: 900; letter-spacing: 6px;
   color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); margin-bottom: 8px;
   animation: pulse-glow 3s ease-in-out infinite;
@@ -100,7 +100,7 @@ body {
 }
 .tab-btn {
   padding: 9px 24px;
-  font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 600;
+  font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 600;
   letter-spacing: 2px; text-transform: uppercase;
   background: rgba(255,255,255,0.03); color: var(--text-dim);
   border: 1px solid var(--border); border-radius: 8px;
@@ -136,7 +136,7 @@ body {
 
 .section-heading {
   display: flex; align-items: center; gap: 10px;
-  font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+  font-family: 'Baloo 2', sans-serif; font-size: 1rem; font-weight: 700;
   color: var(--text); letter-spacing: 2px;
   margin-bottom: 24px;
 }
@@ -145,7 +145,7 @@ body {
 .contrib-table { width: 100%; border-collapse: collapse; }
 .contrib-table thead tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
 .contrib-table thead th {
-  font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
+  font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 600;
   letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted);
   padding: 0 16px 14px 0; text-align: left;
 }
@@ -168,14 +168,14 @@ body {
   background: linear-gradient(135deg, rgba(0,245,255,0.15), rgba(123,47,255,0.2));
   border: 1.5px solid rgba(0,245,255,0.25);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 900;
+  font-family: 'Baloo 2', sans-serif; font-size: 1rem; font-weight: 900;
   color: var(--accent); box-shadow: 0 0 14px rgba(0,245,255,0.1);
   overflow: hidden;
 }
 .avatar-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
 .td-name {
-  font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700;
+  font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
   color: var(--text); letter-spacing: 1px; min-width: 140px;
 }
 
@@ -184,7 +184,7 @@ body {
 
 .visit-link {
   display: inline-flex; align-items: center; gap: 5px;
-  font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 600;
+  font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600;
   letter-spacing: 1px; color: var(--text-dim);
   text-decoration: none; transition: color 0.2s;
   white-space: nowrap;
