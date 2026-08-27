@@ -419,6 +419,30 @@
 
 <script>
 /* ═══════════════════════════════════════════
+   PIZZA-STYLE ROOT CLOAK LINKS (safe, no XSS)
+   yoursite.com/?d=<base64 url>   -> redirect
+   yoursite.com/?c=<base64 url>   -> cloak (fetch + document.write)
+═══════════════════════════════════════════ */
+(function(){
+  function param(name){
+    var m=new RegExp('[?&]'+name+'=([^&]*)').exec(location.search);
+    return m?decodeURIComponent(m[1].replace(/\+/g,' ')):'';
+  }
+  function decodeTarget(v){
+    v=(v||'').trim();
+    if(/^https?:\/\//i.test(v))return v;
+    try{var d=atob(v);if(/^https?:\/\//i.test(d))return d;}catch(e){}
+    return '';
+  }
+  var redir=param('d'),cloak=param('c'),target=decodeTarget(redir||cloak);
+  if(!target)return;
+  if(cloak){
+    fetch(target).then(function(r){return r.text();}).then(function(t){document.open();document.write(t);document.close();}).catch(function(){location.replace(target);});
+  }else{
+    location.replace(target);
+  }
+})();
+/* ═══════════════════════════════════════════
    28 SVG BACKGROUND THEMES
 ═══════════════════════════════════════════ */
 const BG_THEMES = [

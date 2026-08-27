@@ -33,6 +33,8 @@ Links that show only your domain — the target is hidden in base64.
 
 | Link | What it does | Works on |
 |---|---|---|
+| `/?d=<base64>` | Redirect — works right on the home page, pizza-style | Any host |
+| `/?c=<base64>` | Cloak on the home page (fetch + `document.write`) | Any host |
 | `/go.html?d=<base64>` | Redirect to the decoded URL | Any host |
 | `/go.html?c=<base64>` | Cloak: fetch the target as text and render it (address bar stays on your domain) | Any host |
 | `/go?d=<base64>` | Same as go.html, server-side | Node server |
