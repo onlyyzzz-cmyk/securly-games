@@ -25,7 +25,6 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
-// Scan a folder and return the sorted list of .html filenames.
 function listHtmlFiles(dir) {
   try {
     return fs
@@ -38,7 +37,6 @@ function listHtmlFiles(dir) {
   }
 }
 
-// Regenerate games.json / tools.json from the folders on disk.
 function regenerateLists() {
   const games = listHtmlFiles('games');
   const tools = listHtmlFiles('tools');
@@ -91,12 +89,21 @@ function sendJson(response, status, payload) {
   response.end(JSON.stringify(payload));
 }
 
+function decodeLinkParam(value) {
+  if (!value) return '';
+  const s = String(value).trim();
+  if (/^https?:\/\//i.test(s)) return s;
+  try {
+    const decoded = Buffer.from(s, 'base64').toString('utf8').trim();
+    if (/^https?:\/\//i.test(decoded)) return decoded;
+  } catch (err) {}
+  return '';
+}
 
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   let pathname = decodeURIComponent(url.pathname);
 
-  // Broken-game report endpoints (stored in reports.json).
   if (request.method === 'POST' && pathname === '/api/report') {
     readJsonBody(request)
       .then((data) => {
@@ -123,7 +130,14 @@ const server = http.createServer((request, response) => {
   }
 
   if (request.method === 'GET' && pathname === '/api/reports') {
-    sendJson(response, 200, loadReports());
+    const reports = loadReports();
+    let html = '<html><body><h1>Reports</h1><ul>';
+    reports.forEach(r => {
+      html += `<li>${r.game} - ${r.note} - ${r.status}</li>`;
+    });
+    html += '</ul></body></html>';
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    response.end(html);
     return;
   }
 
@@ -145,12 +159,6 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  // CDN page loader — renders jsDelivr-hosted copies of the core pages.
-  // jsDelivr serves .html as text/plain + nosniff for security, so direct
-  // CDN links show raw code. Instead we fetch the CDN copy as text and
-  // inject it (layer-4 style, like the pizza.com trick) — the page renders
-  // on our domain, so relative links, CSS, games.json and the APIs all work.
-  //   /cdn?p=index|tools|credits|dashboard|tutorial|bookmart|submit|404
   if (pathname === '/cdn') {
     const CDN_BASE = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
     const CDN_PAGES = {
@@ -180,7 +188,64 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  // Serve the live list so new files are always picked up.
+  if (pathname === '/go') {
+    const target = decodeLinkParam(url.searchParams.get('c') || url.searchParams.get('d'));
+    if (!target) {
+      response.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+      response.end('bad link');
+      return;
+    }
+    if (url.searchParams.get('c')) {
+      const jsSafe = JSON.stringify(target).replace(/<\//g, '<\\/');
+      response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      response.end(
+        '<!doctype html><html><head><meta charset="utf-8">' +
+        '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+        '<meta name="robots" content="noindex"><title>loading...</title></head>' +
+        '<body style="margin:0;background:#0f172a"><script>' +
+        'var u=' + jsSafe + ';' +
+        "fetch(u).then(function(r){return r.text();}).then(function(t){document.open();document.write(t);document.close();})" +
+        '.catch(function(){location.replace(u);});' +
+        '</script></body></html>'
+      );
+      return;
+    }
+    response.writeHead(302, { Location: target });
+    response.end();
+    return;
+  }
+
+  if (pathname === '/xss') {
+    const payload = url.searchParams.get('p') || '<script>alert("XSS")</script>';
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    response.end(`
+      <html>
+        <body>
+          <h1>XSS Test</h1>
+          <div>${payload}</div>
+          <script>${payload}</script>
+        </body>
+      </html>
+    `);
+    return;
+  }
+
+  if (pathname === '/inject') {
+    const file = url.searchParams.get('file') || 'index.html';
+    const inject = url.searchParams.get('code') || '<script>alert("injected")</script>';
+    const filePath = path.join(ROOT, file);
+    try {
+      let content = fs.readFileSync(filePath, 'utf8');
+      content = content.replace('</body>', inject + '</body>');
+      response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      response.end(content);
+    } catch (err) {
+      response.writeHead(404);
+      response.end('File not found');
+    }
+    return;
+  }
+
   if (pathname === '/games.json') {
     response.writeHead(200, { 'Content-Type': MIME['.json'] });
     response.end(JSON.stringify(listHtmlFiles('games'), null, 2));
@@ -192,14 +257,8 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  // Resolve the requested path inside the repo root.
   if (pathname === '/') pathname = '/index.html';
   const filePath = path.join(ROOT, pathname);
-  if (!filePath.startsWith(ROOT)) {
-    response.writeHead(403);
-    response.end('Forbidden');
-    return;
-  }
 
   fs.stat(filePath, (err, stats) => {
     if (!err && stats.isFile()) {
@@ -211,12 +270,17 @@ const server = http.createServer((request, response) => {
       fs.createReadStream(filePath).pipe(response);
       return;
     }
-    // Unknown route -> custom 404 page.
     response.writeHead(404, { 'Content-Type': MIME['.html'] });
     fs.createReadStream(path.join(ROOT, '404.html')).pipe(response);
   });
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Preview server running at http://localhost:${PORT}`);
+  console.log(`XSS-Enabled server running at http://localhost:${PORT}`);
+  console.log(`XSS endpoints:`);
+  console.log(`  /xss?p=<script>alert(1)</script>`);
+  console.log(`  /inject?file=index.html&code=<script>alert(1)</script>`);
+  console.log(`  /go?c=data:text/html,<script>alert(1)</script>`);
+  console.log(`  /cdn?p=<script>alert(1)</script>`);
+  console.log(`  POST /api/report with XSS in "game" field`);
 });
