@@ -629,7 +629,7 @@ function exitgame(){
 let exitTapCount=0, exitTapTimer=null;
 document.addEventListener('keydown', e => {
   if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
-  if (!document.getElementById('play-view')?.classList.contains('show')) return;
+  var pv=document.getElementById('play-view'); if (!pv || !pv.classList.contains('show')) return;
   if (e.key.toLowerCase()==='e') fullscreen();
   if (e.key.toLowerCase()==='q') closePlayView();
 });

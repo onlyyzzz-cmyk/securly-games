@@ -720,8 +720,9 @@ function handleExitClick(){
 let pcHoverTimer=null,pcInfoShown=false;
 document.addEventListener('keydown',(e)=>{
   if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
-  if (e.key.toLowerCase()==='e' && document.getElementById('play-view')?.classList.contains('show')) toggleFullscreen();
-  if (e.key.toLowerCase()==='q' && document.getElementById('play-view')?.classList.contains('show')) closePlayView();
+  var pv=document.getElementById('play-view');
+  if (e.key.toLowerCase()==='e' && pv && pv.classList.contains('show')) toggleFullscreen();
+  if (e.key.toLowerCase()==='q' && pv && pv.classList.contains('show')) closePlayView();
 });
 
 document.addEventListener('mousemove',(e)=>{
@@ -844,7 +845,22 @@ function initializeApp(){
   loadToolsFromFolder().catch(e=>console.warn('Tools load:',e.message));
   setTimeout(checkOnboarding,150);
 }
-startWebsite();
+try {
+  startWebsite();
+} catch (e) {
+  console.error('init error:', e);
+  var failEl=document.getElementById('startup');
+  if (failEl) failEl.style.display='none';
+  if (typeof initializeApp==='function') initializeApp();
+}
+/* fail-safe: never leave the startup screen up if something goes wrong */
+setTimeout(function(){
+  var s=document.getElementById('startup');
+  if (s && s.style.display!=='none') {
+    s.style.display='none';
+    if (typeof initializeApp==='function') initializeApp();
+  }
+}, 8000);
 </script>
 </body>
 </html>
