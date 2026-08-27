@@ -6,234 +6,8 @@
 <title>securly games - credits</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-:root {
-  --accent: #00f5ff;
-  --accent-dim: rgba(0,245,255,0.12);
-  --accent-glow: rgba(0,245,255,0.35);
-  --accent-rgb: 0,245,255;
-  --grad-b: #7b2fff;
-  --text: #e8eaf6;
-  --text-dim: rgba(232,234,246,0.5);
-  --text-muted: rgba(232,234,246,0.3);
-  --border: rgba(0,245,255,0.10);
-  --border-active: rgba(0,245,255,0.5);
-}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-
-body {
-  background: #060612;
-  color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-#bg-svg-layer {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-#bg-svg-layer svg { width: 100%; height: 100%; position: absolute; inset: 0; }
-
-.scanlines {
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
-  pointer-events: none; z-index: 1;
-}
-
-#backbtn {
-  position: fixed; top: 14px; left: 14px; z-index: 100;
-  padding: 8px 18px;
-  font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
-  letter-spacing: 2px; text-transform: uppercase;
-  background: rgba(0,245,255,0.07); color: var(--accent);
-  border: 1px solid rgba(0,245,255,0.3); border-radius: 6px;
-  cursor: pointer; transition: all 0.25s;
-}
-#backbtn:hover {
-  background: var(--accent-dim); border-color: var(--accent);
-  box-shadow: 0 0 18px var(--accent-glow); transform: translateY(-2px);
-}
-
-.header {
-  text-align: center; margin-bottom: 16px;
-  animation: fadeDown 0.6s ease both;
-}
-@keyframes fadeDown {
-  from { opacity:0; transform:translateY(-20px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-.header h1 {
-  font-family: 'Orbitron', monospace;
-  font-size: clamp(1.6rem,4vw,2.4rem); font-weight: 900; letter-spacing: 6px;
-  color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); margin-bottom: 8px;
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-@keyframes pulse-glow {
-  0%,100% { text-shadow: 0 0 20px var(--accent-glow); }
-  50%      { text-shadow: 0 0 40px var(--accent-glow), 0 0 80px rgba(0,245,255,0.18); }
-}
-.header-sub {
-  font-size: 0.8rem; letter-spacing: 5px; color: var(--text-dim); text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.header-thanks {
-  font-size: 0.95rem; color: var(--text-dim); letter-spacing: 1px;
-  margin-bottom: 14px;
-}
-.divider {
-  width: 100px; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  margin: 16px auto 0; box-shadow: 0 0 10px var(--accent-glow);
-}
-
-.page {
-  position: relative; z-index: 2;
-  max-width: 860px; margin: 0 auto;
-  padding: 90px 24px 80px;
-}
-
-.tabs {
-  display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;
-  margin-bottom: 32px;
-  animation: fadeUp 0.5s 0.15s ease both;
-}
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(16px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-.tab-btn {
-  padding: 9px 24px;
-  font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 600;
-  letter-spacing: 2px; text-transform: uppercase;
-  background: rgba(255,255,255,0.03); color: var(--text-dim);
-  border: 1px solid var(--border); border-radius: 8px;
-  cursor: pointer; transition: all 0.22s;
-  position: relative; overflow: hidden;
-}
-.tab-btn::after {
-  content: ''; position: absolute; bottom:0; left:0; right:0; height:2px;
-  background: linear-gradient(90deg, var(--accent), var(--grad-b));
-  transform: scaleX(0); transition: transform 0.25s;
-}
-.tab-btn:hover { background: var(--accent-dim); color: var(--text); border-color: rgba(0,245,255,0.3); }
-.tab-btn.active {
-  background: var(--accent-dim); color: var(--accent);
-  border-color: var(--border-active); box-shadow: 0 0 18px rgba(0,245,255,0.12);
-}
-.tab-btn.active::after { transform: scaleX(1); }
-
-.tab-panel { display: none; animation: panelIn 0.35s ease both; }
-.tab-panel.active { display: block; }
-@keyframes panelIn {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-.section-block {
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px;
-  padding: 28px 32px;
-  margin-bottom: 20px;
-}
-
-.section-heading {
-  display: flex; align-items: center; gap: 10px;
-  font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
-  color: var(--text); letter-spacing: 2px;
-  margin-bottom: 24px;
-}
-.section-heading .icon { font-size: 1.1rem; }
-
-.contrib-table { width: 100%; border-collapse: collapse; }
-.contrib-table thead tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
-.contrib-table thead th {
-  font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
-  letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted);
-  padding: 0 16px 14px 0; text-align: left;
-}
-.contrib-table thead th:last-child { text-align: right; padding-right: 0; }
-.contrib-table thead th.col-avatar { width: 70px; }
-
-.contrib-table tbody tr {
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  transition: background 0.2s;
-}
-.contrib-table tbody tr:last-child { border-bottom: none; }
-.contrib-table tbody tr:hover { background: rgba(0,245,255,0.03); }
-
-.contrib-table tbody td { padding: 16px 16px 16px 0; vertical-align: middle; }
-.contrib-table tbody td:last-child { text-align: right; padding-right: 0; }
-
-.td-avatar { width: 70px; }
-.avatar-img {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: linear-gradient(135deg, rgba(0,245,255,0.15), rgba(123,47,255,0.2));
-  border: 1.5px solid rgba(0,245,255,0.25);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 900;
-  color: var(--accent); box-shadow: 0 0 14px rgba(0,245,255,0.1);
-  overflow: hidden;
-}
-.avatar-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-
-.td-name {
-  font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700;
-  color: var(--text); letter-spacing: 1px; min-width: 140px;
-}
-
-.td-role { font-size: 0.92rem; color: var(--text-dim); letter-spacing: 0.5px; }
-.role-icon { margin-right: 6px; font-size: 0.85rem; }
-
-.visit-link {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 600;
-  letter-spacing: 1px; color: var(--text-dim);
-  text-decoration: none; transition: color 0.2s;
-  white-space: nowrap;
-}
-.visit-link:hover { color: var(--accent); }
-.visit-link svg { width: 13px; height: 13px; opacity: 0.7; }
-
-.thanks-box {
-  background: rgba(0,245,255,0.03);
-  border: 1px solid rgba(0,245,255,0.1);
-  border-radius: 12px;
-  padding: 20px 24px;
-  margin-bottom: 12px;
-  transition: border-color 0.25s, box-shadow 0.25s;
-}
-.thanks-box:hover {
-  border-color: rgba(0,245,255,0.22);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-}
-.thanks-title {
-  font-size: 1rem; font-weight: 700; color: var(--text); letter-spacing: 1px;
-  margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
-}
-.thanks-title .ticon { color: var(--accent); }
-.thanks-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; }
-.thanks-link {
-  color: var(--accent); text-decoration: none; font-weight: 600;
-  transition: opacity 0.2s;
-}
-.thanks-link:hover { opacity: 0.75; }
-
-@media (max-width: 540px) {
-  .page { padding: 80px 14px 60px; }
-  .section-block { padding: 20px 16px; }
-  .contrib-table thead th, .contrib-table tbody td { padding-left: 0; padding-right: 10px; }
-  .td-name { min-width: 90px; }
-  .avatar-img { width: 36px; height: 36px; font-size: 0.8rem; }
-  .td-avatar { width: 50px; }
-}
-</style>
+<link rel="stylesheet" href="index.css">
 </head>
 <body>
 
@@ -310,10 +84,10 @@ body {
             <td class="td-avatar">
               <div class="avatar-img" style="font-size:0.7rem;letter-spacing:0;">GN</div>
             </td>
-            <td class="td-name">gn-math.dev</td>
+            <td class="td-name">Game Partners</td>
             <td class="td-role"><span class="role-icon">🌐</span> Game Hosting &amp; Resources</td>
             <td>
-              <a class="visit-link" href="https://gn-math.dev" target="_blank" rel="noopener">
+              <a class="visit-link" href="https://Game Partners" target="_blank" rel="noopener">
                 Visit
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               </a>
@@ -352,10 +126,10 @@ body {
       </div>
 
       <div class="thanks-box">
-        <div class="thanks-title"><span class="ticon">🌐</span> gn-math.dev</div>
+        <div class="thanks-title"><span class="ticon">🌐</span> Game Partners</div>
         <div class="thanks-desc">
           For providing game hosting and resources that make the site possible.
-          <a class="thanks-link" href="https://gn-math.dev" target="_blank" rel="noopener"> Visit →</a>
+          <a class="thanks-link" href="https://Game Partners" target="_blank" rel="noopener"> Visit →</a>
         </div>
       </div>
 
@@ -437,10 +211,10 @@ function applyBgTheme(id) {
 // Read the same settings key used by index.html / tools.html
 try {
   const saved = JSON.parse(localStorage.getItem('sg_settings') || '{}');
-  applyBgTheme(saved.bgTheme || 'cyber');
+  applyBgTheme(saved.bgTheme || 'classic');
   if (saved.lowlag) document.documentElement.classList.add('lowlag');
 } catch(e) {
-  applyBgTheme('cyber');
+  applyBgTheme('classic');
 }
 </script>
 <style>
