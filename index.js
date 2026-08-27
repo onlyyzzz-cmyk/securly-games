@@ -4,6 +4,7 @@ const path = require('path');
 
 const PORT = process.env.PORT || 9482;
 const ROOT = __dirname;
+const REPORTS_FILE = path.join(ROOT, 'reports.json');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -54,9 +55,94 @@ function regenerateLists() {
 
 regenerateLists();
 
+function loadReports() {
+  try {
+    const data = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf8'));
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveReports(list) {
+  fs.writeFileSync(REPORTS_FILE, JSON.stringify(list, null, 2) + '\n');
+}
+
+function readJsonBody(request) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    request.on('data', (chunk) => {
+      body += chunk;
+      if (body.length > 1e6) request.destroy();
+    });
+    request.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (err) {
+        reject(err);
+      }
+    });
+    request.on('error', reject);
+  });
+}
+
+function sendJson(response, status, payload) {
+  response.writeHead(status, { 'Content-Type': MIME['.json'] });
+  response.end(JSON.stringify(payload));
+}
+
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   let pathname = decodeURIComponent(url.pathname);
+
+  // Broken-game report endpoints (stored in reports.json).
+  if (request.method === 'POST' && pathname === '/api/report') {
+    readJsonBody(request)
+      .then((data) => {
+        const game = String(data.game || '').trim();
+        const note = String(data.note || '').trim();
+        if (!game) {
+          sendJson(response, 400, { ok: false, error: 'missing game' });
+          return;
+        }
+        const reports = loadReports();
+        const report = {
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+          game: game,
+          note: note || 'no details',
+          date: new Date().toISOString(),
+          status: 'open',
+        };
+        reports.unshift(report);
+        saveReports(reports);
+        sendJson(response, 200, { ok: true, report: report });
+      })
+      .catch(() => sendJson(response, 400, { ok: false, error: 'bad json' }));
+    return;
+  }
+
+  if (request.method === 'GET' && pathname === '/api/reports') {
+    sendJson(response, 200, loadReports());
+    return;
+  }
+
+  if (request.method === 'POST' && pathname === '/api/resolve') {
+    readJsonBody(request)
+      .then((data) => {
+        const id = String(data.id || '');
+        const reports = loadReports();
+        const report = reports.find((r) => r.id === id);
+        if (!report) {
+          sendJson(response, 404, { ok: false, error: 'not found' });
+          return;
+        }
+        report.status = report.status === 'open' ? 'resolved' : 'open';
+        saveReports(reports);
+        sendJson(response, 200, { ok: true, report: report });
+      })
+      .catch(() => sendJson(response, 400, { ok: false, error: 'bad json' }));
+    return;
+  }
 
   // Serve the live list so new files are always picked up.
   if (pathname === '/games.json') {

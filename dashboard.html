@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pizza arcade — dev dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="index.css">
+</head>
+<body class="plain-page dash-page">
+
+<div id="bg-svg-layer"></div>
+<button id="backbtn" onclick="location.href='index.html'">← Back</button>
+
+<!-- Owner sign-in -->
+<div id="dash-login" class="dash-login">
+  <div class="dash-login-card">
+    <div class="dash-login-icon">🍕</div>
+    <h1>dev dashboard</h1>
+    <p>owner sign-in — manage broken game reports</p>
+    <input id="dash-email" type="email" placeholder="owner email" autocomplete="email" onkeydown="if(event.key==='Enter')trySignIn()">
+    <button onclick="trySignIn()">sign in</button>
+    <div id="dash-login-err" class="dash-login-err"></div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dash-app" class="dash-app" style="display:none">
+  <header class="dash-top">
+    <div class="dash-top-left">
+      <span class="dash-logo">🍕</span>
+      <div>
+        <h1>dev dashboard</h1>
+        <div class="dash-top-sub">broken game reports</div>
+      </div>
+    </div>
+    <div class="dash-top-right">
+      <span class="dash-owner" id="dash-owner"></span>
+      <button class="dash-btn ghost" onclick="signOut()">sign out</button>
+    </div>
+  </header>
+
+  <div class="dash-stats" id="dash-stats"></div>
+
+  <div class="dash-cols">
+    <section class="dash-panel">
+      <h2>⚠ broken games</h2>
+      <div id="dash-broken" class="dash-broken"></div>
+    </section>
+    <section class="dash-panel">
+      <h2>🎮 all games</h2>
+      <div id="dash-games" class="dash-games"></div>
+    </section>
+  </div>
+
+  <section class="dash-panel">
+    <h2>📋 all reports</h2>
+    <div id="dash-reports" class="dash-reports"></div>
+  </section>
+</div>
+
+<div id="dash-toast"></div>
+
+<script>
+var OWNER_EMAILS = ['rhonodfletcher@gmail.com', 'rhonodfletcher32@gmail.com'];
+var AUTH_KEY = 'pizza_dash_owner';
+var games = [];
+var reports = [];
+
+function esc(v){return String(v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fmtDate(iso){try{var d=new Date(iso);return d.toLocaleString();}catch(e){return String(iso);}}
+function displayName(file){return String(file).replace(/\.html?$/i,'').replace(/[_\-+]/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/\s+/g,' ').trim().toLowerCase();}
+
+function dashToast(msg){
+  var t=document.getElementById('dash-toast');
+  t.textContent=msg;
+  t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';
+  requestAnimationFrame(function(){t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+  clearTimeout(t._timer);
+  t._timer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2400);
+}
+
+function trySignIn(){
+  var input=document.getElementById('dash-email');
+  var email=(input.value||'').trim().toLowerCase();
+  var err=document.getElementById('dash-login-err');
+  var ok=false;
+  for(var i=0;i<OWNER_EMAILS.length;i++){if(OWNER_EMAILS[i].toLowerCase()===email)ok=true;}
+  if(!ok){err.textContent='that email is not the owner email';return;}
+  err.textContent='';
+  try{localStorage.setItem(AUTH_KEY,email);}catch(e){}
+  showApp(email);
+}
+function showApp(email){
+  document.getElementById('dash-login').style.display='none';
+  document.getElementById('dash-app').style.display='block';
+  document.getElementById('dash-owner').textContent=email;
+  loadData();
+}
+function signOut(){
+  try{localStorage.removeItem(AUTH_KEY);}catch(e){}
+  document.getElementById('dash-app').style.display='none';
+  document.getElementById('dash-login').style.display='flex';
+  document.getElementById('dash-email').value='';
+}
+function owner(){
+  try{return localStorage.getItem(AUTH_KEY)||'';}catch(e){return '';}
+}
+
+function loadData(){
+  Promise.all([fetch('./games.json?v='+Date.now()),fetch('./api/reports?v='+Date.now())])
+    .then(function(responses){
+      return Promise.all([responses[0].json(),responses[1].json()]);
+    })
+    .then(function(data){
+      var list=data[0];
+      games=(Array.isArray(list)?list:[]).map(function(f){return {file:f,name:displayName(f)};});
+      games.sort(function(a,b){return a.name.localeCompare(b.name);});
+      reports=Array.isArray(data[1])?data[1]:[];
+      render();
+    })
+    .catch(function(){dashToast('could not load dashboard data');});
+}
+
+function render(){
+  var open=reports.filter(function(r){return r.status==='open';});
+  var resolved=reports.filter(function(r){return r.status==='resolved';});
+
+  var stats=document.getElementById('dash-stats');
+  stats.innerHTML=''
+    +'<div class="dash-stat"><div class="dash-stat-num">'+games.length+'</div><div class="dash-stat-label">total games</div></div>'
+    +'<div class="dash-stat warn"><div class="dash-stat-num">'+open.length+'</div><div class="dash-stat-label">open reports</div></div>'
+    +'<div class="dash-stat ok"><div class="dash-stat-num">'+resolved.length+'</div><div class="dash-stat-label">resolved</div></div>'
+    +'<div class="dash-stat"><div class="dash-stat-num">'+reports.length+'</div><div class="dash-stat-label">all reports</div></div>';
+
+  var brokenEl=document.getElementById('dash-broken');
+  if(!open.length){
+    brokenEl.innerHTML='<div class="dash-empty">no broken reports — all games running 🎉</div>';
+  }else{
+    var bhtml='';
+    for(var i=0;i<open.length;i++){
+      var r=open[i];
+      bhtml+='<div class="dash-broken-item">'
+        +'<div class="dash-broken-head"><span class="dash-game-name">'+esc(r.game)+'</span>'
+        +'<button class="dash-resolve" onclick="toggleResolve(\''+esc(r.id)+'\')">resolve</button></div>'
+        +'<div class="dash-broken-note">'+esc(r.note)+'</div>'
+        +'<div class="dash-broken-date">'+esc(fmtDate(r.date))+'</div>'
+        +'</div>';
+    }
+    brokenEl.innerHTML=bhtml;
+  }
+
+  var gamesEl=document.getElementById('dash-games');
+  var openCount={},resCount={};
+  reports.forEach(function(r){
+    if(r.status==='open')openCount[r.game]=(openCount[r.game]||0)+1;
+    else resCount[r.game]=(resCount[r.game]||0)+1;
+  });
+  var sorted=games.slice().sort(function(a,b){
+    var ba=(openCount[a.file]||0),bb=(openCount[b.file]||0);
+    if(ba!==bb)return bb-ba;
+    return a.name.localeCompare(b.name);
+  });
+  if(!sorted.length){
+    gamesEl.innerHTML='<div class="dash-empty">no games found in the games folder</div>';
+  }else{
+    var ghtml='';
+    for(var j=0;j<sorted.length;j++){
+      var g=sorted[j],o=openCount[g.file]||0,rs=resCount[g.file]||0;
+      var pill=o>0
+        ?'<span class="dash-pill broken">broken · '+o+'</span>'
+        :(rs>0?'<span class="dash-pill resolved">fixed · '+rs+'</span>':'<span class="dash-pill ok">ok</span>');
+      ghtml+='<div class="dash-game-row'+(o>0?' broken':'')+'"><span class="dash-game-name">'+esc(g.name)+'</span>'+pill+'</div>';
+    }
+    gamesEl.innerHTML=ghtml;
+  }
+
+  var reportsEl=document.getElementById('dash-reports');
+  if(!reports.length){
+    reportsEl.innerHTML='<div class="dash-empty">no reports yet — reports appear here when players hit "report broken"</div>';
+  }else{
+    var rhtml='';
+    for(var k=0;k<reports.length;k++){
+      var rep=reports[k];
+      var pill=rep.status==='open'
+        ?'<span class="dash-pill broken">open</span>'
+        :'<span class="dash-pill resolved">resolved</span>';
+      var btn=rep.status==='open'
+        ?'<button class="dash-resolve" onclick="toggleResolve(\''+esc(rep.id)+'\')">resolve</button>'
+        :'<button class="dash-resolve undo" onclick="toggleResolve(\''+esc(rep.id)+'\')">reopen</button>';
+      rhtml+='<div class="dash-report-row'+(rep.status==='resolved'?' resolved':'')+'">'
+        +'<div class="dash-report-info"><div class="dash-report-top"><span class="dash-game-name">'+esc(rep.game)+'</span>'+pill
+        +'<span class="dash-broken-date">'+esc(fmtDate(rep.date))+'</span></div>'
+        +'<div class="dash-report-note">'+esc(rep.note)+'</div></div>'
+        +btn+'</div>';
+    }
+    reportsEl.innerHTML=rhtml;
+  }
+}
+
+function toggleResolve(id){
+  fetch('./api/resolve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(res){return res.json();})
+    .then(function(data){
+      if(data&&data.ok){dashToast(data.report.status==='resolved'?'marked resolved ✓':'reopened');loadData();}
+      else dashToast('could not update report');
+    })
+    .catch(function(){dashToast('could not update report');});
+}
+
+(function(){
+  if(owner())showApp(owner());
+})();
+</script>
+
+</body>
+</html>
