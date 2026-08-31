@@ -11,3 +11,5 @@ keylog.log
 
 # stale subproject (no longer used)
 games-react/
+# typescript
+*.tsbuildinfo
