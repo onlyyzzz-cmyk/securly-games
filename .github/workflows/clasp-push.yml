@@ -20,16 +20,19 @@ jobs:
       - name: Install clasp
         run: npm install -g @google/clasp
 
-      # Service accounts can't use `clasp login --creds` (that expects an
-      # OAuth *client* file). The supported CI path is Application Default
-      # Credentials via the `--adc` global flag.
-      - name: Authenticate with service account
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.CLASP_SERVICE_ACCOUNT }}
+      - name: Build Apps Script output
+        run: node scripts/build-gas.mjs
+
+      # Service accounts can't push to Apps Script (Google rejects
+      # updateContent for them — see google/clasp#1051). CI authenticates as
+      # the owner's Google account using the refresh token produced once by
+      # `clasp login --no-localhost` (~/.clasprc.json contents).
+      - name: Write clasp credentials
+        run: |
+          mkdir -p "$HOME"
+          echo "$CLASPRC_JSON" > "$HOME/.clasprc.json"
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
 
       - name: Push to Apps Script
-        run: clasp push --force --adc
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+        run: clasp push --force

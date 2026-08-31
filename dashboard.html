@@ -110,14 +110,19 @@ function owner(){
 function loadData(){
   var onScripts=window.google&&window.google.script&&window.google.script.run;
   var reportsP;
+  var gamesP;
   if(onScripts){
     reportsP=new Promise(function(resolve,reject){
       google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).appGetReports();
     });
+    gamesP=new Promise(function(resolve,reject){
+      google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).getGames();
+    });
   }else{
     reportsP=fetch('./api/reports?v='+Date.now()).then(function(r){return r.json();});
+    gamesP=fetch('./games.json?v='+Date.now()).then(function(r){return r.json();});
   }
-  Promise.all([fetch('./games.json?v='+Date.now()),reportsP])
+  Promise.all([gamesP,reportsP])
     .then(function(data){
       var list=data[0];
       games=(Array.isArray(list)?list:[]).map(function(f){return {file:f,name:displayName(f)};});

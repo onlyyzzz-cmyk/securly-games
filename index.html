@@ -588,23 +588,36 @@ function showView(view,el){
 function fileToDisplayName(filename){return filename.replace(/\.html?$/i,'').replace(/[_\-+]/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/\s+/g,' ').trim().toLowerCase();}
 function hideGamesLoading(){const el=document.getElementById('games-loading');if(el)el.style.display='none';}
 
-async function loadGamesFromFolder(){
+function appsScriptAvailable(){return !!(window.google&&window.google.script&&window.google.script.run);}
+function applyGames(files){
   const badge=document.getElementById('badge-text');
+  const filesArr=Array.isArray(files)?files:(files&&files.games?files.games:[]);
+  if(!filesArr.length){allGames=[];}else{
+    filesArr.sort((a,b)=>fileToDisplayName(a).localeCompare(fileToDisplayName(b)));
+    allGames=filesArr.map(f=>({file:f,name:fileToDisplayName(f)}));
+  }
+  if(badge)badge.textContent=allGames.length+' game'+(allGames.length!==1?'s':'')+' available';
+  const b=document.getElementById('badge-all');if(b)b.textContent=allGames.length;
+  hideGamesLoading();renderAllGames();renderRecentsHome();renderFavSection();updateBadges();
+}
+async function loadGamesFromFolder(){
   try{
     const controller=new AbortController();const timeoutId=setTimeout(()=>controller.abort(),5000);
     const res=await fetch('./games.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
     if(!res.ok)throw new Error('HTTP '+res.status);
     const json=await res.json();
-    const files=Array.isArray(json)?json:(json.games||[]);
-    if(!files.length)throw new Error('empty list');
-    files.sort((a,b)=>fileToDisplayName(a).localeCompare(fileToDisplayName(b)));
-    allGames=files.map(f=>({file:f,name:fileToDisplayName(f)}));
-    if(badge)badge.textContent=allGames.length+' game'+(allGames.length!==1?'s':'')+' available';
-    document.getElementById('badge-all').textContent=allGames.length;
-    hideGamesLoading();renderAllGames();renderRecentsHome();renderFavSection();updateBadges();
+    applyGames(json);
   }catch(e){
-    console.warn('games.json error:',e);hideGamesLoading();
-    allGames=[];renderAllGames();renderRecentsHome();renderFavSection();updateBadges();
+    if(appsScriptAvailable()){
+      google.script.run.withSuccessHandler(applyGames).withFailureHandler(()=>applyGames([])).getGames();
+    }else{console.warn('games.json error:',e);applyGames([]);}
+  }
+}
+function applyTools(files){
+  const filesArr=Array.isArray(files)?files:(files&&files.tools?files.tools:[]);
+  if(!filesArr.length){allTools=[];}else{
+    filesArr.sort((a,b)=>fileToDisplayName(a).localeCompare(fileToDisplayName(b)));
+    allTools=filesArr.map(f=>({file:f,name:fileToDisplayName(f)}));
   }
 }
 async function loadToolsFromFolder(){
@@ -612,10 +625,13 @@ async function loadToolsFromFolder(){
     const controller=new AbortController();const timeoutId=setTimeout(()=>controller.abort(),5000);
     const res=await fetch('./tools.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
     if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();const files=Array.isArray(data)?data:(data.tools||[]);
-    files.sort((a,b)=>fileToDisplayName(a).localeCompare(fileToDisplayName(b)));
-    allTools=files.map(f=>({file:f,name:fileToDisplayName(f)}));
-  }catch(e){console.warn('tools.json error:',e);}
+    const data=await res.json();
+    applyTools(data);
+  }catch(e){
+    if(appsScriptAvailable()){
+      google.script.run.withSuccessHandler(applyTools).withFailureHandler(()=>applyTools([])).getTools();
+    }else{console.warn('tools.json error:',e);}
+  }
 }
 
 /* ═══════════════════════════════════════════
