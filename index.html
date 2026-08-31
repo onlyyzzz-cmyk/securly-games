@@ -958,16 +958,34 @@ function startOnboarding(){
 ═══════════════════════════════════════════ */
 function startWebsite(){
   loadSettings();
-  const startupEl=document.getElementById('startup');
+  var startupEl=document.getElementById('startup');
   if(!startupEl||settings.startup===false){if(startupEl)startupEl.style.display='none';initializeApp();return;}
-  const startupFill=document.getElementById('startupfill'),statusEl=document.getElementById('startup-status');
-  let progress=0;
-  const interval=setInterval(()=>{
-    const remaining=100-progress;progress+=Math.min(remaining*0.25+Math.random()*6+2,remaining);if(progress>100)progress=100;
-    if(startupFill)startupFill.style.width=progress+'%';
-    if(statusEl){if(progress<30)statusEl.textContent='loading assets...';else if(progress<60)statusEl.textContent='initializing...';else if(progress<90)statusEl.textContent='preparing...';else statusEl.textContent='ready!';}
-    if(progress>=100){clearInterval(interval);startupEl.style.transition='opacity 0.5s ease';startupEl.style.opacity='0';setTimeout(()=>{startupEl.style.display='none';initializeApp();},500);}
-  },80);
+  var startupFill=document.getElementById('startupfill');
+  var statusEl=document.getElementById('startup-status');
+  if(!startupFill||!statusEl){if(startupEl)startupEl.style.display='none';initializeApp();return;}
+  var progress=0;
+  var interval=setInterval(function(){
+    try{
+      var remaining=100-progress;
+      progress+=Math.min(remaining*0.25+Math.random()*6+2,remaining);
+      if(progress>100)progress=100;
+      startupFill.style.width=progress+'%';
+      if(progress<30)statusEl.textContent='loading assets...';
+      else if(progress<60)statusEl.textContent='initializing...';
+      else if(progress<90)statusEl.textContent='preparing...';
+      else statusEl.textContent='ready!';
+      if(progress>=100){
+        clearInterval(interval);
+        startupEl.style.transition='opacity 0.5s ease';
+        startupEl.style.opacity='0';
+        setTimeout(function(){startupEl.style.display='none';initializeApp();},500);
+      }
+    }catch(err){
+      clearInterval(interval);
+      startupEl.style.display='none';
+      initializeApp();
+    }
+  },60);
 }
 function initializeApp(){
   applySettings();buildFaviconGrid();
@@ -978,22 +996,29 @@ function initializeApp(){
   loadToolsFromFolder().catch(e=>console.warn('Tools load:',e.message));
   setTimeout(checkOnboarding,150);
 }
-try {
-  startWebsite();
-} catch (e) {
-  console.error('init error:', e);
-  var failEl=document.getElementById('startup');
-  if (failEl) failEl.style.display='none';
-  if (typeof initializeApp==='function') initializeApp();
+function bootApp(){
+  try {
+    startWebsite();
+  } catch (e) {
+    console.error('init error:', e);
+    var failEl=document.getElementById('startup');
+    if (failEl) failEl.style.display='none';
+    if (typeof initializeApp==='function') initializeApp();
+  }
 }
-/* fail-safe: never leave the startup screen up if something goes wrong */
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',bootApp);
+}else{
+  bootApp();
+}
+/* fail-safe: never leave the startup screen up */
 setTimeout(function(){
   var s=document.getElementById('startup');
   if (s && s.style.display!=='none') {
     s.style.display='none';
     if (typeof initializeApp==='function') initializeApp();
   }
-}, 8000);
+}, 5000);
 </script>
 </body>
 </html>
