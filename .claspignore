@@ -1,0 +1,13 @@
+# Keep heavy game files out of the Apps Script push.
+# Apps Script projects are flat and large HTML games often fail to import.
+games/
+tools/
+
+# Never push repo metadata, workflows, or local runtime files.
+.git/**
+.github/**
+.gitignore
+*.md
+node_modules/**
+dist/**
+*.log

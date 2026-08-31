@@ -99,3 +99,8 @@ interactive `clasp login` token can't be shared into CI).
 
 From then on every push/merge to `main` runs the workflow and your Apps
 Script app updates automatically.
+
+`.claspignore` keeps the heavy `games/` and `tools/` folders (and repo
+dotfiles/docs) out of the push — Apps Script projects are flat and large
+game HTMLs often fail to import. The core pages + `index.gs` + `appsscript.json`
+go up on every deploy; games can be pushed manually when they import cleanly.
