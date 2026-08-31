@@ -3,6 +3,9 @@
 games/
 tools/
 
+# Node-only server; clashes with index.gs (both map to remote name "index").
+index.js
+
 # Never push repo metadata, workflows, or local runtime files.
 .git/**
 .github/**
