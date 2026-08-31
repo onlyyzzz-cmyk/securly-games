@@ -1,0 +1,40 @@
+name: Deploy to Google Apps Script
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install clasp
+        run: npm install -g @google/clasp
+
+      # Log in with a GCP service account whose key is stored as a GitHub secret.
+      # The service account needs the Apps Script / Drive API enabled in its GCP
+      # project and must be added as an editor of the Apps Script project.
+      - name: Login with service account
+        run: |
+          echo "${{ secrets.CLASP_SERVICE_ACCOUNT }}" > /tmp/clasp-creds.json
+          clasp login --creds /tmp/clasp-creds.json
+          rm -f /tmp/clasp-creds.json
+        env:
+          CLASPRC_VERSION: 0
+          CLASPRC_ACCOUNT: ''
+
+      # Inject the script id from a secret so the repo's .clasp.json template
+      # doesn't hardcode it.
+      - name: Write .clasp.json
+        run: |
+          echo "{\"scriptId\":\"${{ secrets.CLASP_SCRIPT_ID }}\",\"rootDir\":\".\",\"parentId\":[]}" > .clasp.json
+
+      - name: Push to Apps Script
+        run: clasp push --force

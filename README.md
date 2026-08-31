@@ -75,3 +75,27 @@ Deploy note: the dashboard also reads `games.json` to show the game list; on
 Apps Script that file is served like any other page, so add `games.json` to
 the script project as an HTML file named `games` if you want the games panel
 to populate.
+
+## Auto-deploy with GitHub Actions
+
+A workflow in `.github/workflows/clasp-push.yml` pushes the project to Apps
+Script whenever you push to `main`. It runs `clasp push` headlessly on GitHub
+runners using a **GCP service account** stored as GitHub Secrets (a regular
+interactive `clasp login` token can't be shared into CI).
+
+### One-time setup
+
+1. **GCP project** (console.cloud.google.com) → enable the **Apps Script API**
+   and **Drive API**.
+2. Create a **Service Account**, download its JSON key, and *do not commit it*.
+3. Create the Apps Script project (script.google.com or `clasp create`).
+4. **Share the Apps Script project with the service account's email as Editor**
+   (Project Settings → Share).
+5. Put the service-account JSON (as a single-line string) into a GitHub secret
+   named `CLASP_SERVICE_ACCOUNT`, and the script id into `CLASP_SCRIPT_ID`
+   (Settings → Secrets and variables → Actions).
+6. Replace the `REPLACE_WITH_SCRIPT_ID` placeholder in `.clasp.json` (optional,
+   the workflow injects it from the secret anyway).
+
+From then on every push/merge to `main` runs the workflow and your Apps
+Script app updates automatically.
