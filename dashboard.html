@@ -108,10 +108,16 @@ function owner(){
 }
 
 function loadData(){
-  Promise.all([fetch('./games.json?v='+Date.now()),fetch('./api/reports?v='+Date.now())])
-    .then(function(responses){
-      return Promise.all([responses[0].json(),responses[1].json()]);
-    })
+  var onScripts=window.google&&window.google.script&&window.google.script.run;
+  var reportsP;
+  if(onScripts){
+    reportsP=new Promise(function(resolve,reject){
+      google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).appGetReports();
+    });
+  }else{
+    reportsP=fetch('./api/reports?v='+Date.now()).then(function(r){return r.json();});
+  }
+  Promise.all([fetch('./games.json?v='+Date.now()),reportsP])
     .then(function(data){
       var list=data[0];
       games=(Array.isArray(list)?list:[]).map(function(f){return {file:f,name:displayName(f)};});
@@ -199,13 +205,24 @@ function render(){
 }
 
 function toggleResolve(id){
+  var done=function(ok,msg){
+    if(ok){dashToast(msg);loadData();}
+    else dashToast('could not update report');
+  };
+  if(window.google&&window.google.script&&window.google.script.run){
+    google.script.run
+      .withSuccessHandler(function(r){done(true,r.status==='resolved'?'marked resolved ✓':'reopened');})
+      .withFailureHandler(function(){done(false);})
+      .appResolve(id);
+    return;
+  }
   fetch('./api/resolve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
     .then(function(res){return res.json();})
     .then(function(data){
-      if(data&&data.ok){dashToast(data.report.status==='resolved'?'marked resolved ✓':'reopened');loadData();}
-      else dashToast('could not update report');
+      if(data&&data.ok)done(true,data.report.status==='resolved'?'marked resolved ✓':'reopened');
+      else done(false);
     })
-    .catch(function(){dashToast('could not update report');});
+    .catch(function(){done(false);});
 }
 
 (function(){

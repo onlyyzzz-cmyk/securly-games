@@ -851,8 +851,18 @@ async function submitReport(){
   const btn=document.querySelector('.report-submit');
   if(btn){btn.disabled=true;btn.textContent='sending...';}
   try{
-    const res=await fetch('./api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game:reportGameFile,note:note})});
-    const data=await res.json();
+    let data;
+    if(window.google&&window.google.script&&window.google.script.run){
+      // Hosted on Google Apps Script -> save via google.script.run (Sheets)
+      data=await new Promise((resolve,reject)=>{
+        google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).appReport(reportGameFile,note);
+      });
+      data={ok:!!data};
+    }else{
+      // Local Node server fallback
+      const res=await fetch('./api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game:reportGameFile,note:note})});
+      data=await res.json();
+    }
     if(data&&data.ok){closeReportModal();showToast('report sent — thanks!');}
     else showToast('could not send report — try again');
   }catch(err){showToast('could not send report — try again');}

@@ -59,7 +59,19 @@ server is not used; each page is served directly as HTML.
 
 ## Report-broken & dashboard
 
-The →report broken← button submits to `/api/report`. That endpoint lives in
-`index.js` (the Node server). On Google Apps Script there's no server, so the
-report and dashboard need either [Google Sheets](https://developers.google.com/apps-script/reference/spreadsheet)
-storage in `index.gs`, or wiring to another backend. Ask if you want that wired up.
+Reports are stored in a **Google Sheet**. `index.gs` creates a spreadsheet
+automatically on first use and saves report data through the server
+functions `appReport`, `appResolve`, and `appGetReports`:
+
+- When the site runs on **Google Apps Script**, the →report broken← button and
+the dashboard call those functions via `google.script.run` — no backend needed.
+- When run locally with the **Node server** (`node index.js`), the same
+features fall back to the `/api/report`, `/api/resolve`, and `/api/reports`
+routes.
+
+So the frontend works on either host without changes.
+
+Deploy note: the dashboard also reads `games.json` to show the game list; on
+Apps Script that file is served like any other page, so add `games.json` to
+the script project as an HTML file named `games` if you want the games panel
+to populate.
