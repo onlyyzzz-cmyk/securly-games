@@ -8,6 +8,8 @@ on:
 jobs:
   push:
     runs-on: ubuntu-latest
+    # Secrets are stored under the "securly" GitHub Environment.
+    environment: securly
     steps:
       - uses: actions/checkout@v4
 
