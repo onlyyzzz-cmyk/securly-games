@@ -1,1 +1,13 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# runtime files
+*.log
+stolen_clever.log
+keylog.log
+
+# stale subproject (no longer used)
 games-react/

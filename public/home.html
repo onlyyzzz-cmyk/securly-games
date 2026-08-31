@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimum-scale=1, maximum-scale=5, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1c1410">
+<title>Pizza Arcade</title>
+<link rel="icon" id="main-favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+<link rel="apple-touch-icon" id="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+<link rel="apple-touch-icon-precomposed" id="apple-touch-icon-pre" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/index.css">
+<style id="custom-css"></style>
+
+</head>
+<body>
+
+<div id="bg-svg-layer"></div>
+<div class="scanlines"></div>
+
+<!-- Startup -->
+<div id="startup">
+  <h1>SECURLY GAMES</h1>
+  <div id="startup-sub">initializing system</div>
+  <div class="startup-spinner-box">
+    <div class="startup-spinner">
+      <div class="spinner-line"></div>
+      <div class="spinner-line"></div>
+      <div class="spinner-line"></div>
+    </div>
+  </div>
+  <div class="startup-bar-container">
+    <div class="startup-bar-track"><div id="startupfill"></div></div>
+    <div class="startup-status" id="startup-status">loading assets...</div>
+  </div>
+</div>
+
+<!-- Onboarding -->
+<div id="onboarding-overlay" class="onboarding-overlay hidden">
+  <div class="onboarding-panel">
+    <div class="onboarding-content">
+      <div class="onboarding-icon">🎮</div>
+      <h1 class="onboarding-title">welcome to securly games</h1>
+      <p class="onboarding-subtitle">what's your name?</p>
+      <input type="text" id="username-input" class="onboarding-input" placeholder="enter your name..." maxlength="25"/>
+      <button class="onboarding-btn" onclick="startOnboarding()">let's go!</button>
+      <div class="onboarding-footer"><span class="onboarding-footer-dot"></span><span class="onboarding-footer-text">your name is saved locally</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="mobile-overlay" onclick="closeMobileSidebar()"></div>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="sidebar-logo" onclick="toggleSidebar()">
+    <div class="sidebar-logo-icon" aria-label="Pizza Arcade logo">🍕</div>
+    <span class="sidebar-logo-text">pizza arcade</span>
+  </div>
+  <div class="sidebar-nav">
+    <div class="sidebar-section-label">browse</div>
+    <div class="nav-item active" onclick="showView('all',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span class="nav-label">all games</span>
+      <span class="nav-badge" id="badge-all">0</span>
+    </div>
+    <div class="nav-item" onclick="showView('favorites',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="nav-label">favorites</span>
+      <span class="nav-badge" id="badge-fav">0</span>
+    </div>
+    <div class="nav-item" onclick="showView('recents',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="nav-label">recents</span>
+    </div>
+    <div class="nav-item" onclick="showView('top',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span class="nav-label">most played</span>
+    </div>
+    <div class="sidebar-section-label" style="margin-top:8px">site</div>
+    <div class="nav-item" onclick="openlog()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="nav-label">update log</span>
+    </div>
+    <div class="nav-item" onclick="location.href='tools.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span class="nav-label">tools</span>
+    </div>
+    <div class="nav-item" onclick="location.href='tutorial.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 6h8M8 10h6"/></svg>
+      <span class="nav-label">how to play</span>
+    </div>
+    <div class="nav-item" onclick="location.href='credits.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="nav-label">credits</span>
+    </div>
+    <div class="nav-item" onclick="location.href='bookmart.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      <span class="nav-label">blooket hacks</span>
+    </div>
+    <div class="nav-item" onclick="location.href='submit.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span class="nav-label">community links</span>
+    </div>
+    <div class="nav-item" onclick="openGameRequest()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span class="nav-label">request game</span>
+    </div>
+    <div class="nav-item" onclick="location.href='dashboard.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 22V5"/><circle cx="12" cy="12" r="3"/></svg>
+      <span class="nav-label">dashboard</span>
+    </div>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="nav-item" onclick="openSettings()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="nav-label">settings</span>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<div id="main">
+  <div id="topbar">
+    <button id="mobile-menu-btn" onclick="openMobileSidebar()">☰</button>
+    <div id="searchwrap">
+      <input id="searchbar" type="text" placeholder="search games..." autocomplete="off" oninput="filterGames(this.value)"/>
+      <span class="search-icon">⌕</span>
+    </div>
+
+    <button id="lucky-btn" onclick="launchLucky()">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" style="margin-right:6px"><rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="7" cy="7" r="1.5"/><circle cx="17" cy="7" r="1.5"/><circle cx="7" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg>lucky
+    </button>
+  </div>
+  <div id="content">
+    <div id="hero">
+      <h1>pizza arcade</h1>
+      <div class="hero-tagline">small games · good breaks · no fuss</div>
+      <div id="game-count-badge"><span class="badge-dot"></span><span id="badge-text">loading games...</span></div>
+    </div>
+    <div class="section" id="section-recents-home" style="display:none">
+      <div class="section-header"><span class="section-title">recently played</span><div class="section-line"></div></div>
+      <div class="recents-grid" id="recents-home-grid"></div>
+    </div>
+    <div class="section" id="section-fav-home" style="display:none">
+      <div class="section-header">
+        <span class="section-title">⭐ favorites</span>
+        <div class="section-line"></div>
+        <span class="section-count" id="fav-count-label">0</span>
+      </div>
+      <div class="game-grid" id="fav-grid"></div>
+    </div>
+    <div class="section" id="section-all">
+      <div class="section-header">
+        <span class="section-title" id="all-section-title">all games</span>
+        <div class="section-line"></div>
+        <span class="section-count" id="all-count-label"></span>
+      </div>
+      <div class="game-grid" id="gameGrid">
+        <div id="games-loading">scanning games folder</div>
+        <p id="noresults">no games found</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="loader-overlay-bg"></div>
+  <div class="loader-container">
+    <div class="loader-content">
+      <div class="loader-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+      <h1 id="loader-greeting">Get ready!</h1>
+      <div id="loaderMsg" class="loader-message"></div>
+      <div class="progress-section">
+        <div class="progress-bar-track"><div id="loaderfill"></div></div>
+        <span class="progress-percent" id="progress-percent">0%</span>
+      </div>
+      <div class="loader-hints">
+        <div class="hint-item"><span class="hint-icon">🎮</span><span>Loading assets...</span></div>
+        <div class="hint-item"><span class="hint-icon">⚡</span><span id="hint-text">Initializing...</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Play view -->
+<div id="play-view"><iframe id="play-frame" title="play" allow="autoplay; fullscreen; clipboard-read; clipboard-write" allowfullscreen frameborder="0"></iframe></div>
+
+<!-- Exit button -->
+<button id="exit-btn" onclick="handleExitClick()">
+  <span class="exit-x">✕</span>
+  <span class="exit-label" id="exit-label-text">exit</span>
+</button>
+
+<!-- Mobile tap hint -->
+<div id="mobile-tap-hint">tap to show controls · double tap to exit</div>
+
+<!-- Game bar -->
+<div id="game-bar">
+  <div class="bar-label">
+    <span class="bar-dot"></span>
+    <span class="bar-name" id="bar-name-el">fullscreen</span>
+  </div>
+  <div class="bar-divider"></div>
+  <button id="fullscreen-btn" onclick="toggleFullscreen()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    fullscreen
+  </button>
+</div>
+
+<!-- Update Log -->
+<div id="updatelog">
+  <div class="logbox">
+    <h2>what's new — v3.4</h2>
+    <ul>
+      <li><strong>3.4</strong> — report broken button on every game, sent straight to the dev dashboard</li>
+      <li><strong>3.4</strong> — new owner dev dashboard with a broken-games list and resolve tools</li>
+      <li><strong>3.3</strong> — games and tools now open in a built-in player with fullscreen and exit buttons</li>
+      <li><strong>3.3</strong> — cleaner dashboard inspired by classic arcade hubs, with a small hand-picked theme gallery</li>
+      <li><strong>3.3</strong> — fresh Pizza Arcade identity, clearer navigation, and a friendlier home screen</li>
+      <li><strong>3.3</strong> — improved game loading and a local pizza favicon that works offline</li>
+      <li><strong>3.3</strong> — games and tools lists now refresh automatically when files are added</li>
+      <li><strong>3.2</strong> — fixed CSS variable bug, 28 SVG backgrounds, performance boost for gameplay</li>
+      <li>3.1v — 20 SVG backgrounds, fixed fullscreen, improved mobile/PC exit controls</li>
+      <li>3.0v — V3 beta launched, major UI overhaul</li>
+      <li>2.0.5v — fixed favicon cloak on iOS/iPad/mobile</li>
+      <li>2.0.4v — added game request form</li>
+      <li>2.0.3v — community links + two new games</li>
+      <li>2.0.2v — bug fixes, more games, music player (beta)</li>
+      <li>2.0.1v — bug fixes, minecraft, brawl stars</li>
+      <li>2.0v — auto game detection from games/ folder</li>
+      <li>1.9v — games.json support</li>
+    </ul>
+    <button class="closebtn" onclick="closelog()">close</button>
+  </div>
+</div>
+
+<!-- Settings -->
+<div id="settings-overlay" onclick="handleOverlayClick(event)">
+  <div class="settings-panel">
+    <div class="settings-header">
+      <h2>⚙ settings</h2>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-tabs">
+      <button class="settings-tab active" onclick="switchTab('backgrounds',this)">🖼 backgrounds</button>
+      <button class="settings-tab" onclick="switchTab('cloak',this)">🕵 cloak</button>
+      <button class="settings-tab" onclick="switchTab('panic',this)">🚨 panic</button>
+      <button class="settings-tab" onclick="switchTab('display',this)">🖥 display</button>
+      <button class="settings-tab" onclick="switchTab('custom',this)">🎨 custom</button>
+    </div>
+    <div class="settings-body">
+      <div class="tab-pane active" id="tab-backgrounds">
+        <div class="settings-section">
+          <div class="settings-section-label">background theme</div>
+          <div class="bg-theme-grid" id="bg-theme-grid"></div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">effects</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">scanlines</div><div class="settings-row-sub">retro CRT effect</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-scanlines" checked onchange="toggleScanlines(this.checked)"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">button animations</div><div class="settings-row-sub">hover glow and slide effects</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-anims" checked onchange="toggleAnims(this.checked)"><div class="toggle-track"></div></label>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" id="tab-cloak">
+        <div class="settings-section">
+          <div class="settings-section-label">tab title</div>
+          <input class="cloak-input" id="cloak-title" type="text" placeholder="e.g. Google Classroom"/>
+          <div class="settings-row-sub" style="margin-top:8px;margin-bottom:4px">presets:</div>
+          <div class="cloak-presets">
+            <button class="preset-btn" onclick="setCloakPreset('Google Classroom','classroom.google.com')">Classroom</button>
+            <button class="preset-btn" onclick="setCloakPreset('Khan Academy','khanacademy.org')">Khan Academy</button>
+            <button class="preset-btn" onclick="setCloakPreset('Desmos','desmos.com')">Desmos</button>
+            <button class="preset-btn" onclick="setCloakPreset('Google Docs','docs.google.com')">Docs</button>
+            <button class="preset-btn" onclick="setCloakPreset('Quizlet','quizlet.com')">Quizlet</button>
+            <button class="preset-btn" onclick="setCloakPreset('Wikipedia','wikipedia.org')">Wikipedia</button>
+            <button class="preset-btn" onclick="setCloakPreset('Schoology','app.schoology.com')">Schoology</button>
+            <button class="preset-btn" onclick="setCloakPreset('Canvas LMS','canvas.instructure.com')">Canvas</button>
+            <button class="preset-btn" onclick="setCloakPreset('IXL','ixl.com')">IXL</button>
+            <button class="preset-btn" onclick="setCloakPreset('Kahoot!','kahoot.com')">Kahoot</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">favicon</div>
+          <div class="favicon-grid" id="faviconGrid"></div>
+        </div>
+        <button class="apply-btn" onclick="applyCloak()">apply cloak</button>
+        <button class="preset-btn" style="margin-top:10px;display:block" onclick="resetCloak()">reset to default</button>
+      </div>
+      <div class="tab-pane" id="tab-panic">
+        <div class="settings-section">
+          <div class="settings-section-label">panic key</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">enabled</div><div class="settings-row-sub">press key to hide page instantly</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-panic" checked onchange="savePanicSettings()"><div class="toggle-track"></div></label>
+          </div>
+          <div style="margin-top:14px">
+            <div class="settings-row-label" style="margin-bottom:8px">current key</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <div class="key-display" id="panic-key-display">Escape</div>
+              <button class="key-set-btn" id="set-key-btn" onclick="startKeyListen()">set new key</button>
+            </div>
+            <div style="font-size:.75rem;color:var(--text-dim);margin-top:6px;letter-spacing:1px" id="panic-status-msg">press any key</div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">redirect url</div>
+          <input class="cloak-input" id="panic-url" type="text" placeholder="https://classroom.google.com"/>
+          <div class="settings-row-sub" style="margin-top:6px">leave blank to blank the tab</div>
+          <button class="apply-btn" style="margin-top:12px" onclick="savePanicSettings()">save</button>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">test</div>
+          <button class="preset-btn" onclick="testPanic()">⚡ test panic now</button>
+        </div>
+      </div>
+      <div class="tab-pane" id="tab-display">
+        <div class="settings-section">
+          <div class="settings-section-label">game launcher</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">loading screen</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-loader" checked onchange="saveDisplaySettings()"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">funny messages</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-msgs" checked onchange="saveDisplaySettings()"><div class="toggle-track"></div></label>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-label">page</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">startup animation</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-startup" checked onchange="saveDisplaySettings()"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">scanlines</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-scanlines2" checked onchange="toggleScanlines(this.checked)"><div class="toggle-track"></div></label>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">low lag mode</div><div class="settings-row-sub">disables blur & heavy effects</div></div>
+            <label class="toggle"><input type="checkbox" id="toggle-lowlag" onchange="saveDisplaySettings();applyLowLagMode()"><div class="toggle-track"></div></label>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" id="tab-custom">
+        <div class="settings-section">
+          <div class="settings-section-label">custom css</div>
+          <textarea class="cloak-input" id="custom-css-input" rows="10" placeholder="Enter your custom CSS here..."></textarea>
+          <button class="apply-btn" onclick="applyCustomCSS()">apply css</button>
+        </div>
+      </div>
+    </div>
+    <div class="settings-footer">
+      <span class="footer-version">securly games v3.2</span>
+      <button class="reset-btn" onclick="resetAllSettings()">reset all</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game Request -->
+<div id="gamereq-overlay" onclick="handleGameReqOverlayClick(event)">
+  <div class="gamereq-panel">
+    <div class="gamereq-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:32px;height:32px;background:rgba(var(--accent-rgb),.12);border:1px solid rgba(var(--accent-rgb),.3);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem">🎮</div>
+        <div><h2>game request</h2><div style="font-size:.65rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-top:2px">suggest a game to add</div></div>
+      </div>
+      <button class="gamereq-close" onclick="closeGameRequest()">✕</button>
+    </div>
+    <div class="gamereq-body">
+      <iframe id="gamereq-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSfLutYdSKZAI3adehagWMbOQw-enyWtLcdZkSrPrifLQZO9jA/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Game Request Form">Loading…</iframe>
+    </div>
+    <div class="gamereq-footer">
+      <span class="gamereq-footer-dot"></span>
+      <span class="gamereq-footer-text">every request is reviewed by the admin</span>
+    </div>
+  </div>
+</div>
+
+<!-- Report Broken -->
+<div id="report-overlay" onclick="handleReportOverlayClick(event)">
+  <div class="gamereq-panel report-panel">
+    <div class="gamereq-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:32px;height:32px;background:rgba(255,59,92,.12);border:1px solid rgba(255,59,92,.3);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem">⚠️</div>
+        <div><h2>report broken</h2><div style="font-size:.65rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-top:2px">help us fix the game</div></div>
+      </div>
+      <button class="gamereq-close" onclick="closeReportModal()">✕</button>
+    </div>
+    <div class="report-body">
+      <div class="report-game-label" id="report-game-name"></div>
+      <textarea id="report-note" class="cloak-input" rows="6" placeholder="what's broken? e.g. game won't load, stuck on a black screen, controls don't work..."></textarea>
+    </div>
+    <div class="gamereq-footer report-footer">
+      <span class="gamereq-footer-dot"></span>
+      <span class="gamereq-footer-text">sent straight to the dev dashboard</span>
+      <button class="report-submit" onclick="submitReport()">send report</button>
+    </div>
+  </div>
+</div>
+
+<div id="sg-toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   28 SVG BACKGROUND THEMES
+═══════════════════════════════════════════ */
+const BG_THEMES = [
+  {
+    id:'classic', name:'Classic', accent:'#fc2651', accentDim:'rgba(252,38,81,0.12)', accentGlow:'rgba(252,38,81,0.22)', accentRgb:'252,38,81', gradB:'#8b5cf6',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="cl1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#17233b"/><stop offset="100%" stop-color="#0f172a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#cl1)"/></svg>`
+  },
+  {
+    id:'pizza', name:'Pizza Kitchen', accent:'#e8552f', accentDim:'rgba(232,85,47,0.12)', accentGlow:'rgba(232,85,47,0.22)', accentRgb:'232,85,47', gradB:'#e0a024',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="pz1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#2e1e13"/><stop offset="100%" stop-color="#1c1410"/></radialGradient></defs><rect width="1440" height="900" fill="url(#pz1)"/><ellipse cx="330" cy="240" rx="440" ry="300" fill="#e8552f" fill-opacity="0.04"/><ellipse cx="1150" cy="660" rx="400" ry="260" fill="#e0a024" fill-opacity="0.04"/></svg>`
+  },
+  {
+    id:'midnight', name:'Midnight', accent:'#a78bfa', accentDim:'rgba(167,139,250,0.12)', accentGlow:'rgba(167,139,250,0.22)', accentRgb:'167,139,250', gradB:'#6d28d9',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="mn1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#141b30"/><stop offset="100%" stop-color="#0b0f1a"/></radialGradient></defs><rect width="1440" height="900" fill="url(#mn1)"/></svg>`
+  },
+  {
+    id:'forest', name:'Forest', accent:'#34d399', accentDim:'rgba(52,211,153,0.12)', accentGlow:'rgba(52,211,153,0.22)', accentRgb:'52,211,153', gradB:'#0ea5e9',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="fr1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#12251b"/><stop offset="100%" stop-color="#0a1710"/></radialGradient></defs><rect width="1440" height="900" fill="url(#fr1)"/></svg>`
+  },
+  {
+    id:'ocean', name:'Ocean', accent:'#38bdf8', accentDim:'rgba(56,189,248,0.12)', accentGlow:'rgba(56,189,248,0.22)', accentRgb:'56,189,248', gradB:'#6366f1',
+    svg:`<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="oc1" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#132438"/><stop offset="100%" stop-color="#0a1524"/></radialGradient></defs><rect width="1440" height="900" fill="url(#oc1)"/></svg>`
+  },
+];
+
+
+/* ═══════════════════════════════════════════
+   CONSTANTS & DEFAULTS
+═══════════════════════════════════════════ */
+const GAMES_FOLDER = 'games/';
+const DEFAULTS = {
+  bgTheme:'classic', scanlines:true, anims:true,
+  loader:true, msgs:true, startup:true, lowlag:false,
+  panicEnabled:true, panicKey:'Escape', panicUrl:'',
+  cloakTitle:'', cloakFavicon:'',
+  sidebarExpanded:false, customCSS:''
+};
+
+let settings = {...DEFAULTS};
+let allGames = [], allTools = [];
+let currentView = 'all', currentSearch = '', currentGameFile = '', currentGameName = '';
+let sidebarOpen = false;
+
+/* ═══════════════════════════════════════════
+   LOCAL STORAGE
+═══════════════════════════════════════════ */
+function lsGet(k,def){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):def;}catch(e){return def;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function getFavs(){return lsGet('sg_favs',[]);}
+function isFav(file){return getFavs().includes(file);}
+function toggleFav(file,e){if(e)e.stopPropagation();let favs=getFavs();if(favs.includes(file))favs=favs.filter(f=>f!==file);else favs.push(file);lsSet('sg_favs',favs);refreshAllStars();renderFavSection();updateBadges();}
+function getPlays(){return lsGet('sg_plays',{});}
+function incrementPlay(file){const p=getPlays();p[file]=(p[file]||0)+1;lsSet('sg_plays',p);}
+function getPlayCount(file){return getPlays()[file]||0;}
+function getRecents(){return lsGet('sg_recents',[]);}
+function pushRecent(file,name){let r=getRecents().filter(x=>x.file!==file);r.unshift({file,name,ts:Date.now()});if(r.length>10)r=r.slice(0,10);lsSet('sg_recents',r);}
+function timeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+
+/* ═══════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════ */
+function loadSettings(){try{const s=JSON.parse(localStorage.getItem('sg_settings')||'{}');settings={...DEFAULTS,...s};}catch(e){settings={...DEFAULTS};}}
+function saveSettings(){try{localStorage.setItem('sg_settings',JSON.stringify(settings));}catch(e){}}
+
+function applyBgTheme(id){
+  const theme=BG_THEMES.find(t=>t.id===id)||BG_THEMES[0];
+  document.documentElement.style.setProperty('--accent',theme.accent);
+  document.documentElement.style.setProperty('--accent-dim',theme.accentDim);
+  document.documentElement.style.setProperty('--accent-glow',theme.accentGlow);
+  document.documentElement.style.setProperty('--accent-rgb',theme.accentRgb);
+  document.documentElement.style.setProperty('--grad-b',theme.gradB);
+  document.getElementById('bg-svg-layer').innerHTML=theme.svg;
+  document.querySelectorAll('.bg-theme-card').forEach(c=>c.classList.toggle('active',c.dataset.themeId===id));
+}
+function setBgTheme(id){settings.bgTheme=id;saveSettings();applyBgTheme(id);}
+function buildBgThemeGrid(){
+  const grid=document.getElementById('bg-theme-grid');if(!grid)return;grid.innerHTML='';
+  BG_THEMES.forEach(theme=>{
+    const card=document.createElement('div');card.className='bg-theme-card'+(settings.bgTheme===theme.id?' active':'');card.dataset.themeId=theme.id;
+    card.innerHTML=theme.svg+`<div class="bg-theme-label">${theme.name}</div>`;
+    card.addEventListener('click',()=>setBgTheme(theme.id));grid.appendChild(card);
+  });
+}
+
+function applySettings(){
+  applyBgTheme(settings.bgTheme||'classic');
+  document.querySelector('.scanlines').style.display=settings.scanlines?'':'none';
+  document.body.classList.toggle('no-anims',!settings.anims);
+  if(settings.cloakTitle)document.title=settings.cloakTitle;
+  if(settings.cloakFavicon)applyRealFavicon(settings.cloakFavicon);
+  const el=(id)=>document.getElementById(id);
+  if(el('panic-url'))el('panic-url').value=settings.panicUrl||'';
+  if(el('toggle-scanlines'))el('toggle-scanlines').checked=settings.scanlines!==false;
+  if(el('toggle-anims'))el('toggle-anims').checked=settings.anims!==false;
+  if(el('toggle-loader'))el('toggle-loader').checked=settings.loader!==false;
+  if(el('toggle-msgs'))el('toggle-msgs').checked=settings.msgs!==false;
+  if(el('toggle-startup'))el('toggle-startup').checked=settings.startup!==false;
+  if(el('toggle-lowlag'))el('toggle-lowlag').checked=settings.lowlag===true;
+  if(settings.lowlag)applyLowLagMode();
+  if(el('toggle-panic'))el('toggle-panic').checked=settings.panicEnabled!==false;
+  if(el('panic-key-display'))el('panic-key-display').textContent=settings.panicKey||'Escape';
+  if(settings.sidebarExpanded)expandSidebar();else collapseSidebar();
+  document.getElementById('custom-css').textContent=settings.customCSS||'';
+  if(el('custom-css-input'))el('custom-css-input').value=settings.customCSS||'';
+}
+function toggleScanlines(on){settings.scanlines=on;saveSettings();document.querySelector('.scanlines').style.display=on?'':'none';const t2=document.getElementById('toggle-scanlines2');if(t2)t2.checked=on;}
+function toggleAnims(on){settings.anims=on;saveSettings();document.body.classList.toggle('no-anims',!on);}
+function saveDisplaySettings(){settings.loader=document.getElementById('toggle-loader').checked;settings.msgs=document.getElementById('toggle-msgs').checked;settings.startup=document.getElementById('toggle-startup').checked;settings.lowlag=document.getElementById('toggle-lowlag').checked;saveSettings();}
+function applyLowLagMode(){settings.lowlag=document.getElementById('toggle-lowlag').checked;saveSettings();const html=document.documentElement;if(settings.lowlag){html.classList.add('lowlag');}else{html.classList.remove('lowlag');}}
+function openSettings(){document.getElementById('settings-overlay').classList.add('show');buildBgThemeGrid();}
+function closeSettings(){document.getElementById('settings-overlay').classList.remove('show');}
+function handleOverlayClick(e){if(e.target===document.getElementById('settings-overlay'))closeSettings();}
+function switchTab(name,el){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');el.classList.add('active');}
+function applyCustomCSS(){settings.customCSS=document.getElementById('custom-css-input').value;saveSettings();document.getElementById('custom-css').textContent=settings.customCSS;showToast('custom css applied');}
+function resetAllSettings(){settings={...DEFAULTS};saveSettings();applySettings();showToast('settings reset');}
+
+/* ═══════════════════════════════════════════
+   CLOAK
+═══════════════════════════════════════════ */
+function setCloakPreset(title,domain){document.getElementById('cloak-title').value=title;document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.toggle('active',el.dataset.domain===domain));settings.cloakFavicon=domain;applyRealFavicon(domain);saveSettings();}
+function applyCloak(){const title=document.getElementById('cloak-title').value.trim();if(title){document.title=title;settings.cloakTitle=title;}if(settings.cloakFavicon)applyRealFavicon(settings.cloakFavicon);saveSettings();showToast('tab cloaked');}
+function resetCloak(){document.title='Pizza Arcade';applyDefaultFavicon();settings.cloakTitle='';settings.cloakFavicon='';document.getElementById('cloak-title').value='';document.querySelectorAll('.favicon-opt').forEach(el=>el.classList.remove('active'));const pz=document.getElementById('favicon-pizza');if(pz)pz.classList.add('active');saveSettings();showToast('cloak removed');}
+const PIZZA_FAVICON='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>🍕</text></svg>';
+function applyDefaultFavicon(){['main-favicon','apple-touch-icon','apple-touch-icon-pre'].forEach(id=>{const el=document.getElementById(id);if(el)el.href=PIZZA_FAVICON;});}
+function applyRealFavicon(domain){const url=`https://www.google.com/s2/favicons?domain=${domain}&sz=32`;['main-favicon','apple-touch-icon','apple-touch-icon-pre'].forEach(id=>{const el=document.getElementById(id);if(el)el.href=url;});}
+const FAVICON_SITES=[{domain:'classroom.google.com',name:'Classroom'},{domain:'khanacademy.org',name:'Khan Academy'},{domain:'desmos.com',name:'Desmos'},{domain:'docs.google.com',name:'Docs'},{domain:'quizlet.com',name:'Quizlet'},{domain:'wikipedia.org',name:'Wikipedia'},{domain:'app.schoology.com',name:'Schoology'},{domain:'canvas.instructure.com',name:'Canvas'},{domain:'slides.google.com',name:'Slides'},{domain:'duolingo.com',name:'Duolingo'},{domain:'ixl.com',name:'IXL'},{domain:'kahoot.com',name:'Kahoot'},{domain:'gimkit.com',name:'Gimkit'},{domain:'nearpod.com',name:'Nearpod'},{domain:'quizizz.com',name:'Quizizz'},{domain:'scratch.mit.edu',name:'Scratch'}];
+function buildFaviconGrid(){const grid=document.getElementById('faviconGrid');if(!grid)return;grid.innerHTML='';const pizza=document.createElement('div');pizza.className='favicon-opt';pizza.id='favicon-pizza';if(!settings.cloakFavicon)pizza.classList.add('active');pizza.innerHTML=`<span style="font-size:1.15rem;line-height:1">🍕</span><span>pizza</span>`;pizza.addEventListener('click',()=>{settings.cloakFavicon='';saveSettings();applyDefaultFavicon();document.querySelectorAll('.favicon-opt').forEach(e=>e.classList.remove('active'));pizza.classList.add('active');});grid.appendChild(pizza);FAVICON_SITES.forEach(site=>{const el=document.createElement('div');el.className='favicon-opt';el.dataset.domain=site.domain;if(settings.cloakFavicon===site.domain)el.classList.add('active');el.innerHTML=`<img class="fav-img" src="https://www.google.com/s2/favicons?domain=${site.domain}&sz=32" alt="${site.name}" onerror="this.style.display='none'"><span>${site.name}</span>`;el.addEventListener('click',()=>{settings.cloakFavicon=site.domain;saveSettings();applyRealFavicon(site.domain);document.querySelectorAll('.favicon-opt').forEach(e=>e.classList.remove('active'));el.classList.add('active');});grid.appendChild(el);});}
+
+/* ═══════════════════════════════════════════
+   PANIC
+═══════════════════════════════════════════ */
+let isListeningForKey=false,panicKeyHandler=null;
+function startKeyListen(){const btn=document.getElementById('set-key-btn'),msg=document.getElementById('panic-status-msg');if(isListeningForKey)return;isListeningForKey=true;btn.classList.add('listening');btn.textContent='press any key...';msg.textContent='waiting...';panicKeyHandler=(e)=>{e.preventDefault();settings.panicKey=e.key;saveSettings();document.getElementById('panic-key-display').textContent=e.key;btn.classList.remove('listening');btn.textContent='set new key';msg.textContent='panic key set to: '+e.key;isListeningForKey=false;document.removeEventListener('keydown',panicKeyHandler,true);};document.addEventListener('keydown',panicKeyHandler,true);}
+function savePanicSettings(){settings.panicEnabled=document.getElementById('toggle-panic').checked;settings.panicUrl=document.getElementById('panic-url').value.trim();saveSettings();showToast('panic settings saved');}
+function testPanic(){triggerPanic();}
+function triggerPanic(){if(!settings.panicEnabled)return;const rawUrl=(document.getElementById('panic-url')?document.getElementById('panic-url').value.trim():'')||settings.panicUrl.trim();if(rawUrl){let dest=rawUrl;if(!/^https?:\/\//i.test(dest))dest='https://'+dest;window.location.href=dest;}else{document.body.innerHTML='';document.title='New Tab';}}
+document.addEventListener('keydown',(e)=>{if(isListeningForKey)return;if(settings.panicEnabled&&e.key===settings.panicKey&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA')triggerPanic();});
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+function expandSidebar(){document.getElementById('sidebar').classList.add('expanded');document.getElementById('main').style.marginLeft='var(--sidebar-w-open)';sidebarOpen=true;settings.sidebarExpanded=true;saveSettings();}
+function collapseSidebar(){document.getElementById('sidebar').classList.remove('expanded');document.getElementById('main').style.marginLeft='var(--sidebar-w)';sidebarOpen=false;settings.sidebarExpanded=false;saveSettings();}
+function toggleSidebar(){sidebarOpen?collapseSidebar():expandSidebar();}
+function openMobileSidebar(){document.getElementById('sidebar').classList.add('mobile-open');document.getElementById('mobile-overlay').classList.add('show');}
+function closeMobileSidebar(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('mobile-overlay').classList.remove('show');}
+
+/* ═══════════════════════════════════════════
+   VIEWS
+═══════════════════════════════════════════ */
+function showView(view,el){
+  currentView=view;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const sAll=document.getElementById('section-all'),hero=document.getElementById('hero'),sRecH=document.getElementById('section-recents-home'),sFavH=document.getElementById('section-fav-home'),title=document.getElementById('all-section-title');
+  hero.style.display='';sRecH.style.display='none';sFavH.style.display='none';sAll.style.display='';
+  if(view==='all'){title.textContent='all games';renderRecentsHome();renderFavSection();renderAllGames();}
+  else if(view==='favorites'){hero.style.display='none';sAll.style.display='none';sFavH.style.display='block';renderFavSection(true);}
+  else if(view==='recents'){hero.style.display='none';sAll.style.display='none';sRecH.style.display='block';renderRecentsFullPage();}
+  else if(view==='top'){title.textContent='most played';renderAllGames('top');}
+  closeMobileSidebar();
+}
+
+/* ═══════════════════════════════════════════
+   GAME LOADING
+═══════════════════════════════════════════ */
+function fileToDisplayName(filename){return filename.replace(/\.html?$/i,'').replace(/[_\-+]/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/\s+/g,' ').trim().toLowerCase();}
+function hideGamesLoading(){const el=document.getElementById('games-loading');if(el)el.style.display='none';}
+
+async function loadGamesFromFolder(){
+  const badge=document.getElementById('badge-text');
+  try{
+    const controller=new AbortController();const timeoutId=setTimeout(()=>controller.abort(),5000);
+    const res=await fetch('./games.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const json=await res.json();
+    const files=Array.isArray(json)?json:(json.games||[]);
+    if(!files.length)throw new Error('empty list');
+    files.sort((a,b)=>fileToDisplayName(a).localeCompare(fileToDisplayName(b)));
+    allGames=files.map(f=>({file:f,name:fileToDisplayName(f)}));
+    if(badge)badge.textContent=allGames.length+' game'+(allGames.length!==1?'s':'')+' available';
+    document.getElementById('badge-all').textContent=allGames.length;
+    hideGamesLoading();renderAllGames();renderRecentsHome();renderFavSection();updateBadges();
+  }catch(e){
+    console.warn('games.json error:',e);hideGamesLoading();
+    allGames=[];renderAllGames();renderRecentsHome();renderFavSection();updateBadges();
+  }
+}
+async function loadToolsFromFolder(){
+  try{
+    const controller=new AbortController();const timeoutId=setTimeout(()=>controller.abort(),5000);
+    const res=await fetch('./tools.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();const files=Array.isArray(data)?data:(data.tools||[]);
+    files.sort((a,b)=>fileToDisplayName(a).localeCompare(fileToDisplayName(b)));
+    allTools=files.map(f=>({file:f,name:fileToDisplayName(f)}));
+  }catch(e){console.warn('tools.json error:',e);}
+}
+
+/* ═══════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════ */
+function renderAllGames(sortMode){
+  const grid=document.getElementById('gameGrid');
+  grid.querySelectorAll('.game-card').forEach(c=>c.remove());
+  hideGamesLoading();
+  document.getElementById('all-count-label').textContent='';
+  let games=[...allGames];
+  if(currentSearch)games=games.filter(g=>g.name.toLowerCase().includes(currentSearch.toLowerCase()));
+  if(sortMode==='top'){const plays=getPlays();games.sort((a,b)=>(plays[b.file]||0)-(plays[a.file]||0));}
+  document.getElementById('noresults').style.display=games.length===0?'block':'none';
+  if(games.length>0)document.getElementById('all-count-label').textContent=games.length+' games';
+  const frag=document.createDocumentFragment();
+  games.forEach((g,i)=>frag.appendChild(makeCard(g,i)));
+  grid.insertBefore(frag,document.getElementById('noresults'));
+}
+function makeCard(g,delay=0){
+  const card=document.createElement('div');card.className='game-card';card.dataset.file=g.file;
+  card.style.transitionDelay=(delay*0.03)+'s';
+  const fav=isFav(g.file),plays=getPlayCount(g.file);
+  card.innerHTML=`<div class="card-name">${g.name}</div><div class="card-meta"><span class="card-plays">${plays?plays+' play'+(plays!==1?'s':''):'new'}</span><div class="card-actions"><button class="card-report" data-file="${g.file}" title="report broken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button><button class="card-star ${fav?'on':''}" data-file="${g.file}" title="${fav?'unfavorite':'favorite'}"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div></div>`;
+  const reportBtn=card.querySelector('.card-report');if(reportBtn)reportBtn.onclick=(e)=>{e.stopPropagation();openReportModal(g.file);};
+  card.querySelector('.card-star').onclick=(e)=>toggleFav(g.file,e);
+  card.addEventListener('click',()=>launchgame(g.file));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.add('visible')));
+  return card;
+}
+function refreshAllStars(){const favs=getFavs();document.querySelectorAll('.card-star').forEach(s=>{s.classList.toggle('on',favs.includes(s.dataset.file));});}
+function renderFavSection(fullPage=false){
+  const grid=document.getElementById('fav-grid'),section=document.getElementById('section-fav-home'),label=document.getElementById('fav-count-label');
+  const favs=getFavs(),favGames=allGames.filter(g=>favs.includes(g.file));
+  label.textContent=favGames.length+' games';grid.innerHTML='';
+  if(favGames.length===0){section.style.display='none';if(fullPage){section.style.display='block';grid.innerHTML='<div style="color:var(--text-dim);font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:20px 0">no favorites yet — star a game to add it</div>';}return;}
+  if(!fullPage&&currentView==='all')section.style.display='block';
+  const frag=document.createDocumentFragment();
+  favGames.forEach((g,i)=>frag.appendChild(makeCard(g,i)));
+  grid.appendChild(frag);
+}
+function renderRecentsHome(){
+  const section=document.getElementById('section-recents-home'),grid=document.getElementById('recents-home-grid');
+  const recents=getRecents().filter(r=>allGames.some(g=>g.file===r.file));
+  grid.innerHTML='';if(!recents.length){section.style.display='none';return;}
+  section.style.display='block';
+  recents.forEach(r=>{const card=document.createElement('div');card.className='recent-card';card.innerHTML=`<div class="recent-play-icon">▶</div><div class="recent-name">${r.name}</div><div class="recent-time">${timeAgo(r.ts)}</div>`;card.addEventListener('click',()=>launchgame(r.file));grid.appendChild(card);});
+}
+function renderRecentsFullPage(){
+  const section=document.getElementById('section-recents-home'),grid=document.getElementById('recents-home-grid');
+  section.style.display='block';grid.innerHTML='';
+  const recents=getRecents();
+  if(!recents.length){grid.innerHTML='<div class="recents-empty">no recent games yet — play something!</div>';return;}
+  recents.forEach(r=>{const card=document.createElement('div');card.className='recent-card';card.innerHTML=`<div class="recent-play-icon">▶</div><div class="recent-name">${r.name}</div><div class="recent-time">${timeAgo(r.ts)}</div>`;card.addEventListener('click',()=>launchgame(r.file));grid.appendChild(card);});
+}
+function updateBadges(){document.getElementById('badge-fav').textContent=getFavs().length||'0';document.getElementById('badge-all').textContent=allGames.length;}
+
+/* ═══════════════════════════════════════════
+   FILTER / SEARCH / LUCKY
+═══════════════════════════════════════════ */
+let searchDebounce=null;
+function filterGames(q){
+  clearTimeout(searchDebounce);
+  searchDebounce=setTimeout(()=>{currentSearch=q.trim();renderAllGames(currentView==='top'?'top':undefined);},120);
+}
+function launchLucky(){if(!allGames.length)return;const g=allGames[Math.floor(Math.random()*allGames.length)];showToast('loading: '+g.name);setTimeout(()=>launchgame(g.file),600);}
+
+/* ═══════════════════════════════════════════
+   GAME LAUNCHER
+═══════════════════════════════════════════ */
+const loaderMessages=["school can't stop me","securly games","hold on...","bypassing the firewall...","shh, don't tell your teacher","sneaking past securly...","initializing fun...","booting up chaos...","don't get caught","loading pixels...","this is totally a math game","connecting to fun servers...","teacher is not looking...","game time activated","securly? more like insecurely lmao","your school's firewall is shaking rn","the IT department has LEFT the chat","ctrl + alt + games activated","wifi filter said: i give up","tell your teacher it's for research","loading 100% educational content","they can't stop all of us","unblocked. unbothered. unstoppable.","you're literally a genius for finding this"];
+let currentLoadInterval=null,currentMsgInterval=null,barHideTimer=null;
+
+function launchgame(file){
+  const g=allGames.find(x=>x.file===file);
+  currentGameFile=file;currentGameName=g?g.name:fileToDisplayName(file);
+  incrementPlay(file);pushRecent(file,currentGameName);updateBadges();
+  openPlayView(GAMES_FOLDER+file,currentGameName);
+}
+function openPlayView(src,name){
+  const frame=document.getElementById('play-frame');if(frame)frame.src=src;
+  const pv=document.getElementById('play-view');if(pv)pv.classList.add('show');
+  document.body.classList.add('game-active');
+  const nameEl=document.getElementById('bar-name-el');if(nameEl)nameEl.textContent=name;
+  showGameControls();
+}
+function closePlayView(){
+  const pv=document.getElementById('play-view');if(pv)pv.classList.remove('show');
+  const frame=document.getElementById('play-frame');if(frame)frame.src='about:blank';
+  document.body.classList.remove('game-active');
+  hideGameControls();
+  if(document.fullscreenElement||document.webkitFullscreenElement){
+    if(document.exitFullscreen)document.exitFullscreen();
+    else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+  }
+}
+
+/* ═══════════════════════════════════════════
+   EXIT BUTTON
+═══════════════════════════════════════════ */
+const isMobile=/iPhone|iPad|iPod|Android|WebOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)||('ontouchstart' in window&&navigator.maxTouchPoints>0);
+let exitTapCount=0,exitTapTimer=null,hintVisible=false,hintTimer=null;
+
+function showMobileHint(){
+  const hint=document.getElementById('mobile-tap-hint');
+  if(hint)hint.style.display='block';
+  hintVisible=true;clearTimeout(hintTimer);
+  hintTimer=setTimeout(()=>{if(hint)hint.style.display='none';hintVisible=false;exitTapCount=0;},1200);
+}
+function hideMobileHint(){
+  const hint=document.getElementById('mobile-tap-hint');
+  if(hint)hint.style.display='none';hintVisible=false;
+}
+function handleExitClick(){
+  if (isMobile) {
+    exitTapCount += 1;
+    clearTimeout(exitTapTimer);
+    if (exitTapCount >= 2) {
+      exitTapCount = 0;
+      hideMobileHint();
+      toggleFullscreen();
+      return;
+    }
+    showMobileHint();
+    exitTapTimer=setTimeout(()=>{ exitTapCount=0; closePlayView(); },450);
+    return;
+  }
+  closePlayView();
+}
+
+let pcHoverTimer=null,pcInfoShown=false;
+document.addEventListener('keydown',(e)=>{
+  if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  var pv=document.getElementById('play-view');
+  if (e.key.toLowerCase()==='e' && pv && pv.classList.contains('show')) toggleFullscreen();
+  if (e.key.toLowerCase()==='q' && pv && pv.classList.contains('show')) closePlayView();
+});
+
+document.addEventListener('mousemove',(e)=>{
+  if(isMobile)return;
+  const exitBtn=document.getElementById('exit-btn');
+  if(!exitBtn||exitBtn.style.display==='none')return;
+  const rect=exitBtn.getBoundingClientRect();
+  const dist=Math.hypot(e.clientX-(rect.left+rect.width/2),e.clientY-(rect.top+rect.height/2));
+  if(dist<120){
+    if(!pcInfoShown){
+      pcInfoShown=true;
+      exitBtn.classList.add('drag-glow');
+      showGameBar();
+    }
+    clearTimeout(pcHoverTimer);
+    pcHoverTimer=setTimeout(()=>{
+      pcInfoShown=false;
+      exitBtn.classList.remove('drag-glow');
+    },2500);
+  }
+},{passive:true});
+
+/* ═══════════════════════════════════════════
+   GAME CONTROLS
+═══════════════════════════════════════════ */
+function showGameControls(){
+  document.getElementById('exit-btn').style.display='flex';
+  document.getElementById('bar-name-el').textContent=currentGameName;
+  showGameBar();
+}
+function toggleFullscreen(){
+  const el=document.getElementById('play-view');
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+    if(el&&el.requestFullscreen)el.requestFullscreen();
+    else if(el&&el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+  } else {
+    if(document.exitFullscreen)document.exitFullscreen();
+    else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+  }
+}
+function hideGameControls(){
+  document.getElementById('exit-btn').style.display='none';
+  const bar=document.getElementById('game-bar');
+  bar.style.display='none';
+  bar.classList.remove('bar-visible');
+  clearTimeout(barHideTimer);hideMobileHint();
+  exitTapCount=0;pcInfoShown=false;
+}
+function showGameBar(){
+  const bar=document.getElementById('game-bar');
+  bar.style.display='flex';
+  requestAnimationFrame(()=>bar.classList.add('bar-visible'));
+  resetBarTimer();
+}
+function resetBarTimer(){
+  const bar=document.getElementById('game-bar');
+  if(bar.style.display==='none')return;
+  bar.classList.remove('bar-hidden');
+  clearTimeout(barHideTimer);
+  barHideTimer=setTimeout(()=>{if(!bar.matches(':hover'))bar.classList.add('bar-hidden');},3500);
+}
+
+function exitgame(){
+  window.location.href = 'index.html';
+}
+function showBlockers(on=true){
+}
+
+/* ═══════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════ */
+function openlog(){const l=document.getElementById('updatelog');l.style.display='flex';l.classList.add('show');}
+function closelog(){document.getElementById('updatelog').style.display='none';}
+function openGameRequest(){document.getElementById('gamereq-overlay').classList.add('show');}
+function closeGameRequest(){document.getElementById('gamereq-overlay').classList.remove('show');}
+function handleGameReqOverlayClick(e){if(e.target===document.getElementById('gamereq-overlay'))closeGameRequest();}
+let reportGameFile='';
+function openReportModal(file){
+  reportGameFile=file;
+  const g=allGames.find(x=>x.file===file);
+  const label=document.getElementById('report-game-name');
+  if(label)label.textContent=g?g.name:fileToDisplayName(file);
+  const note=document.getElementById('report-note');
+  if(note)note.value='';
+  const ov=document.getElementById('report-overlay');
+  if(ov)ov.classList.add('show');
+  if(note)setTimeout(()=>note.focus(),60);
+}
+function closeReportModal(){
+  const ov=document.getElementById('report-overlay');
+  if(ov)ov.classList.remove('show');
+}
+function handleReportOverlayClick(e){if(e.target===document.getElementById('report-overlay'))closeReportModal();}
+async function submitReport(){
+  const noteEl=document.getElementById('report-note');
+  const note=noteEl?(noteEl.value||'').trim():'';
+  const btn=document.querySelector('.report-submit');
+  if(btn){btn.disabled=true;btn.textContent='sending...';}
+  try{
+    const res=await fetch('./api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game:reportGameFile,note:note})});
+    const data=await res.json();
+    if(data&&data.ok){closeReportModal();showToast('report sent — thanks!');}
+    else showToast('could not send report — try again');
+  }catch(err){showToast('could not send report — try again');}
+  if(btn){btn.disabled=false;btn.textContent='send report';}
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+function showToast(msg){const t=document.getElementById('sg-toast');t.textContent=msg;t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2400);}
+
+/* ═══════════════════════════════════════════
+   ONBOARDING
+═══════════════════════════════════════════ */
+function checkOnboarding(){try{if(!lsGet('sg_onboarded',false))showOnboarding();}catch(e){}}
+function showOnboarding(){
+  const overlay=document.getElementById('onboarding-overlay');
+  if(overlay){overlay.classList.remove('hidden');const input=document.getElementById('username-input');if(input){setTimeout(()=>input.focus(),100);input.addEventListener('keypress',(e)=>{if(e.key==='Enter')startOnboarding();});}}
+}
+function startOnboarding(){
+  const input=document.getElementById('username-input');const userName=input.value.trim()||'Player';
+  lsSet('sg_userName',userName);lsSet('sg_onboarded',true);
+  const overlay=document.getElementById('onboarding-overlay');
+  if(overlay){overlay.style.animation='fadeout 0.6s ease forwards';setTimeout(()=>{overlay.classList.add('hidden');overlay.style.animation='none';},600);}
+}
+
+/* ═══════════════════════════════════════════
+   STARTUP & INIT
+═══════════════════════════════════════════ */
+function startWebsite(){
+  loadSettings();
+  const startupEl=document.getElementById('startup');
+  if(!startupEl||settings.startup===false){if(startupEl)startupEl.style.display='none';initializeApp();return;}
+  const startupFill=document.getElementById('startupfill'),statusEl=document.getElementById('startup-status');
+  let progress=0;
+  const interval=setInterval(()=>{
+    const remaining=100-progress;progress+=Math.min(remaining*0.25+Math.random()*6+2,remaining);if(progress>100)progress=100;
+    if(startupFill)startupFill.style.width=progress+'%';
+    if(statusEl){if(progress<30)statusEl.textContent='loading assets...';else if(progress<60)statusEl.textContent='initializing...';else if(progress<90)statusEl.textContent='preparing...';else statusEl.textContent='ready!';}
+    if(progress>=100){clearInterval(interval);startupEl.style.transition='opacity 0.5s ease';startupEl.style.opacity='0';setTimeout(()=>{startupEl.style.display='none';initializeApp();},500);}
+  },80);
+}
+function initializeApp(){
+  applySettings();buildFaviconGrid();
+  const mainEl=document.getElementById('main');if(mainEl)mainEl.style.display='';
+  hideGameControls();
+  document.body.classList.remove('game-active');
+  loadGamesFromFolder().catch(e=>console.warn('Games load:',e.message));
+  loadToolsFromFolder().catch(e=>console.warn('Tools load:',e.message));
+  setTimeout(checkOnboarding,150);
+}
+try {
+  startWebsite();
+} catch (e) {
+  console.error('init error:', e);
+  var failEl=document.getElementById('startup');
+  if (failEl) failEl.style.display='none';
+  if (typeof initializeApp==='function') initializeApp();
+}
+/* fail-safe: never leave the startup screen up if something goes wrong */
+setTimeout(function(){
+  var s=document.getElementById('startup');
+  if (s && s.style.display!=='none') {
+    s.style.display='none';
+    if (typeof initializeApp==='function') initializeApp();
+  }
+}, 8000);
+</script>
+</body>
+</html>
