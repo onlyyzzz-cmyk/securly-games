@@ -997,13 +997,13 @@ function initializeApp(){
   setTimeout(checkOnboarding,150);
 }
 function bootApp(){
+  /* Skip startup animation on Apps Script — sandboxed iframe breaks setInterval */
+  var startupEl=document.getElementById('startup');
+  if(startupEl) startupEl.style.display='none';
   try {
-    startWebsite();
+    initializeApp();
   } catch (e) {
     console.error('init error:', e);
-    var failEl=document.getElementById('startup');
-    if (failEl) failEl.style.display='none';
-    if (typeof initializeApp==='function') initializeApp();
   }
 }
 if(document.readyState==='loading'){
