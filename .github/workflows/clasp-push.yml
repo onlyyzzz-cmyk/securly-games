@@ -24,13 +24,15 @@ jobs:
       # The service account needs the Apps Script / Drive API enabled in its GCP
       # project and must be added as an editor of the Apps Script project.
       - name: Login with service account
+        # The service-account JSON contains double quotes; expanding it
+        # directly inside a shell command lets bash strip them. Passing it
+        # through an env var keeps the file byte-for-byte intact.
         run: |
-          echo "${{ secrets.CLASP_SERVICE_ACCOUNT }}" > /tmp/clasp-creds.json
+          echo "$CLASP_SERVICE_ACCOUNT" > /tmp/clasp-creds.json
           clasp login --creds /tmp/clasp-creds.json
           rm -f /tmp/clasp-creds.json
         env:
-          CLASPRC_VERSION: 0
-          CLASPRC_ACCOUNT: ''
+          CLASP_SERVICE_ACCOUNT: ${{ secrets.CLASP_SERVICE_ACCOUNT }}
 
       # Inject the script id from a secret so the repo's .clasp.json template
       # doesn't hardcode it.
