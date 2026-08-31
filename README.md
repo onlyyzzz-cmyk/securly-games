@@ -94,8 +94,8 @@ interactive `clasp login` token can't be shared into CI).
 5. Put the service-account JSON (as a single-line string) into a GitHub secret
    named `CLASP_SERVICE_ACCOUNT`, and the script id into `CLASP_SCRIPT_ID`
    (Settings → Secrets and variables → Actions).
-6. Replace the `REPLACE_WITH_SCRIPT_ID` placeholder in `.clasp.json` (optional,
-   the workflow injects it from the secret anyway).
+6. `.clasp.json` already contains your script id; the workflow also injects it
+   from the `CLASP_SCRIPT_ID` secret so keep that secret up to date too.
 
 From then on every push/merge to `main` runs the workflow and your Apps
 Script app updates automatically.
