@@ -195,7 +195,7 @@
 
 
 <!-- Play view -->
-<div id="play-view"><iframe id="play-frame" title="play" allow="autoplay; fullscreen; clipboard-read; clipboard-write" allowfullscreen frameborder="0"></iframe></div>
+<div id="play-view"><iframe id="play-frame" title="play" allow="autoplay; fullscreen; clipboard-read; clipboard-write" allowfullscreen frameborder="0" onload="hideLoader()"></iframe></div>
 
 <!-- Exit button -->
 <button id="exit-btn" onclick="handleExitClick()">
@@ -705,10 +705,57 @@ function launchLucky(){if(!allGames.length)return;const g=allGames[Math.floor(Ma
 const loaderMessages=["school can't stop me","securly games","hold on...","bypassing the firewall...","shh, don't tell your teacher","sneaking past securly...","initializing fun...","booting up chaos...","don't get caught","loading pixels...","this is totally a math game","connecting to fun servers...","teacher is not looking...","game time activated","securly? more like insecurely lmao","your school's firewall is shaking rn","the IT department has LEFT the chat","ctrl + alt + games activated","wifi filter said: i give up","tell your teacher it's for research","loading 100% educational content","they can't stop all of us","unblocked. unbothered. unstoppable.","you're literally a genius for finding this"];
 let currentLoadInterval=null,currentMsgInterval=null,barHideTimer=null;
 
+function showLoader(name){
+  if(settings.loader===false)return;
+  const loader=document.getElementById('loader');
+  const msgEl=document.getElementById('loaderMsg');
+  const fillEl=document.getElementById('loaderfill');
+  const greetingEl=document.getElementById('loader-greeting');
+  const pctEl=document.getElementById('progress-percent');
+  if(!loader)return;
+  loader.style.display='flex';
+  loader.style.opacity='1';
+  if(greetingEl)greetingEl.textContent='Loading '+(name||'game')+'...';
+  if(msgEl)msgEl.textContent='';
+  if(fillEl)fillEl.style.width='0%';
+  if(pctEl)pctEl.textContent='0%';
+  let progress=0;
+  let msgIdx=0;
+  clearInterval(currentLoadInterval);
+  clearInterval(currentMsgInterval);
+  currentLoadInterval=setInterval(()=>{
+    const remaining=100-progress;
+    progress+=Math.min(remaining*0.18+Math.random()*8+2,remaining);
+    if(progress>100)progress=100;
+    if(fillEl)fillEl.style.width=progress+'%';
+    if(pctEl)pctEl.textContent=Math.round(progress)+'%';
+    if(progress>=100){
+      clearInterval(currentLoadInterval);
+      clearInterval(currentMsgInterval);
+      setTimeout(hideLoader,400);
+    }
+  },120);
+  if(settings.msgs!==false){
+    currentMsgInterval=setInterval(()=>{
+      if(msgEl){msgEl.style.opacity='0';setTimeout(()=>{msgEl.textContent=loaderMessages[msgIdx%loaderMessages.length];msgEl.style.opacity='1';},200);}
+      msgIdx++;
+    },1800);
+    if(msgEl)msgEl.textContent=loaderMessages[0];
+  }
+}
+
+function hideLoader(){
+  clearInterval(currentLoadInterval);
+  clearInterval(currentMsgInterval);
+  const loader=document.getElementById('loader');
+  if(loader){loader.style.opacity='0';setTimeout(()=>{loader.style.display='none';},400);}
+}
+
 function launchgame(file){
   const g=allGames.find(x=>x.file===file);
   currentGameFile=file;currentGameName=g?g.name:fileToDisplayName(file);
   incrementPlay(file);pushRecent(file,currentGameName);updateBadges();
+  showLoader(currentGameName);
   openPlayView(GAMES_FOLDER+encodeURIComponent(file),currentGameName);
 }
 function openPlayView(src,name){
@@ -719,6 +766,7 @@ function openPlayView(src,name){
   showGameControls();
 }
 function closePlayView(){
+  hideLoader();
   const pv=document.getElementById('play-view');if(pv)pv.classList.remove('show');
   const frame=document.getElementById('play-frame');if(frame)frame.src='about:blank';
   document.body.classList.remove('game-active');
