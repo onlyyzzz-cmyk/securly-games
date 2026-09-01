@@ -23,7 +23,6 @@ Every public static file keeps its repository path and can be addressed by appen
 | `games.json` | `https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/games.json` |
 | `tools.json` | `https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools.json` |
 | `tools.html` | `https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools.html` |
-| `bookmart.html` | `https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/bookmart.html` |
 | `games/<filename>.html` | `https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/games/<filename>.html` |
 | `tools/<filename>.html` | `https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools/<filename>.html` |
 
@@ -58,7 +57,6 @@ Open these URLs in a browser:
 - Games catalog: <https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/games.json>
 - Tools catalog: <https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools.json>
 - Tools page: <https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools.html>
-- Bookmart page: <https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/bookmart.html>
 
 The current catalogs contain 54 games and 3 tools.
 
@@ -83,7 +81,7 @@ For a normal website URL instead of individual CDN file URLs, enable GitHub Page
 - `index.css` — shared stylesheet
 - `games.json` / `tools.json` — game and tool catalogs
 - `games/` / `tools/` — HTML5 games and tools
-- `tools.html`, `credits.html`, `tutorial.html`, `dashboard.html`, `bookmart.html`, `submit.html`, `404.html` — supporting pages
+- `tools.html`, `credits.html`, `tutorial.html`, `dashboard.html`, `submit.html`, `404.html` — supporting pages
 - `index.js` — optional local static server
 
 ## Local preview
