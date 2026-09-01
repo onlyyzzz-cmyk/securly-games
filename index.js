@@ -39,16 +39,11 @@ function listHtmlFiles(dir) {
 
 function regenerateLists() {
   const games = listHtmlFiles('games');
-  const tools = listHtmlFiles('tools');
   fs.writeFileSync(
     path.join(ROOT, 'games.json'),
     JSON.stringify(games, null, 2) + '\n'
   );
-  fs.writeFileSync(
-    path.join(ROOT, 'tools.json'),
-    JSON.stringify(tools, null, 2) + '\n'
-  );
-  console.log(`Auto-loaded ${games.length} games and ${tools.length} tools`);
+  console.log(`Auto-loaded ${games.length} games`);
 }
 
 regenerateLists();
@@ -163,7 +158,6 @@ const server = http.createServer((request, response) => {
     const CDN_BASE = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
     const CDN_PAGES = {
       index: 'index.html',
-      tools: 'tools.html',
       credits: 'credits.html',
       dashboard: 'dashboard.html',
       tutorial: 'tutorial.html',
@@ -378,11 +372,6 @@ const server = http.createServer((request, response) => {
   if (pathname === '/games.json') {
     response.writeHead(200, { 'Content-Type': MIME['.json'] });
     response.end(JSON.stringify(listHtmlFiles('games'), null, 2));
-    return;
-  }
-  if (pathname === '/tools.json') {
-    response.writeHead(200, { 'Content-Type': MIME['.json'] });
-    response.end(JSON.stringify(listHtmlFiles('tools'), null, 2));
     return;
   }
 

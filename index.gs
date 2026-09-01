@@ -1,12 +1,12 @@
 /**
  * Securly Games — Google Apps Script web host.
- * Core pages are stored in this Apps Script project. Games and tools stay in
+ * Core pages are stored in this Apps Script project. Games stay in
  * GitHub and are loaded through jsDelivr so Apps Script's file limit is not a
  * problem.
  */
 
 var ALLOWED_PAGES = [
-  'index', 'tools', 'credits', 'dashboard', 'submit', 'tutorial', '404'
+  'index', 'credits', 'dashboard', 'submit', 'tutorial', '404'
 ];
 var REPORTS_SHEET_NAME = 'Reports';
 var SPREADSHEET_KEY = 'SECURLY_GAMES_SPREADSHEET_ID';
@@ -16,9 +16,6 @@ function doGet(e) {
   var requested = e && e.parameter && String(e.parameter.p || 'index').trim();
   if (requested.indexOf('games/') === 0) {
     return serveFromCdn_('games', requested.substring(6), 'game');
-  }
-  if (requested.indexOf('tools/') === 0) {
-    return serveFromCdn_('tools', requested.substring(6), 'tool');
   }
   var page = requested.toLowerCase();
   if (ALLOWED_PAGES.indexOf(page) === -1) page = 'index';
@@ -95,10 +92,6 @@ function serveError_(message) {
 }
 
 function getGames() {
-  return JSON.parse('[]');
-}
-
-function getTools() {
   return JSON.parse('[]');
 }
 

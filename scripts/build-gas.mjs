@@ -16,7 +16,7 @@ function removeStartup(html) {
   return html;
 }
 
-for (const page of ['index', 'tools', 'credits', 'dashboard', 'submit', 'tutorial', '404']) {
+for (const page of ['index', 'credits', 'dashboard', 'submit', 'tutorial', '404']) {
   let html = read(page + '.html');
   if (/<link rel="stylesheet" href="[^"]*index\.css">/i.test(html)) html = html.replace(/<link rel="stylesheet" href="[^"]*index\.css">/i, cssTag);
   if (page === 'index') html = removeStartup(html);
