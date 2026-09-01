@@ -167,7 +167,6 @@ const server = http.createServer((request, response) => {
       credits: 'credits.html',
       dashboard: 'dashboard.html',
       tutorial: 'tutorial.html',
-      bookmart: 'bookmart.html',
       submit: 'submit.html',
       '404': '404.html',
     };

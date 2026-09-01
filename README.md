@@ -1,6 +1,6 @@
 # Securly Games
 
-A static HTML5 games site with a home grid, tools, credits, tutorial, bookmark page, and dashboard. The primary hosting path is **GitHub + jsDelivr**; no Google Apps Script deployment is required for the public site.
+A static HTML5 games site with a home grid, tools, credits, tutorial, and dashboard. The primary hosting path is **GitHub + jsDelivr**; no Google Apps Script deployment is required for the public site.
 
 ## GitHub and jsDelivr
 
@@ -94,6 +94,6 @@ node index.js
 
 The server uses the injected `PORT` when available and regenerates the catalogs from `games/` and `tools/`.
 
-## Google Apps Script
+## Legacy hosting
 
-Google Apps Script files remain in the repository only as a legacy/manual export. The public static site does not depend on Apps Script, `google.script.run`, or an Apps Script URL. Do not use the old Apps Script deployment URLs for the CDN version.
+The public static site uses GitHub and jsDelivr only. Legacy Apps Script files, if present in the repository, are not required by the public pages.

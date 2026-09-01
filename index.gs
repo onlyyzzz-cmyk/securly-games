@@ -6,7 +6,7 @@
  */
 
 var ALLOWED_PAGES = [
-  'index', 'tools', 'credits', 'dashboard', 'bookmart', 'submit', 'tutorial', '404'
+  'index', 'tools', 'credits', 'dashboard', 'submit', 'tutorial', '404'
 ];
 var REPORTS_SHEET_NAME = 'Reports';
 var SPREADSHEET_KEY = 'SECURLY_GAMES_SPREADSHEET_ID';
