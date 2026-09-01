@@ -38,8 +38,10 @@ const tools = read('tools.json').trim();
 const listFunctions = `function getGames() {\n  return JSON.parse('[]');\n}\n\nfunction getTools() {\n  return JSON.parse('[]');\n}`;
 const embeddedFunctions = `function getGames() {\n  return JSON.parse(${JSON.stringify(games)});\n}\n\nfunction getTools() {\n  return JSON.parse(${JSON.stringify(tools)});\n}`;
 const placeholder = `// Helper called from client pages via google.script.run to build URL links.\nfunction getGames() {\n  return [];\n}`;
+const currentFunctions = /function getGames\(\) \{[\\s\\S]*?\n\}\n\nfunction getTools\(\) \{[\\s\\S]*?\n\}/;
 if (gs.includes(listFunctions)) gs = gs.replace(listFunctions, embeddedFunctions);
 else if (gs.includes(placeholder)) gs = gs.replace(placeholder, embeddedFunctions);
+else if (currentFunctions.test(gs)) gs = gs.replace(currentFunctions, embeddedFunctions);
 else {
   console.error('getGames/getTools block not found');
   process.exit(1);
