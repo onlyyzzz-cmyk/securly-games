@@ -9,6 +9,7 @@ if (existsSync(out)) rmSync(out, { recursive: true });
 mkdirSync(out, { recursive: true });
 const read = (p) => readFileSync(join(root, p), 'utf8');
 const cssTag = '<style>\n' + read('index.css') + '\n</style>';
+const CDN_ROOT = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
 
 function removeStartup(html) {
   html = html.replace(/<!-- Startup -->[\s\S]*?<\/div>\s*\n\s*<!-- Onboarding -->/i, '<!-- Startup disabled for Apps Script -->\n\n<!-- Onboarding -->');
