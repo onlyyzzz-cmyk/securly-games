@@ -448,7 +448,8 @@ const BG_THEMES = [
 /* ═══════════════════════════════════════════
    CONSTANTS & DEFAULTS
 ═══════════════════════════════════════════ */
-const GAMES_FOLDER = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/games/';
+const CDN_ROOT = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
+const GAMES_FOLDER = CDN_ROOT + 'games/';
 const DEFAULTS = {
   bgTheme:'classic', scanlines:true, anims:true,
   loader:true, msgs:true, startup:true, lowlag:false,
@@ -603,14 +604,12 @@ function applyGames(files){
 async function loadGamesFromFolder(){
   try{
     const controller=new AbortController();const timeoutId=setTimeout(()=>controller.abort(),5000);
-    const res=await fetch('./games.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
+    const res=await fetch(CDN_ROOT+'games.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
     if(!res.ok)throw new Error('HTTP '+res.status);
-    const json=await res.json();
-    applyGames(json);
+    applyGames(await res.json());
   }catch(e){
-    if(appsScriptAvailable()){
-      google.script.run.withSuccessHandler(applyGames).withFailureHandler(()=>applyGames([])).getGames();
-    }else{console.warn('games.json error:',e);applyGames([]);}
+    if(appsScriptAvailable()) google.script.run.withSuccessHandler(applyGames).withFailureHandler(()=>applyGames([])).getGames();
+    else { console.warn('CDN games.json error:',e); applyGames([]); }
   }
 }
 function applyTools(files){
@@ -623,14 +622,12 @@ function applyTools(files){
 async function loadToolsFromFolder(){
   try{
     const controller=new AbortController();const timeoutId=setTimeout(()=>controller.abort(),5000);
-    const res=await fetch('./tools.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
+    const res=await fetch(CDN_ROOT+'tools.json?v='+Date.now(),{signal:controller.signal});clearTimeout(timeoutId);
     if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    applyTools(data);
+    applyTools(await res.json());
   }catch(e){
-    if(appsScriptAvailable()){
-      google.script.run.withSuccessHandler(applyTools).withFailureHandler(()=>applyTools([])).getTools();
-    }else{console.warn('tools.json error:',e);}
+    if(appsScriptAvailable()) google.script.run.withSuccessHandler(applyTools).withFailureHandler(()=>applyTools([])).getTools();
+    else console.warn('CDN tools.json error:',e);
   }
 }
 
