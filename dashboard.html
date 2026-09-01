@@ -108,7 +108,7 @@ function owner(){
 }
 
 function loadData(){
-  var onScripts=window.google&&window.google.script&&window.google.script.run;
+  var onScripts=false;
   var reportsP;
   var gamesP;
   var CDN_ROOT='https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
@@ -120,7 +120,7 @@ function loadData(){
       google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).getGames();
     });
   }else{
-    reportsP=fetch('./api/reports?v='+Date.now()).then(function(r){return r.json();});
+    reportsP=Promise.resolve([]);
     gamesP=fetch(CDN_ROOT+'games.json?v='+Date.now()).then(function(r){return r.json();});
   }
   Promise.all([gamesP,reportsP])

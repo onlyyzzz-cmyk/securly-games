@@ -8,7 +8,7 @@ const out = join(root, 'gas');
 if (existsSync(out)) rmSync(out, { recursive: true });
 mkdirSync(out, { recursive: true });
 const read = (p) => readFileSync(join(root, p), 'utf8');
-const cssTag = '<style>\n' + read('index.css') + '\n</style>';
+const cssTag = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/index.css">';
 
 function removeStartup(html) {
   html = html.replace(/<!-- Startup -->[\s\S]*?<\/div>\s*\n\s*<!-- Onboarding -->/i, '<!-- Startup disabled -->\n\n<!-- Onboarding -->');
