@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" id="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
 <link rel="apple-touch-icon-precomposed" id="apple-touch-icon-pre" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/index.css">
 <style id="custom-css"></style>
 
 </head>
@@ -393,28 +393,6 @@
   </div>
 </div>
 
-<!-- Report Broken -->
-<div id="report-overlay" onclick="handleReportOverlayClick(event)">
-  <div class="gamereq-panel report-panel">
-    <div class="gamereq-header">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:32px;height:32px;background:rgba(255,59,92,.12);border:1px solid rgba(255,59,92,.3);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem">⚠️</div>
-        <div><h2>report broken</h2><div style="font-size:.65rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-top:2px">help us fix the game</div></div>
-      </div>
-      <button class="gamereq-close" onclick="closeReportModal()">✕</button>
-    </div>
-    <div class="report-body">
-      <div class="report-game-label" id="report-game-name"></div>
-      <textarea id="report-note" class="cloak-input" rows="6" placeholder="what's broken? e.g. game won't load, stuck on a black screen, controls don't work..."></textarea>
-    </div>
-    <div class="gamereq-footer report-footer">
-      <span class="gamereq-footer-dot"></span>
-      <span class="gamereq-footer-text">sent straight to the dev dashboard</span>
-      <button class="report-submit" onclick="submitReport()">send report</button>
-    </div>
-  </div>
-</div>
-
 <div id="sg-toast"></div>
 
 <script>
@@ -449,8 +427,8 @@ const BG_THEMES = [
    CONSTANTS & DEFAULTS
 ═══════════════════════════════════════════ */
 const CDN_ROOT = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSuwdMOrXhwzazRvhKCqEAseJGLmVJH8--Zbi3cg1i/exec';
 const GAMES_FOLDER = CDN_ROOT + 'games/';
+const REPORT_ENDPOINT = '';
 const DEFAULTS = {
   bgTheme:'classic', scanlines:true, anims:true,
   loader:true, msgs:true, startup:true, lowlag:false,
@@ -590,7 +568,15 @@ function showView(view,el){
 function fileToDisplayName(filename){return filename.replace(/\.html?$/i,'').replace(/[_\-+]/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/\s+/g,' ').trim().toLowerCase();}
 function hideGamesLoading(){const el=document.getElementById('games-loading');if(el)el.style.display='none';}
 
-function appsScriptAvailable(){return !!(window.google&&window.google.script&&window.google.script.run);}
+function appsScriptAvailable(){return false;}
+function staticPageUrl(page){return CDN_ROOT+String(page).replace(/^\/+/, '')+'.html';}
+function gameUrl(file){return GAMES_FOLDER+encodeURIComponent(String(file));}
+function openReportModal(){showToast('Reports are unavailable on static CDN hosting.');}
+function launchgame(file){
+  const game=allGames.find(g=>g.file===file)||{file:file,name:fileToDisplayName(file)};
+  incrementPlay(game.file);pushRecent(game.file,game.name);
+  window.open(gameUrl(game.file),'_blank','noopener,noreferrer');
+}
 function applyGames(files){
   const badge=document.getElementById('badge-text');
   const filesArr=Array.isArray(files)?files:(files&&files.games?files.games:[]);
@@ -609,8 +595,8 @@ async function loadGamesFromFolder(){
     if(!res.ok)throw new Error('HTTP '+res.status);
     applyGames(await res.json());
   }catch(e){
-    if(appsScriptAvailable()) google.script.run.withSuccessHandler(applyGames).withFailureHandler(()=>applyGames([])).getGames();
-    else { console.warn('CDN games.json error:',e); applyGames([]); }
+    console.warn('CDN games.json error:',e);
+    applyGames([]);
   }
 }
 function applyTools(files){
@@ -627,8 +613,8 @@ async function loadToolsFromFolder(){
     if(!res.ok)throw new Error('HTTP '+res.status);
     applyTools(await res.json());
   }catch(e){
-    if(appsScriptAvailable()) google.script.run.withSuccessHandler(applyTools).withFailureHandler(()=>applyTools([])).getTools();
-    else console.warn('CDN tools.json error:',e);
+    console.warn('CDN tools.json error:',e);
+    applyTools([]);
   }
 }
 
