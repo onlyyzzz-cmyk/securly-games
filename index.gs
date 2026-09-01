@@ -11,6 +11,7 @@ var ALLOWED_PAGES = [
 var REPORTS_SHEET_NAME = 'Reports';
 var SPREADSHEET_KEY = 'SECURLY_GAMES_SPREADSHEET_ID';
 var CDN_BASE = 'https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxTxRIqj1BqdfLbVKIKWt6uU1DWyewqSJIF1jnTqy73Nn8hajkQ_7ii2dCYWiY9nRM2RA/exec';
 
 function doGet(e) {
   var requested = e && e.parameter && String(e.parameter.p || 'index').trim();
@@ -59,7 +60,7 @@ function serveFromCdn_(folder, encodedName, label) {
     var body = bodyMatch ? bodyMatch[1] : source;
     var reportButton =
       '<button id="sg-report-broken" type="button" style="position:fixed;right:12px;bottom:12px;z-index:2147483647;padding:10px 14px;border:1px solid #ff3b5c;border-radius:8px;background:#17111d;color:#fff;font:700 13px Arial,sans-serif;cursor:pointer;box-shadow:0 4px 18px #0008">⚠ Report broken</button>' +
-      '<script>(function(){var b=document.getElementById("sg-report-broken");if(!b)return;b.addEventListener("click",function(){var note=window.prompt("What is broken?")||"no details";var game=' + escapeScriptString_(name) + ';if(window.google&&google.script&&google.script.run){google.script.run.withSuccessHandler(function(){b.textContent="✓ Report sent";setTimeout(function(){b.textContent="⚠ Report broken"},1800)}).withFailureHandler(function(){window.location.href="?p=submit"}).appReport(game,note)}else{window.location.href="?p=submit"}})})();<\\/script>';
+      '<script>(function(){var b=document.getElementById("sg-report-broken");if(!b)return;b.addEventListener("click",function(){var note=window.prompt("What is broken?")||"no details";var game=' + escapeScriptString_(name) + ';if(window.google&&google.script&&google.script.run){google.script.run.withSuccessHandler(function(){b.textContent="✓ Report sent";setTimeout(function(){b.textContent="⚠ Report broken"},1800)}).withFailureHandler(function(){window.location.href=' + escapeScriptString_(WEB_APP_URL + '?p=submit') + '}).appReport(game,note)}else{window.location.href=' + escapeScriptString_(WEB_APP_URL + '?p=submit') + '}})})();<\\/script>';
 
     var html = '<!doctype html><html><head>' + head +
       '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +

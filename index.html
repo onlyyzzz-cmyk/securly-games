@@ -755,8 +755,11 @@ function launchgame(file){
   const g=allGames.find(x=>x.file===file);
   currentGameFile=file;currentGameName=g?g.name:fileToDisplayName(file);
   incrementPlay(file);pushRecent(file,currentGameName);updateBadges();
-  showLoader(currentGameName);
-  openPlayView(GAMES_FOLDER+encodeURIComponent(file),currentGameName);
+  openGameCdn(file,currentGameName);
+}
+function openGameCdn(file,name){
+  const url="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/games/"+encodeURIComponent(file)+"?v="+Date.now();
+  window.open(url,"_blank","noopener");
 }
 function openPlayView(src,name){
   const frame=document.getElementById('play-frame');if(frame)frame.src=src;

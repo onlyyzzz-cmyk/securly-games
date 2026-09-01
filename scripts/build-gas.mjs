@@ -8,7 +8,6 @@ const out = join(root, 'gas');
 if (existsSync(out)) rmSync(out, { recursive: true });
 mkdirSync(out, { recursive: true });
 const read = (p) => readFileSync(join(root, p), 'utf8');
-
 const cssTag = '<style>\n' + read('index.css') + '\n</style>';
 
 function removeStartup(html) {
@@ -29,23 +28,24 @@ for (const page of ['index', 'tools', 'credits', 'dashboard']) {
   writeFileSync(join(out, page + '.html'), html);
 }
 for (const page of ['bookmart', 'submit', 'tutorial', '404']) {
-  writeFileSync(join(out, page + '.html'), read(page + '.html'));
+  let html = read(page + '.html');
+  if (/<link rel="stylesheet" href="[^"]*index\.css">/i.test(html)) html = html.replace(/<link rel="stylesheet" href="[^"]*index\.css">/i, cssTag);
+  writeFileSync(join(out, page + '.html'), html);
 }
 
+// Use the CDN directly for games/tools. Apps Script only needs the core pages.
+// The game list is intentionally left in GitHub so jsDelivr can serve each game unchanged.
 let gs = read('index.gs');
 const games = read('games.json').trim();
 const tools = read('tools.json').trim();
 const listFunctions = `function getGames() {\n  return JSON.parse('[]');\n}\n\nfunction getTools() {\n  return JSON.parse('[]');\n}`;
 const embeddedFunctions = `function getGames() {\n  return JSON.parse(${JSON.stringify(games)});\n}\n\nfunction getTools() {\n  return JSON.parse(${JSON.stringify(tools)});\n}`;
 const placeholder = `// Helper called from client pages via google.script.run to build URL links.\nfunction getGames() {\n  return [];\n}`;
-const currentFunctions = /function getGames\(\) \{[\\s\\S]*?\n\}\n\nfunction getTools\(\) \{[\\s\\S]*?\n\}/;
+const currentFunctions = /function getGames\(\) \{[\s\S]*?\n\}\n\nfunction getTools\(\) \{[\s\S]*?\n\}/;
 if (gs.includes(listFunctions)) gs = gs.replace(listFunctions, embeddedFunctions);
 else if (gs.includes(placeholder)) gs = gs.replace(placeholder, embeddedFunctions);
 else if (currentFunctions.test(gs)) gs = gs.replace(currentFunctions, embeddedFunctions);
-else {
-  console.error('getGames/getTools block not found');
-  process.exit(1);
-}
+else { console.error('getGames/getTools block not found'); process.exit(1); }
 writeFileSync(join(out, 'Code.gs'), gs);
 writeFileSync(join(out, 'appsscript.json'), read('appsscript.json'));
 

@@ -598,7 +598,7 @@ function launchtool(file) {
   const t=allTools.find(x=>x.file===file);
   currentToolFile=file;
   currentToolName=t?t.name:fileToDisplayName(file);
-  const frame=document.getElementById('play-frame');if(frame)frame.src=TOOLS_FOLDER+encodeURIComponent(file);
+  const frame=document.getElementById('play-frame');if(frame)frame.src="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools/"+encodeURIComponent(file)+"?v="+Date.now();
   const pv=document.getElementById('play-view');if(pv)pv.classList.add('show');
   document.body.classList.add('game-active');
   const nameEl=document.getElementById('bar-name-el');if(nameEl)nameEl.textContent=currentToolName;
