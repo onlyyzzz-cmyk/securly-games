@@ -58,7 +58,17 @@ Open these URLs in a browser:
 - Tools catalog: <https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools.json>
 - Tools page: <https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools.html>
 
-The current catalogs contain 54 games and 3 tools.
+The current catalogs contain 54 games and 3 tools. Because jsDelivr may serve repository HTML as source text, use the bookmarklet loader below when a game or tool must execute inside a new `about:blank` document.
+
+## JavaScript loader bookmarklet
+
+Copy this JavaScript into a bookmark’s URL field. It fetches the CDN catalogs, shows a loading screen immediately, then fetches each selected HTML document and writes it into a real `about:blank` page so the game or tool can execute instead of displaying source code:
+
+```javascript
+javascript:(function(){var C="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/",w=window.open("about:blank","_blank");if(!w){alert("Allow pop-ups first.");return;}w.document.write('<!doctype html><title>Loading Securly Games…</title><style>body{margin:0;display:grid;place-items:center;min-height:100vh;background:#17111d;color:#fff;font:18px Arial}</style><p>Loading CDN catalogs…</p>');function load(url){return fetch(url,{cache:"no-store"}).then(function(r){if(!r.ok)throw Error(r.status);return r.text()})}Promise.all([load(C+"games.json"),load(C+"tools.json")]).then(function(a){var g=JSON.parse(a[0]),t=JSON.parse(a[1]),h='<h1>Securly Games</h1><h2>Games</h2><ul>'+g.map(function(f){return '<li><a href="'+C+'games/'+encodeURIComponent(f)+'" data-cdn="games/'+encodeURIComponent(f)+'">'+f+'</a></li>'}).join('')+'</ul><h2>Tools</h2><ul>'+t.map(function(f){return '<li><a href="'+C+'tools/'+encodeURIComponent(f)+'" data-cdn="tools/'+encodeURIComponent(f)+'">'+f+'</a></li>'}).join('')+'</ul>';w.document.open();w.document.write('<!doctype html><title>Securly Games</title><style>body{font:16px Arial;background:#17111d;color:#fff;padding:24px}a{color:#7dd3fc}li{margin:8px 0}</style>'+h);w.document.close();Array.prototype.forEach.call(w.document.querySelectorAll("a[data-cdn]"),function(a){a.onclick=function(e){e.preventDefault();load(C+a.getAttribute("data-cdn")).then(function(html){w.document.open();w.document.write(html);w.document.close()}).catch(function(){w.document.body.innerHTML="<h1>Could not load this file</h1>"})}})}).catch(function(e){w.document.open();w.document.write("<h1>CDN load failed</h1><p>"+e.message+"</p>");w.document.close()})})();
+```
+
+The direct jsDelivr URL can still be used for assets such as SVG, CSS, JSON, JavaScript, and images. The loader is needed for HTML files when the CDN response is displayed as source text.
 
 ## Caching and updates
 
