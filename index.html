@@ -20,12 +20,30 @@ body{min-height:100vh;margin:0;background:#17111d;color:#fff;font-family:Nunito,
   function write(id,html){var element=document.getElementById(id);if(element)element.innerHTML=html;}
   function render(id,items,folder){
     if(!Array.isArray(items)||!items.length){write(id,'<div class=\"cdn-empty\">No files found.</div>');return;}
-    write(id,items.map(function(file){var href=cdn(folder+'/'+encodeURIComponent(file));return '<article class=\"cdn-card\"><div class=\"cdn-card-name\">'+escapeHtml(label(file))+'</div><div class=\"cdn-card-actions\"><a class=\"cdn-link\" href=\"'+href+'\">Open</a><a class=\"cdn-link\" target=\"_blank\" rel=\"noopener\" href=\"'+href+'\">New tab</a></div></article>';}).join(''));
+    write(id,items.map(function(file){var path=folder+'/'+encodeURIComponent(file);var href=cdn(path);return '<article class=\"cdn-card\"><div class=\"cdn-card-name\">'+escapeHtml(label(file))+'</div><div class=\"cdn-card-actions\"><a class=\"cdn-link\" href=\"'+href+'\" data-file=\"'+path+'\">Open</a><a class=\"cdn-link\" href=\"'+href+'\" data-file=\"'+path+'\">New tab</a></div></article>';}).join(''));
+  }
+  function openGame(path){
+    var popup=window.open('about:blank','_blank');
+    if(!popup){location.href=ROOT+path;return;}
+    popup.document.open();
+    popup.document.write('<div style=\"font-family:Arial;display:grid;place-items:center;min-height:100vh;margin:0;background:#17111d;color:#fff\">Loading…</div>');
+    popup.document.close();
+    fetch(ROOT+path,{cache:'no-store'}).then(function(response){if(!response.ok)throw Error(response.status);return response.text();}).then(function(html){
+      var dir=path.split('/')[0],base='<base href=\"'+ROOT+dir+'/\">';
+      if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
+      else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
+      popup.document.open();popup.document.write(html);popup.document.close();
+    }).catch(function(){popup.document.open();popup.document.write('<div style=\"font-family:Arial;padding:24px;background:#17111d;color:#fff\">Could not load this file.</div>');popup.document.close();});
+  }
+  function wireGrid(id){
+    var grid=document.getElementById(id);if(!grid)return;
+    Array.prototype.forEach.call(grid.querySelectorAll('a[data-file]'),function(a){a.addEventListener('click',function(e){e.preventDefault();openGame(a.getAttribute('data-file'));});});
   }
   function fetchCatalog(file,id,folder){return fetch(cdn(file),{cache:'no-store'}).then(function(response){if(!response.ok)throw Error(response.status);return response.json();}).then(function(items){render(id,items,folder);return items;});}
   document.write('<p class=\"cdn-status\">Loading CDN catalogs…</p>');
   Promise.all([fetchCatalog('games.json','games-grid','games'),fetchCatalog('tools.json','tools-grid','tools')]).then(function(result){
     var status=document.getElementById('cdn-status');if(status)status.textContent=result[0].length+' games and '+result[1].length+' tools loaded from jsDelivr.';
+    wireGrid('games-grid');wireGrid('tools-grid');
   }).catch(function(error){var status=document.getElementById('cdn-status');if(status)status.innerHTML='<span class=\"cdn-error\">Could not load the CDN catalog.</span>';console.error(error);});
 }());
 </script></body></html>
