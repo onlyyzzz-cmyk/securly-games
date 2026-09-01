@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
-  <title id="title">Math</title>
-  <desc id="desc">A simple calculator-style math icon</desc>
-  <rect width="256" height="256" rx="40" fill="#17111d"/>
-  <rect x="48" y="28" width="160" height="200" rx="18" fill="#e8552f"/>
-  <rect x="68" y="50" width="120" height="48" rx="8" fill="#fff5e9"/>
-  <path d="M82 74h92M128 60v28" stroke="#17111d" stroke-width="9" stroke-linecap="round"/>
-  <g fill="#fff5e9"><circle cx="88" cy="126" r="10"/><circle cx="128" cy="126" r="10"/><circle cx="168" cy="126" r="10"/><circle cx="88" cy="166" r="10"/><circle cx="128" cy="166" r="10"/><circle cx="168" cy="166" r="10"/><circle cx="88" cy="206" r="10"/><circle cx="128" cy="206" r="10"/><circle cx="168" cy="206" r="10"/></g>
-</svg>
