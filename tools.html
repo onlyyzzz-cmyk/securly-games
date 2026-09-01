@@ -528,7 +528,7 @@ function applyTools(files){
 }
 async function loadToolsFromFolder(){
   try {
-    const res=await fetch('tools.json?v='+Date.now());
+    const res=await fetch('https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools.json?v='+Date.now());
     if(!res.ok) throw new Error('not found');
     const data=await res.json();
     applyTools(data);
@@ -595,11 +595,20 @@ function launchtool(file) {
   const t=allTools.find(x=>x.file===file);
   currentToolFile=file;
   currentToolName=t?t.name:fileToDisplayName(file);
-  const frame=document.getElementById('play-frame');if(frame)frame.src="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/tools/"+encodeURIComponent(file)+"?v="+Date.now();
+  const frame=document.getElementById('play-frame');
   const pv=document.getElementById('play-view');if(pv)pv.classList.add('show');
   document.body.classList.add('game-active');
   const nameEl=document.getElementById('bar-name-el');if(nameEl)nameEl.textContent=currentToolName;
   showGameControls();
+  if(!frame)return;
+  const toolUrl=TOOLS_FOLDER+encodeURIComponent(file);
+  const doc=frame.contentDocument;doc.open();doc.write('<div style="font-family:Arial;display:grid;place-items:center;min-height:100vh;margin:0;background:#0f172a;color:#fff">Loading tool…</div>');doc.close();
+  fetch(toolUrl,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error(r.status);return r.text();}).then(function(html){
+    const base='<base href="'+TOOLS_FOLDER+'">';
+    if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
+    else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
+    const d=frame.contentDocument;d.open();d.write(html);d.close();
+  }).catch(function(){const d=frame.contentDocument;d.open();d.write('<div style="font-family:Arial;color:#fff;padding:24px;background:#0f172a;min-height:100vh">Could not load this tool.</div>');d.close();});
 }
 function showGameControls(){
   const exitBtn=document.getElementById('exit-btn');if(exitBtn)exitBtn.style.display='flex';
