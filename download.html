@@ -151,12 +151,14 @@
 <script>
 var CDN = [
   "https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/bookmarklet.js",
-  "https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/bookmarklet.js"
+  "https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/bookmarklet.js",
+  "https://raw.githack.com/onlyyzzz-cmyk/securly-games/main/bookmarklet.js"
 ];
 var status=document.getElementById("status"),sttxt=document.getElementById("sttxt"),badge=document.getElementById("badge"),code=document.getElementById("code"),btn=document.getElementById("copy"),copied=document.getElementById("copied");
 function live(t){code.value=t;sttxt.textContent="live from CDN";status.className="live";badge.textContent="LIVE";badge.className="badge";btn.disabled=false;}
-function dead(){code.value="// CDN not live yet — bookmarklet.js hasn't been pushed to GitHub.\n// Push it, then reopen this page: the newest code appears here automatically.";sttxt.textContent="waiting for push";badge.textContent="waiting";badge.className="badge wait";btn.disabled=true;}
-async function loadLatest(){for(var i=0;i<CDN.length;i++){try{var r=await fetch(CDN[i],{cache:"no-store"});if(!r.ok)throw Error(r.status);var t=await r.text();if(t.indexOf("javascript:(function(){")===0){live(t.trim());return;}}catch(e){}}dead();}
+function dead(){code.value="// Couldn't reach the CDNs from this network.\n// If this is a school network, open this page from a normal connection once,\n// copy the code, and it keeps working everywhere — the bookmark doesn't need this page again.";sttxt.textContent="CDN unreachable";badge.textContent="waiting";badge.className="badge wait";btn.disabled=true;}
+function fetchFast(u,ms){return Promise.race([fetch(u,{cache:"no-store"}),new Promise(function(_,rej){setTimeout(function(){rej(new Error("timeout"))},ms||6000)})]);}
+async function loadLatest(){for(var i=0;i<CDN.length;i++){try{var r=await fetchFast(CDN[i]);if(!r.ok)throw Error(r.status);var t=await r.text();if(t.indexOf("javascript:(function(){")===0){live(t.trim());return;}}catch(e){}}dead();}
 loadLatest();
 btn.onclick=function(){var t=code.value;function done(){copied.style.visibility="visible";setTimeout(function(){copied.style.visibility="hidden"},1600);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){selectCopy();done();});}else{selectCopy();done();}function selectCopy(){code.focus();code.select();try{document.execCommand("copy");}catch(e){}}};
 </script>
