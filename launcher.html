@@ -79,15 +79,12 @@
 
 /* ---- CDN sources, freshest first. raw.github sends a CSP on HTML files,
    so it is only used for fetching content — never for hosting this page. */
-/* githack first: fresh (60s cache), no CSP, and reachable in school
-   filters. esm.sh is LAST on purpose — it serves the page/catalog fine
-   but rewrites .js files into ES-module stubs, which breaks game
-   scripts, so it is only a last-resort fallback. */
+/* Only the two CDNs that work in school filters: jsDelivr + esm.sh.
+   jsDelivr first — esm.sh rewrites .js files into ES-module stubs
+   (breaks game scripts), so it stays as the fast fallback for the
+   page/catalog and HTML-only games. */
 var CDNS=[
-  {name:"githack", base:"https://raw.githack.com/onlyyzzz-cmyk/securly-games/main/"},
-  {name:"statically", base:"https://cdn.statically.io/gh/onlyyzzz-cmyk/securly-games@main/"},
   {name:"jsdelivr",base:"https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/"},
-  {name:"github",  base:"https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/"},
   {name:"esm.sh",  base:"https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/"}
 ];
 
