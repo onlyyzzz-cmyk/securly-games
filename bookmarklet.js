@@ -1,1 +1,1 @@
-javascript:(function(){var u="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/launcher.html";var w=window.open(u,"_blank");if(!w){w=window.open();}if(!w){alert("Popup blocked — allow pop-ups for this site, then try the bookmark again.");}})();
+javascript:(function(){var u="https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/launcher.html";var w=window.open(u,"_blank");if(!w){w=window.open();}if(!w){alert("Popup blocked — allow pop-ups for this site, then try the bookmark again.");}})();
