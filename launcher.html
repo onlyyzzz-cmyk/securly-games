@@ -58,7 +58,7 @@
     <span id="count" class="chip">0 / 0</span>
   </div>
   <div id="list"><div class="state">Connecting to the CDN…</div></div>
-  <p class="foot">games stream from the securly-games CDN · Esc closes the credits · games open in a new tab</p>
+  <p class="foot">games open directly from the CDN — nothing is rewritten · Esc closes the credits</p>
 </div>
 
 <div id="ov" style="display:none">
@@ -132,57 +132,14 @@ function loadCatalog(){
   });
 }
 
-function loadGameHTML(name,onTry){
-  /* Start from the CDN that worked for the catalog, fall back through the rest. */
-  var startIdx=0;
-  for(var k=0;k<CDNS.length;k++){if(CDNS[k].base===bestBase){startIdx=k;break;}}
-  return pick(function(cdn){
-    return fetchTimeout(cdn.base+"games/"+encodeURIComponent(name)).then(function(r){return r.text();}).then(function(html){
-      return {html:html,base:cdn.base};
-    });
-  },startIdx,onTry);
-}
-
-function openPopup(){
-  var w=window.open("about:blank","_blank");
-  if(!w)w=window.open();
-  if(!w){alert("Popup blocked — allow pop-ups for this site, then click the game again.");return null;}
-  return w;
-}
-
-function loading(w,name,line){
-  w.document.open();
-  w.document.write('<div style="font-family:Arial;display:grid;place-items:center;min-height:100vh;margin:0;background:#0c0d10;color:#f2efe6;text-align:center;padding:20px"><div>Loading '+esc(name)+'…</div><div style="color:#5a6174;font-size:13px;margin-top:8px">'+esc(line||"")+'</div></div>');
-  w.document.close();
-}
-
+/* Games open DIRECTLY from the CDN — no fetch, no document.write,
+   no rewriting of the game code. The game runs exactly like it does
+   when you open it in a tab by itself, so nothing can interfere. */
 function play(name){
-  var w=openPopup();
-  if(!w)return;
-  loading(w,name,"starting…");
-  loadGameHTML(name,function(cdn,i,total){
-    loading(w,name,"source "+i+"/"+total+" · "+cdn.name+"…");
-  }).then(function(res){
-    var html=res.html;
-    /* Root-absolute paths are always broken in an about:blank popup —
-       make them relative so they resolve under the <base> tag instead. */
-    html=html.replace(/\b(src|href)="\/(?!\/)/g,'$1="');
-    if(!/<base\s/i.test(html)){
-      var base='<base href="'+res.base+'games/">';
-      if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
-      else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
-      else html=base+html;
-    }
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-    var e=w.document.getElementById("exit");
-    if(e)e.onclick=function(){w.close();};
-  }).catch(function(e){
-    w.document.open();
-    w.document.write('<div style="font-family:Arial;padding:24px;background:#0c0d10;color:#ff6b6b;min-height:100vh">Couldn\'t load '+esc(name)+': '+esc(e&&e.message||e)+'</div>');
-    w.document.close();
-  });
+  var u="https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/games/"+encodeURIComponent(name);
+  var w=window.open(u,"_blank");
+  if(!w){w=window.open();}
+  if(!w){alert("Popup blocked — allow pop-ups for this site, then click the game again.");}
 }
 
 function draw(filter){
