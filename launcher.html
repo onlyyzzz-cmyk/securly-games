@@ -83,7 +83,8 @@ var CDNS=[
   {name:"github",  base:"https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/"},
   {name:"githack", base:"https://raw.githack.com/onlyyzzz-cmyk/securly-games/main/"},
   {name:"statically", base:"https://cdn.statically.io/gh/onlyyzzz-cmyk/securly-games@main/"},
-  {name:"jsdelivr",base:"https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/"}
+  {name:"jsdelivr",base:"https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/"},
+  {name:"esm.sh",  base:"https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/"}
 ];
 
 var list=document.getElementById("list");
@@ -154,6 +155,9 @@ function play(name){
   w.document.close();
   loadGameHTML(name).then(function(res){
     var html=res.html;
+    /* Root-absolute paths are always broken in an about:blank popup —
+       make them relative so they resolve under the <base> tag instead. */
+    html=html.replace(/\b(src|href)="\/(?!\/)/g,'$1="');
     if(!/<base\s/i.test(html)){
       var base='<base href="'+res.base+'games/">';
       if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
