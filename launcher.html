@@ -79,11 +79,15 @@
 
 /* ---- CDN sources, freshest first. raw.github sends a CSP on HTML files,
    so it is only used for fetching content — never for hosting this page. */
+/* githack first: fresh (60s cache), no CSP, and reachable in school
+   filters. esm.sh is LAST on purpose — it serves the page/catalog fine
+   but rewrites .js files into ES-module stubs, which breaks game
+   scripts, so it is only a last-resort fallback. */
 var CDNS=[
-  {name:"github",  base:"https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/"},
   {name:"githack", base:"https://raw.githack.com/onlyyzzz-cmyk/securly-games/main/"},
   {name:"statically", base:"https://cdn.statically.io/gh/onlyyzzz-cmyk/securly-games@main/"},
   {name:"jsdelivr",base:"https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/"},
+  {name:"github",  base:"https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/"},
   {name:"esm.sh",  base:"https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/"}
 ];
 
@@ -100,19 +104,21 @@ function bust(u){return u+"?v="+Date.now();}
 
 function fetchTimeout(u,ms){
   return new Promise(function(resolve,reject){
-    var timer=setTimeout(function(){reject(new Error("timed out"));},ms||8000);
+    var timer=setTimeout(function(){reject(new Error("timed out"));},ms||4000);
     fetch(bust(u),{cache:"no-store"})
       .then(function(r){clearTimeout(timer);if(!r.ok)throw new Error("HTTP "+r.status);resolve(r);})
       .catch(function(e){clearTimeout(timer);reject(e);});
   });
 }
 
-/* Try each CDN in order; first one that answers wins. */
-function pick(pickFn,startAt){
+/* Try each CDN in order; first one that answers wins.
+   onTry(cdn,i,total) fires before each attempt for progress feedback. */
+function pick(pickFn,startAt,onTry){
   var i=startAt||0;
   function next(){
     if(i>=CDNS.length)return Promise.reject(new Error("all CDNs failed"));
     var cdn=CDNS[i++];
+    if(onTry)onTry(cdn,i,CDNS.length);
     return pickFn(cdn).catch(next);
   }
   return next();
@@ -129,7 +135,7 @@ function loadCatalog(){
   });
 }
 
-function loadGameHTML(name){
+function loadGameHTML(name,onTry){
   /* Start from the CDN that worked for the catalog, fall back through the rest. */
   var startIdx=0;
   for(var k=0;k<CDNS.length;k++){if(CDNS[k].base===bestBase){startIdx=k;break;}}
@@ -137,7 +143,7 @@ function loadGameHTML(name){
     return fetchTimeout(cdn.base+"games/"+encodeURIComponent(name)).then(function(r){return r.text();}).then(function(html){
       return {html:html,base:cdn.base};
     });
-  },startIdx);
+  },startIdx,onTry);
 }
 
 function openPopup(){
@@ -147,13 +153,19 @@ function openPopup(){
   return w;
 }
 
+function loading(w,name,line){
+  w.document.open();
+  w.document.write('<div style="font-family:Arial;display:grid;place-items:center;min-height:100vh;margin:0;background:#0c0d10;color:#f2efe6;text-align:center;padding:20px"><div>Loading '+esc(name)+'…</div><div style="color:#5a6174;font-size:13px;margin-top:8px">'+esc(line||"")+'</div></div>');
+  w.document.close();
+}
+
 function play(name){
   var w=openPopup();
   if(!w)return;
-  w.document.open();
-  w.document.write('<div style="font-family:Arial;display:grid;place-items:center;min-height:100vh;margin:0;background:#0c0d10;color:#f2efe6">Loading '+esc(name)+'…</div>');
-  w.document.close();
-  loadGameHTML(name).then(function(res){
+  loading(w,name,"starting…");
+  loadGameHTML(name,function(cdn,i,total){
+    loading(w,name,"source "+i+"/"+total+" · "+cdn.name+"…");
+  }).then(function(res){
     var html=res.html;
     /* Root-absolute paths are always broken in an about:blank popup —
        make them relative so they resolve under the <base> tag instead. */
