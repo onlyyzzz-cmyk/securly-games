@@ -28,7 +28,8 @@
   .g{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border:1px solid #232734;border-radius:12px;background:#12141b;color:#f2efe6;font:inherit;cursor:pointer;box-shadow:0 3px 0 #1a1d26;transition:transform .08s,border-color .08s,box-shadow .08s}
   .g:hover{transform:translateY(-2px);border-color:#3ee6c8;box-shadow:0 6px 0 -1px rgba(62,230,200,.4)}
   .g .num{font:700 12px ui-monospace,Menlo,Consolas,monospace;color:#ffb347;min-width:22px}
-  .g .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:capitalize}
+  .g .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:capitalize}
+  .g .big{flex:none;font:700 9px ui-monospace,Menlo,Consolas,monospace;color:#3ee6c8;border:1px solid #3ee6c833;border-radius:999px;padding:3px 7px;letter-spacing:.5px}
   .foot{margin:22px 0 0;color:#5a6174;font-size:12px}
   .err{color:#ff6b6b}
   .state{padding:26px;border:1px dashed #262a35;border-radius:12px;color:#8b93a7;text-align:center}
@@ -58,7 +59,7 @@
     <span id="count" class="chip">0 / 0</span>
   </div>
   <div id="list"><div class="state">Connecting to the CDN…</div></div>
-  <p class="foot">games stream from the CDN into a private window · Esc closes the credits</p>
+  <p class="foot">games stream from the CDN + Cloudflare storage into a private window · Esc closes the credits</p>
 </div>
 
 <div id="ov" style="display:none">
@@ -79,13 +80,16 @@
 
 /* ---- CDN sources, freshest first. raw.github sends a CSP on HTML files,
    so it is only used for fetching content — never for hosting this page. */
-/* Only the two CDNs that work in school filters: jsDelivr + esm.sh.
+/* Only the CDNs that work in school filters: jsDelivr + esm.sh first.
    jsDelivr first — esm.sh rewrites .js files into ES-module stubs
    (breaks game scripts), so it stays as the fast fallback for the
-   page/catalog and HTML-only games. */
+   page/catalog and HTML-only games. githack is the last resort: it
+   serves GitHub files with CORS and NO 20MB cap (GitHub allows files
+   up to 100MB), so big games that outgrow jsDelivr/esm.sh still load. */
 var CDNS=[
   {name:"jsdelivr",base:"https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/"},
-  {name:"esm.sh",  base:"https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/"}
+  {name:"esm.sh",  base:"https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/"},
+  {name:"githack", base:"https://raw.githack.com/onlyyzzz-cmyk/securly-games/main/"}
 ];
 
 var list=document.getElementById("list");
@@ -94,6 +98,7 @@ var count=document.getElementById("count");
 var srcBadge=document.getElementById("src");
 var items=[];
 var bestBase=null;
+var bigMap={};
 
 function esc(x){return String(x).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]});}
 function pad(i){return (i<10?"0":"")+i;}
@@ -132,19 +137,71 @@ function loadCatalog(){
   });
 }
 
+/* Big games are too large for jsDelivr/esm.sh (both cap around 20MB
+   per file), so they live on big-game storage (Cloudflare R2 or any big
+   file host) and are listed in big-games.json with their public URL(s).
+   The manifest is tiny, so it travels fine on the CDN chain — and it can
+   hold ANY number of games, one entry each: {"file":…, "url":…,
+   "mirrors":[…]} (mirrors are extra copies tried if the main host dies). */
+function loadBigList(){
+  return pick(function(cdn){
+    return fetchTimeout(cdn.base+"big-games.json").then(function(r){return r.json();}).then(function(j){
+      if(!Array.isArray(j))throw new Error("big list not a list");
+      for(var i=0;i<j.length;i++){
+        var e=j[i];
+        if(!e||!e.file)continue;
+        var urls=[];
+        if(e.url)urls.push(String(e.url));
+        if(Array.isArray(e.mirrors)){
+          for(var m=0;m<e.mirrors.length;m++){if(e.mirrors[m])urls.push(String(e.mirrors[m]));}
+        }
+        if(urls.length)bigMap[String(e.file)]=urls;
+      }
+      return j;
+    });
+  }).catch(function(){ /* the big list is optional — CDN games still work */ });
+}
+
+function dirOf(u){var k=u.lastIndexOf("/");return k>=0?u.slice(0,k+1):u;}
+
 /* jsDelivr serves .html as plain text (that's why a direct open shows
    the code), but it serves .js assets correctly. So games are fetched
    as TEXT and re-served through document.write into an about:blank
    popup — the game renders normally and its scripts still load from
    jsDelivr. esm.sh is the fallback for the HTML text itself. */
-function loadGameHTML(name,onTry){
+function loadFromCDN(name,onTry){
   var startIdx=0;
   for(var k=0;k<CDNS.length;k++){if(CDNS[k].base===bestBase){startIdx=k;break;}}
   return pick(function(cdn){
-    return fetchTimeout(cdn.base+"games/"+encodeURIComponent(name)).then(function(r){return r.text();}).then(function(html){
-      return {html:html,base:cdn.base};
+    /* long timeout: a big game fetched from githack can take a while */
+    return fetchTimeout(cdn.base+"games/"+encodeURIComponent(name),20000).then(function(r){return r.text();}).then(function(html){
+      return {html:html,href:cdn.base+"games/",host:cdn.name};
     });
   },startIdx,onTry);
+}
+
+/* Big games stream straight from storage — each entry can list a primary
+   URL plus mirrors (extra R2 domains, backup hosts). Every host is tried
+   in order with a long timeout; the winning folder URL becomes the game's
+   <base> so its own assets resolve from the same host. If every storage
+   host fails, the normal CDN chain (incl. githack, which has no 20MB
+   cap) is the fallback. */
+function loadGameHTML(name,onTry){
+  var urls=bigMap[name];
+  if(urls&&urls.length){
+    var i=0;
+    function tryUrl(){
+      if(i>=urls.length)return Promise.reject(new Error("all storage hosts failed"));
+      var u=urls[i++];
+      return fetchTimeout(u,20000).then(function(r){return r.text();}).then(function(html){
+        return {html:html,href:dirOf(u),host:"storage"};
+      }).catch(tryUrl);
+    }
+    return tryUrl().catch(function(){
+      return loadFromCDN(name,onTry);
+    });
+  }
+  return loadFromCDN(name,onTry);
 }
 
 function openPopup(){
@@ -160,18 +217,18 @@ function loading(w,name,line){
   w.document.close();
 }
 
-function play(name){
+function play(g){
   var w=openPopup();
   if(!w)return;
-  loading(w,name,"starting…");
-  loadGameHTML(name,function(cdn,i,total){
-    loading(w,name,"source "+i+"/"+total+" · "+cdn.name+"…");
+  loading(w,g.dn,bigMap[g.file]?"big-game storage…":"starting…");
+  loadGameHTML(g.file,function(cdn,i,total){
+    loading(w,g.dn,"source "+i+"/"+total+" · "+cdn.name+"…");
   }).then(function(res){
     var html=res.html;
     /* Only add a <base> when the game doesn't have its own — the game
        code itself is never touched otherwise. */
     if(!/<base\s/i.test(html)){
-      var base='<base href="'+res.base+'games/">';
+      var base='<base href="'+res.href+'">';
       if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
       else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
       else html=base+html;
@@ -183,7 +240,7 @@ function play(name){
     if(e)e.onclick=function(){w.close();};
   }).catch(function(e){
     w.document.open();
-    w.document.write('<div style="font-family:Arial;padding:24px;background:#0c0d10;color:#ff6b6b;min-height:100vh">Couldn\'t load '+esc(name)+': '+esc(e&&e.message||e)+'</div>');
+    w.document.write('<div style="font-family:Arial;padding:24px;background:#0c0d10;color:#ff6b6b;min-height:100vh">Couldn\'t load '+esc(g.dn)+': '+esc(e&&e.message||e)+'</div>');
     w.document.close();
   });
 }
@@ -196,11 +253,11 @@ function draw(filter){
   }
   count.textContent=out.length+" / "+items.length;
   list.innerHTML=out.map(function(g){
-    return '<li><button class="g" data-i="'+g.i+'"><span class="num">'+pad(g.i+1)+'</span><span class="t">'+esc(g.dn)+'</span></button></li>';
+    return '<li><button class="g" data-i="'+g.i+'"><span class="num">'+pad(g.i+1)+'</span><span class="t">'+esc(g.dn)+'</span>'+(g.host==="cloudflare"?'<span class="big">big</span>':'')+'</button></li>';
   }).join("");
   var btns=list.querySelectorAll(".g");
   for(var j=0;j<btns.length;j++){
-    btns[j].onclick=(function(g){return function(){play(g.file);};})(items[Number(btns[j].getAttribute("data-i"))]);
+    btns[j].onclick=(function(g){return function(){play(g);};})(items[Number(btns[j].getAttribute("data-i"))]);
   }
 }
 
@@ -214,8 +271,20 @@ document.getElementById("exit").onclick=function(){window.close();};
 
 q.oninput=function(){draw(q.value);};
 
-loadCatalog().then(function(j){
-  items=j.map(function(n,i){return {i:i,name:String(n),file:String(n),dn:String(n).replace(/\.html?$/i,"")};});
+Promise.all([loadCatalog(),loadBigList()]).then(function(res){
+  /* Merge: catalog files first, then big-game entries that only exist on
+     storage (Cloudflare-only ports are never in the repo's games folder,
+     so without this they'd never show up). */
+  var cat=res[0].slice();
+  var seen={};
+  for(var c=0;c<cat.length;c++)seen[cat[c]]=1;
+  for(var key in bigMap){
+    if(bigMap.hasOwnProperty(key)&&!seen[key]){seen[key]=1;cat.push(key);}
+  }
+  items=cat.map(function(n,i){
+    var f=String(n);
+    return {i:i,name:f,file:f,dn:f.replace(/\.html?$/i,""),host:bigMap[f]?"cloudflare":"cdn"};
+  });
   if(!items.length){list.innerHTML='<div class="state">catalog is empty</div>';return;}
   draw("");
 }).catch(function(e){

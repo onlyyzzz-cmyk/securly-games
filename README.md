@@ -10,24 +10,94 @@ https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/index.html
 
 ## JavaScript bookmarklet
 
-Copy this exact JavaScript into a bookmark’s URL field. It opens an `about:blank` window and builds everything with `document.write()` right from the bookmark — the address bar only ever shows `about:blank` (no file to load, no "File Not Found", no plain text). It fetches the game catalog from **esm.sh** and shows a searchable list. Clicking a game fetches its HTML from esm.sh (served as real `text/html` with CORS enabled) and writes it into the same window, so the game plays right there.
+Copy this exact JavaScript into a bookmark’s URL field. It opens the launcher from **esm.sh** in a new tab (a plain navigation, so restrictive pages can’t block it). The launcher then streams each game into an `about:blank` window with `document.write()` — no game code is ever rewritten and the game window’s address bar stays clean.
 
 ```javascript
-javascript:(function(){try{var SRC=["https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/","https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/","https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/"],w=window.open("about:blank","_blank");if(!w){w=window.open();}if(!w){alert("Popup blocked — allow pop-ups for this site, then try the bookmark again.");return;}function esc(x){return String(x).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}function page(body,title){return'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+title+'</title><style>*{box-sizing:border-box}html,body{margin:0;min-height:100%}body{background:radial-gradient(1100px 480px at 15% -10%,rgba(255,179,71,.12),transparent 55%),radial-gradient(900px 420px at 95% -15%,rgba(62,230,200,.1),transparent 55%),#0c0d10;color:#f2efe6;font:15px/1.45 Arial,Helvetica,sans-serif;padding:28px 22px 40px}h1{margin:0;font:800 30px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px;text-transform:uppercase}h1 em{font-style:normal;color:#ffb347}.tag{margin:6px 0 0;color:#8b93a7;font-size:13px}.hd{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}.btns{display:flex;gap:8px}.btn{padding:9px 14px;border:1px solid #ffb347;border-radius:8px;background:#ffb347;color:#14110b;font:800 13px ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:1px;cursor:pointer}.btn.ghost{background:transparent;color:#ffb347}.btn:hover{filter:brightness(1.12)}.bar{display:flex;gap:10px;align-items:center;margin-bottom:16px}#q{flex:1;min-width:0;padding:11px 14px;border:1px solid #262a35;border-radius:10px;background:#12141b;color:#f2efe6;font-size:15px;outline:none}#q:focus{border-color:#3ee6c8}#q::placeholder{color:#5a6174}.chip{font:700 12px ui-monospace,Menlo,Consolas,monospace;color:#3ee6c8;background:#12141b;border:1px solid #262a35;border-radius:999px;padding:8px 12px;white-space:nowrap}#list{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.g{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border:1px solid #232734;border-radius:12px;background:#12141b;color:#f2efe6;font:inherit;cursor:pointer;box-shadow:0 3px 0 #1a1d26;transition:transform .08s,border-color .08s,box-shadow .08s}.g:hover{transform:translateY(-2px);border-color:#3ee6c8;box-shadow:0 6px 0 -1px rgba(62,230,200,.4)}.g .num{font:700 12px ui-monospace,Menlo,Consolas,monospace;color:#ffb347;min-width:22px}.g .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:capitalize}.foot{margin:22px 0 0;color:#5a6174;font-size:12px}.err{color:#ff6b6b}#ov{position:fixed;inset:0;background:rgba(5,6,9,.78);display:flex;align-items:center;justify-content:center;padding:20px;z-index:999}.card{max-width:430px;width:100%;background:#12141b;border:1px solid #2a2f3d;border-radius:14px;padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.5)}.card h2{margin:0 0 12px;font:800 16px ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px;color:#ffb347}.card ul{margin:0 0 16px;padding-left:18px;color:#cfd3dd}.card li{margin:6px 0}a{color:#3ee6c8}</style></head><body>'+body+'</body></html>'}function write(x){w.document.open();w.document.write(x);w.document.close();var e=w.document.getElementById("exit"),c=w.document.getElementById("cred"),cl=w.document.getElementById("cclose"),ov=w.document.getElementById("ov");if(e)e.onclick=function(){w.close()};if(c)c.onclick=function(){ov.style.display="flex"};if(cl)cl.onclick=function(){ov.style.display="none"};if(ov)ov.onclick=function(ev){if(ev.target===ov)ov.style.display="none"};w.document.onkeydown=function(ev){if(ev.key==="Escape"){var o=w.document.getElementById("ov");if(o&&o.style.display==="flex")o.style.display="none"}}}function load(u,text){function go(i){return fetch(SRC[i]+u,{cache:"no-store"}).then(function(r){if(!r.ok)throw Error("HTTP "+r.status+" for "+u);return text?r.text():r.json()}).then(function(t){return{t:t,s:SRC[i]}}).catch(function(e){if(i<SRC.length-1)return go(i+1);throw e})}return go(0)}function play(name,path){load(path,true).then(function(res){var html=res.t,src=res.s;if(!/<base\s/i.test(html)){var base='<base href="'+src+'games/">';if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return'<head'+a+'>'+base});else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return'<html'+a+'>'+base});else html=base+html;}write(html)}).catch(function(e){write(page('<h1>Couldn’t load '+esc(name)+'</h1><p class="err">'+esc(e&&e.message||e)+'</p><button id="exit" class="btn">Exit</button>',"Error"))})}function launcher(x){function pad(i){return(i<10?"0":"")+i}var items=x.map(function(n){return{name:n,dn:n.replace(/\.html$/i,""),path:"games/"+encodeURIComponent(n)}});write(page('<div class="hd"><div><h1>SECURLY<em>GAMES</em></h1><p class="tag">unblocked arcade · by acearooni10 · @24k_onlyy</p></div><div class="btns"><button id="cred" class="btn ghost">Credits</button><button id="exit" class="btn">Exit</button></div></div><div class="bar"><input id="q" placeholder="Find a game…" autocomplete="off"><span id="count" class="chip">0 / 0</span></div><ul id="list"></ul><p class="foot">games stream from the securly-games CDN · Esc closes the credits</p><div id="ov" style="display:none"><div class="card"><h2>CREDITS</h2><ul><li><b>Acearooni10</b> — founder &amp; lead developer · <a href="https://www.instagram.com/24k_onlyy/" target="_blank">@24k_onlyy</a></li><li><b>Game Partners</b> — game hosting &amp; resources</li><li>All games belong to their original creators.</li></ul><button id="cclose" class="btn">Close</button></div></div>',"Securly Games"));var inp=w.document.getElementById("q"),list=w.document.getElementById("list"),count=w.document.getElementById("count");function draw(q){q=(q||"").toLowerCase();var out=items.map(function(it,idx){return{it:it,idx:idx}}).filter(function(k){return k.it.name.toLowerCase().indexOf(q)>-1});count.textContent=out.length+" / "+items.length;list.innerHTML=out.map(function(k){return'<li><button class="g" data-i="'+k.idx+'"><span class="num">'+pad(k.idx+1)+'</span><span class="t">'+esc(k.it.dn)+'</span></button></li>'}).join("");Array.prototype.forEach.call(w.document.querySelectorAll(".g"),function(b){var it=items[Number(b.getAttribute("data-i"))];b.onclick=function(){play(it.dn,it.path)}})}if(inp)inp.oninput=function(){draw(inp.value)};draw("")}load("games.json").then(function(res){var x=res.t;if(!Array.isArray(x))throw Error("catalog was not a list");launcher(x)}).catch(function(e){write(page('<h1>Couldn’t load the catalog</h1><p class="err">'+esc(e&&e.message||e)+'</p><button id="exit" class="btn">Exit</button>',"Error"))})}catch(err){try{write(page('<h1>Bookmarklet error</h1><p class="err">'+esc(err&&err.message||err)+'</p><button id="exit" class="btn">Exit</button>',"Error"))}catch(e2){alert("Bookmarklet error: "+(err&&err.message||err));}}})();
+javascript:(function(){var u="https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/launcher.html";var w=window.open(u,"_blank");if(!w){w=window.open();}if(!w){alert("Popup blocked — allow pop-ups for this site, then try the bookmark again.");}})();
 ```
 
 Notes:
 
-- The launcher and every game live in the same `about:blank` window — the address bar never shows a game URL.
-- Game HTML is fetched from **esm.sh**, which serves the repo’s files as real `text/html` (`application/json` for the catalog) with `Access-Control-Allow-Origin: *`, so the fetches work from any page.
+- The launcher tries **jsDelivr** first, then **esm.sh**, then **githack**, for the catalog and game files (esm.sh rewrites `.js` files into ES-module stubs; githack is the big-file fallback — CORS enabled, no 20 MB cap).
+- Big games live in `big-games.json` (tiny manifest, unlimited entries, mirror URLs supported). Any game listed there appears in the same game list even though it is not in this repo — the launcher and the site both merge it in and stream it from storage.
+- Games are fetched as text and re-served through `document.write()` into an `about:blank` popup — the game renders normally and its scripts/assets still load from the CDN.
 - Games with their own `<base>` tag (like Google Baseball) keep it; games without one get a `<base>` injected pointing at their CDN folder so relative scripts/styles/assets resolve.
 - The toolbar has **Credits** (the team — Acearooni10 · @24k_onlyy — and partners) and **Exit**.
 - The search box filters the game cards as you type; the chip shows matches out of the full catalog.
 
-Troubleshooting:
+## Big games — hosting options
 
-- Nothing happens at all when you click it — the code got mangled while copying. Re-copy it from this page: it must be one single line in the bookmark’s URL field.
+jsDelivr and esm.sh both cap files around 20 MB, so very large games (full ports with big asset folders) can’t ride the main CDN chain. Big games are **never removed from the catalog** — they stream from a bigger host instead, listed in `big-games.json`.
+
+`big-games.json` holds **any number of games**, one entry each, and every entry supports **mirror URLs**: the loader tries the main URL first, then each mirror in order, then falls back to the normal CDN chain. So a game never fails just because one host is down.
+
+### Option A — githack (no setup, files up to ~100 MB)
+
+Just commit the game to the repo like any other game. The launcher/site fall back to **raw.githack.com**, which serves GitHub files with `Access-Control-Allow-Origin: *` and no 20 MB cap (GitHub allows files up to 100 MB). Nothing else to configure — no account, no storage, no manifest entry.
+
+### Option B — big-game storage (Cloudflare R2 or any big file host)
+
+Very large games (above ~100 MB, or big folders of assets) live on **Cloudflare R2** (free tier: 10 GB storage, zero egress fees) — or any host that serves files over HTTPS with CORS (`Access-Control-Allow-Origin: *`). R2 public access needs a domain connected to the bucket (a subdomain of a domain you own).
+
+How it works:
+
+1. The launcher/site load `games.json` (the repo catalog) **plus** `big-games.json` — the manifest of `{"file": …, "url": …, "mirrors": […]}` entries. Games that only exist in the manifest still show up in the list.
+2. When a game is played, every listed host is tried in order (main URL first, then mirrors), each with a long timeout for big files.
+3. A `<base>` is injected pointing at the winning host’s folder, so the game’s own assets (a full port’s folder of scripts/sprites/sounds) resolve from the same place. Game code is never rewritten.
+4. If every storage host fails, the loader falls back to the normal CDN chain (githack included).
+5. `index.js` (dev server) and the dashboard merge the same manifest, so big games show up everywhere.
+
+### Adding a big game
+
+1. Upload the game to the bucket, e.g. `games/`. Multi-file ports go in their own folder, e.g. `games/portal/` — then `url` points at that folder’s HTML file and everything else in the folder loads automatically.
+2. Set the bucket CORS policy so the bookmarklet can fetch it from any page:
+
+```json
+{
+  "CORSRules": [
+    {
+      "AllowedOrigins": ["*"],
+      "AllowedMethods": ["GET", "HEAD"],
+      "AllowedHeaders": ["*"],
+      "MaxAgeSeconds": 3600
+    }
+  ]
+}
+```
+
+3. Add one entry per game to `big-games.json`. `url` is the main host; `mirrors` are optional extra copies tried if the main host is down:
+
+```json
+[
+  {
+    "file": "minecraft 1.8.8.html",
+    "url": "https://games.example.com/games/minecraft 1.8.8.html"
+  },
+  {
+    "file": "portal.html",
+    "url": "https://games.example.com/games/portal/index.html",
+    "mirrors": [
+      "https://pub-xxxx.r2.dev/games/portal/index.html",
+      "https://backup.example.com/games/portal/index.html"
+    ]
+  }
+]
+```
+
+4. Commit and push — the launcher and website pick it up automatically. No game is ever removed from the catalog.
+
+Quick upload with Cloudflare’s CLI (run locally where the game files are):
+
+```bash
+npx wrangler r2 object put securly-games/games/portal/index.html --file=index.html --content-type=text/html
+```
+
+## Troubleshooting
+
+- Nothing happens at all when you click the bookmark — the code got mangled while copying. Re-copy it from this page: it must be one single line in the bookmark’s URL field.
 - You get a “Popup blocked” alert — allow pop-ups for the site you’re on and retry, or run the bookmark from a different page.
-- The launcher opens but says “Could not load games” — the network is blocking `esm.sh`. Try a different page or network.
-- A game shows “Could not load game” — the fetch to esm.sh was blocked. Try a different page or network.
-- A game loads but stays blank — the game’s own CDN assets (hosted outside this repo) may be blocked by the network.
+- The launcher opens but says it can’t load the catalog — the network is blocking the CDNs. Try a different page or network.
+- A game shows “Couldn’t load …” — the fetch was blocked. Try a different page or network.
+- A big game fails while the same file opens fine in a browser tab — the host’s CORS policy is missing (paste the policy above), the domain isn’t connected, or every mirror is also down. For games under 100 MB, the simplest fix is Option A: commit the game to the repo and let githack serve it.
+- A big game appears in the list but “Couldn’t load”s instantly — double-check the `file` name in `big-games.json` matches the card exactly (including spaces and `.html`).
+- A game loads but stays blank — the game’s own assets may be hosted outside this repo/CDN and blocked by the network.

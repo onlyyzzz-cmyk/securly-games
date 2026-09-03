@@ -370,8 +370,26 @@ const server = http.createServer((request, response) => {
   }
 
   if (pathname === '/games.json') {
+    const local = listHtmlFiles('games');
+    let big = [];
+    try {
+      big = JSON.parse(fs.readFileSync(path.join(ROOT, 'big-games.json'), 'utf8'));
+    } catch (err) {
+      big = [];
+    }
+    const seen = new Set(local);
+    const merged = local.slice();
+    if (Array.isArray(big)) {
+      big.forEach((e) => {
+        const f = e && e.file;
+        if (typeof f === 'string' && !seen.has(f)) {
+          seen.add(f);
+          merged.push(f);
+        }
+      });
+    }
     response.writeHead(200, { 'Content-Type': MIME['.json'] });
-    response.end(JSON.stringify(listHtmlFiles('games'), null, 2));
+    response.end(JSON.stringify(merged, null, 2));
     return;
   }
 

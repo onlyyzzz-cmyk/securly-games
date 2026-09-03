@@ -3,12 +3,12 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Securly Games</title>
 <style>
-body{min-height:100vh;margin:0;background:#17111d;color:#fff;font-family:Nunito,Arial,sans-serif}#cdn-app{max-width:1180px;margin:auto;padding:28px 20px 60px}.cdn-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.cdn-brand{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:800}.cdn-sub{margin:4px 0;color:#c8b9ca}.cdn-nav,.cdn-card-actions{display:flex;gap:8px;flex-wrap:wrap}.cdn-nav a,.cdn-link{display:inline-block;padding:10px 14px;border:1px solid #ffffff29;border-radius:10px;background:#ffffff12;color:#fff;text-decoration:none;font-weight:700}.cdn-hero{margin:38px 0 24px;padding:28px;border:1px solid #ffffff1f;border-radius:18px;background:linear-gradient(135deg,#e8552f2e,#8b5cf61f)}.cdn-hero h1{margin:0 0 8px}.cdn-hero p{color:#d9cedd}.cdn-status{color:#f5bd7b;font-weight:700}.cdn-section{margin-top:28px}.cdn-section-head{display:flex;align-items:center;gap:12px}.cdn-section h2{font-size:1.25rem}.cdn-rule{height:1px;flex:1;background:#ffffff24}.cdn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.cdn-card{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid #ffffff1f;border-radius:14px;background:#ffffff0f}.cdn-card-name{font-weight:800;flex:1}.cdn-search{width:100%;max-width:340px;margin:14px 0 2px;padding:10px 14px;border:1px solid #ffffff29;border-radius:10px;background:#ffffff12;color:#fff;font:inherit;box-sizing:border-box}.cdn-search::placeholder{color:#a99aae}.cdn-search:focus{outline:none;border-color:#8b5cf6;background:#ffffff1a}.cdn-empty{padding:22px;border:1px dashed #ffffff33;border-radius:12px;color:#c8b9ca}.cdn-error{color:#ff9eae}.cdn-footer{margin-top:42px;color:#a99aae;font-size:.82rem}
+body{min-height:100vh;margin:0;background:#17111d;color:#fff;font-family:Nunito,Arial,sans-serif}#cdn-app{max-width:1180px;margin:auto;padding:28px 20px 60px}.cdn-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.cdn-brand{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:800}.cdn-sub{margin:4px 0;color:#c8b9ca}.cdn-nav,.cdn-card-actions{display:flex;gap:8px;flex-wrap:wrap}.cdn-nav a,.cdn-link{display:inline-block;padding:10px 14px;border:1px solid #ffffff29;border-radius:10px;background:#ffffff12;color:#fff;text-decoration:none;font-weight:700}.cdn-hero{margin:38px 0 24px;padding:28px;border:1px solid #ffffff1f;border-radius:18px;background:linear-gradient(135deg,#e8552f2e,#8b5cf61f)}.cdn-hero h1{margin:0 0 8px}.cdn-hero p{color:#d9cedd}.cdn-status{color:#f5bd7b;font-weight:700}.cdn-section{margin-top:28px}.cdn-section-head{display:flex;align-items:center;gap:12px}.cdn-section h2{font-size:1.25rem}.cdn-rule{height:1px;flex:1;background:#ffffff24}.cdn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.cdn-card{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid #ffffff1f;border-radius:14px;background:#ffffff0f}.cdn-card-name{font-weight:800;flex:1}.cdn-card-tag{font:700 10px ui-monospace,monospace;color:#7fe3cd;border:1px solid #7fe3cd40;border-radius:999px;padding:3px 7px;align-self:flex-start}.cdn-search{width:100%;max-width:340px;margin:14px 0 2px;padding:10px 14px;border:1px solid #ffffff29;border-radius:10px;background:#ffffff12;color:#fff;font:inherit;box-sizing:border-box}.cdn-search::placeholder{color:#a99aae}.cdn-search:focus{outline:none;border-color:#8b5cf6;background:#ffffff1a}.cdn-empty{padding:22px;border:1px dashed #ffffff33;border-radius:12px;color:#c8b9ca}.cdn-error{color:#ff9eae}.cdn-footer{margin-top:42px;color:#a99aae;font-size:.82rem}
 </style></head><body><main id="cdn-app">
 <header class="cdn-top"><div><div class="cdn-brand">🍕 pizza arcade</div><p class="cdn-sub">small games · good breaks · no fuss</p></div><nav class="cdn-nav"><a href="tutorial.html">how to play</a><a href="credits.html">credits</a></nav></header>
-<section class="cdn-hero"><h1>Welcome to Securly Games</h1><p>Games and pages loaded directly from GitHub through jsDelivr.</p><div id="cdn-status" class="cdn-status">Loading games.json…</div></section>
+<section class="cdn-hero"><h1>Welcome to Securly Games</h1><p>Small games stream from GitHub through the CDN — big games (full ports included) stream from big-game storage with auto-fallbacks.</p><div id="cdn-status" class="cdn-status">Loading games.json…</div></section>
 <section class="cdn-section"><div class="cdn-section-head"><h2>🎮 Games</h2><div class="cdn-rule"></div></div><input id="games-search" class="cdn-search" type="search" placeholder="Search games…" autocomplete="off"><div id="games-grid" class="cdn-grid"><div class="cdn-empty">Scanning the games catalog…</div></div></section>
-<footer class="cdn-footer">Static CDN build · GitHub main branch</footer></main>
+<footer class="cdn-footer">Static CDN build · GitHub main branch · big games on Cloudflare storage (mirrors supported) · fallback: githack (no 20 MB cap)</footer></main>
 <script>
 (function(){
   'use strict';
@@ -17,22 +17,78 @@ body{min-height:100vh;margin:0;background:#17111d;color:#fff;font-family:Nunito,
   function label(file){return String(file).replace(/\.html?$/i,'').replace(/[_\-+]/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2');}
   function escapeHtml(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function write(id,html){var element=document.getElementById(id);if(element)element.innerHTML=html;}
-  function render(id,items,folder){
-    if(!Array.isArray(items)||!items.length){write(id,'<div class=\"cdn-empty\">No files found.</div>');return;}
-    write(id,items.map(function(file){var path=folder+'/'+encodeURIComponent(file);var href=cdn(path);return '<article class=\"cdn-card\"><div class=\"cdn-card-name\">'+escapeHtml(label(file))+'</div><div class=\"cdn-card-actions\"><a class=\"cdn-link\" href=\"'+href+'\" data-file=\"'+path+'\">Open</a><a class=\"cdn-link\" href=\"'+href+'\" data-file=\"'+path+'\">New tab</a></div></article>';}).join(''));
+  function dirOf(u){var k=u.lastIndexOf('/');return k>=0?u.slice(0,k+1):u;}
+  /* big-games.json: one entry per big game. Each entry = {file, url, mirrors}
+     — url is the primary host (Cloudflare R2 etc.), mirrors are extra copies
+     tried in order if the primary dies. The manifest can hold any number of
+     games; the loader below never touches game code, it just streams the
+     HTML and sets <base> to the winning host's folder so the game's own
+     assets (folders of a full port) resolve from the same place. */
+  function urlListOf(entry){
+    var out=[];
+    if(!entry)return out;
+    if(entry.url)out.push(String(entry.url));
+    if(Array.isArray(entry.mirrors)){
+      for(var i=0;i<entry.mirrors.length;i++){if(entry.mirrors[i])out.push(String(entry.mirrors[i]));}
+    }
+    return out;
+  }
+  var BIGS={};
+  function render(id,items,folder,bigs){
+    if(!Array.isArray(items)||!items.length){write(id,'<div class="cdn-empty">No files found.</div>');return;}
+    if(Array.isArray(bigs)){
+      for(var b=0;b<bigs.length;b++){
+        var u=urlListOf(bigs[b]);
+        if(bigs[b]&&bigs[b].file&&u.length)BIGS[String(bigs[b].file)]=u;
+      }
+    }
+    write(id,items.map(function(file){
+      var path=folder+'/'+encodeURIComponent(file);
+      var href=cdn(path);
+      var urls=BIGS[String(file)]||[];
+      var tag=urls.length?'<div class="cdn-card-tag">big · storage</div>':'';
+      var target=urls.length?urls[0]:href;
+      return '<article class="cdn-card"><div class="cdn-card-name">'+escapeHtml(label(file))+'</div>'+tag+'<div class="cdn-card-actions"><a class="cdn-link" href="'+target+'" data-file="'+escapeHtml(path)+'">Open</a><a class="cdn-link" href="'+target+'" data-file="'+escapeHtml(path)+'">New tab</a></div></article>';
+    }).join(''));
   }
   function openGame(path){
     var popup=window.open('about:blank','_blank');
-    if(!popup){location.href=ROOT+path;return;}
+    var file=decodeURIComponent(String(path).replace(/^.*\//,''));
+    var urls=BIGS[file]||[];
+    if(!popup){location.href=urls[0]||(ROOT+path);return;}
     popup.document.open();
-    popup.document.write('<div style=\"font-family:Arial;display:grid;place-items:center;min-height:100vh;margin:0;background:#17111d;color:#fff\">Loading…</div>');
+    popup.document.write('<div style="font-family:Arial;display:grid;place-items:center;min-height:100vh;margin:0;background:#17111d;color:#fff">Loading…</div>');
     popup.document.close();
-    fetch(ROOT+path,{cache:'no-store'}).then(function(response){if(!response.ok)throw Error(response.status);return response.text();}).then(function(html){
-      var dir=path.split('/')[0],base='<base href=\"'+ROOT+dir+'/\">';
-      if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
-      else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
-      popup.document.open();popup.document.write(html);popup.document.close();
-    }).catch(function(){popup.document.open();popup.document.write('<div style=\"font-family:Arial;padding:24px;background:#17111d;color:#fff\">Could not load this file.</div>');popup.document.close();});
+    /* Source chain: every storage host listed for this big game first
+       (Cloudflare R2 primary + mirrors), then the CDN chain — jsDelivr →
+       esm.sh → githack (CORS *, no 20 MB cap) → raw GitHub. First host
+       that answers wins; its folder becomes the game's <base>. */
+    var chain=[];
+    for(var s=0;s<urls.length;s++)chain.push({url:urls[s],dir:dirOf(urls[s])});
+    var repoDir='https://cdn.jsdelivr.net/gh/onlyyzzz-cmyk/securly-games@main/games/';
+    chain.push({url:ROOT+path,dir:repoDir});
+    chain.push({url:'https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/'+path,dir:'https://esm.sh/gh/onlyyzzz-cmyk/securly-games@main/games/'});
+    chain.push({url:'https://raw.githack.com/onlyyzzz-cmyk/securly-games/main/'+path,dir:'https://raw.githack.com/onlyyzzz-cmyk/securly-games/main/games/'});
+    chain.push({url:'https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/'+path,dir:'https://raw.githubusercontent.com/onlyyzzz-cmyk/securly-games/main/games/'});
+    var i=0,done=false;
+    function fail(){if(done)return;done=true;popup.document.open();popup.document.write('<div style="font-family:Arial;padding:24px;background:#17111d;color:#fff">Could not load this game — every source failed.</div>');popup.document.close();}
+    function tryNext(){
+      if(done)return;
+      if(i>=chain.length){fail();return;}
+      var s=chain[i++];
+      var timer=setTimeout(tryNext,20000);
+      fetch(s.url,{cache:'no-store'}).then(function(response){if(!response.ok)throw Error(response.status);clearTimeout(timer);return response.text();}).then(function(html){
+        if(done)return;done=true;
+        if(!/<base\s/i.test(html)){
+          var base='<base href="'+s.dir+'">';
+          if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
+          else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
+          else html=base+html;
+        }
+        popup.document.open();popup.document.write(html);popup.document.close();
+      }).catch(function(){clearTimeout(timer);tryNext();});
+    }
+    tryNext();
   }
   function wireGrid(id){
     var grid=document.getElementById(id);if(!grid)return;
@@ -49,12 +105,17 @@ body{min-height:100vh;margin:0;background:#17111d;color:#fff;font-family:Nunito,
       });
     });
   }
-  function fetchCatalog(file,id,folder){return fetch(cdn(file),{cache:'no-store'}).then(function(response){if(!response.ok)throw Error(response.status);return response.json();}).then(function(items){render(id,items,folder);return items;});}
-  document.write('<p class=\"cdn-status\">Loading CDN catalogs…</p>');
-  Promise.all([fetchCatalog('games.json','games-grid','games')]).then(function(result){
-    var status=document.getElementById('cdn-status');if(status)status.textContent=result[0].length+' games loaded from jsDelivr.';
+  function fetchJson(file){return fetch(cdn(file),{cache:'no-store'}).then(function(response){if(!response.ok)throw Error(response.status);return response.json();});}
+  document.write('<p class="cdn-status">Loading CDN catalogs…</p>');
+  Promise.all([fetchJson('games.json'),fetchJson('big-games.json').catch(function(){return [];})]).then(function(result){
+    var list=result[0]||[], bigs=result[1]||[], seen={}, merged=[];
+    for(var i=0;i<list.length;i++){seen[list[i]]=true;merged.push(list[i]);}
+    for(var j=0;j<bigs.length;j++){var e=bigs[j];if(e&&e.file&&!seen[e.file]){seen[e.file]=true;merged.push(e.file);}}
+    render('games-grid',merged,'games',bigs);
+    var status=document.getElementById('cdn-status');
+    if(status)status.textContent=merged.length+' games loaded — '+bigs.length+' big games on Cloudflare storage.';
     wireGrid('games-grid');
     wireSearch();
-  }).catch(function(error){var status=document.getElementById('cdn-status');if(status)status.innerHTML='<span class=\"cdn-error\">Could not load the CDN catalog.</span>';console.error(error);});
+  }).catch(function(error){var status=document.getElementById('cdn-status');if(status)status.innerHTML='<span class="cdn-error">Could not load the CDN catalog.</span>';console.error(error);});
 }());
 </script></body></html>
