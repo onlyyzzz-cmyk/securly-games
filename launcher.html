@@ -102,13 +102,28 @@ var bigMap={};
 
 function esc(x){return String(x).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]});}
 function pad(i){return (i<10?"0":"")+i;}
-function bust(u){return u+"?v="+Date.now();}
+function encodePath(value){return String(value).split("/").map(encodeURIComponent).join("/");}
+function isGameHTML(html){return /<(?:!doctype|html|head|body|script|canvas)\b/i.test(String(html));}
+function bust(u){
+  u=String(u);
+  if(!/^https:\/\/(?:cdn\.jsdelivr\.net|esm\.sh|raw\.githack\.com|raw\.githubusercontent\.com)\//i.test(u))return u;
+  return u+(u.indexOf("?")>=0?"&":"?")+"v="+Date.now();
+}
 
 function fetchTimeout(u,ms){
   return new Promise(function(resolve,reject){
-    var timer=setTimeout(function(){reject(new Error("timed out"));},ms||4000);
-    fetch(bust(u),{cache:"no-store"})
-      .then(function(r){clearTimeout(timer);if(!r.ok)throw new Error("HTTP "+r.status);resolve(r);})
+    var controller=typeof AbortController==="function"?new AbortController():null;
+    var timer=setTimeout(function(){
+      if(controller)controller.abort();
+      reject(new Error("timed out"));
+    },ms||4000);
+    var options=controller?{cache:"no-store",signal:controller.signal}:{cache:"no-store"};
+    fetch(bust(u),options)
+      .then(function(r){
+        if(!r.ok)throw new Error("HTTP "+r.status);
+        clearTimeout(timer);
+        resolve(r);
+      })
       .catch(function(e){clearTimeout(timer);reject(e);});
   });
 }
@@ -163,6 +178,71 @@ function loadBigList(){
 }
 
 function dirOf(u){var k=u.lastIndexOf("/");return k>=0?u.slice(0,k+1):u;}
+function absoluteUrl(value,fallback){
+  try{return new URL(value,fallback).href;}catch(e){return fallback;}
+}
+function normalizeBase(value,fallback){
+  var url=absoluteUrl(value,fallback);
+  try{
+    var parsed=new URL(url);
+    if(parsed.hostname.toLowerCase()==="raw.githubusercontent.com"||parsed.hostname.toLowerCase()==="raw.github.com"){
+      var parts=parsed.pathname.split("/").filter(function(part){return part;});
+      if(parts.length>=3){
+        var suffix=parts.slice(3).join("/");
+        if(parsed.pathname.charAt(parsed.pathname.length-1)==="/")suffix+="/";
+        return "https://cdn.jsdelivr.net/gh/"+parts[0]+"/"+parts[1]+"@"+parts[2]+"/"+suffix+(parsed.search||"");
+      }
+    }
+  }catch(e){}
+  return url;
+}
+function pageBaseFromUrl(value,fallback){
+  var url=absoluteUrl(value,fallback);
+  var build=url.search(/\/Build\//i);
+  if(build>=0)return url.slice(0,build+1);
+  if(/\/Build\/?$/i.test(url))return url.replace(/Build\/?$/i,"");
+  return dirOf(url);
+}
+function findPageBase(html,fallback){
+  var match=html.match(/(?:var|let|const)\s+buildUrl\s*=\s*["'](https?:\/\/[^"']+)["']/i);
+  if(match)return pageBaseFromUrl(match[1],fallback);
+  var urls=html.match(/(?:dataUrl|frameworkUrl|codeUrl|loaderUrl)\s*[:=]\s*["'](https?:\/\/[^"']+)["']/ig)||[];
+  for(var i=0;i<urls.length;i++){
+    var found=urls[i].match(/https?:\/\/[^"']+/i);
+    if(found&&/\/Build\//i.test(found[0]))return pageBaseFromUrl(found[0],fallback);
+  }
+  return fallback;
+}
+
+/* Games are written into about:blank, so Unity's loader cannot resolve
+   relative StreamingAssets against document.URL. Normalize raw GitHub
+   bases to a JavaScript-safe CDN, preserve each game's own base, add one
+   only when missing, and make Unity's streaming path absolute. */
+function stripInjectedMarkup(html){
+  return String(html)
+    .replace(/<script\b[^>]*src=["']https:\/\/www\.googletagmanager\.com\/gtag\/js[^>]*><\/script>/ig,"")
+    .replace(/<script\b[^>]*>\s*window\.dataLayer\s*=\s*window\.dataLayer\s*\|\|\s*\[\];[\s\S]*?<\/script>/ig,"")
+    .replace(/\sid=["']sidebarad[12]["']/ig,"");
+}
+function prepareGameHTML(html,fallback){
+  html=stripInjectedMarkup(html);
+  var match=html.match(/<base\s+[^>]*href=["']([^"']+)["']/i);
+  var originalBase=match?absoluteUrl(match[1],fallback):fallback;
+  var baseHref=normalizeBase(originalBase,fallback);
+  if(!match){
+    var base='<base href="'+baseHref+'">';
+    if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
+    else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
+    else html=base+html;
+  }else if(baseHref!==originalBase){
+    html=html.replace(/(<base\s+[^>]*href=)(["'])[^"']*(\2)/i,function(m,prefix,quote,end){return prefix+quote+baseHref+end;});
+  }
+  var pageBase=findPageBase(html,baseHref);
+  var assetsHref=absoluteUrl("StreamingAssets/",pageBase);
+  var safeAssetsHref=JSON.stringify(assetsHref);
+  html=html.replace(/(streamingAssetsUrl\s*:\s*)(["'])StreamingAssets\/?\2/g,function(m,prefix){return prefix+safeAssetsHref;});
+  return html;
+}
 
 /* jsDelivr serves .html as plain text (that's why a direct open shows
    the code), but it serves .js assets correctly. So games are fetched
@@ -174,8 +254,10 @@ function loadFromCDN(name,onTry){
   for(var k=0;k<CDNS.length;k++){if(CDNS[k].base===bestBase){startIdx=k;break;}}
   return pick(function(cdn){
     /* long timeout: a big game fetched from githack can take a while */
-    return fetchTimeout(cdn.base+"games/"+encodeURIComponent(name),20000).then(function(r){return r.text();}).then(function(html){
-      return {html:html,href:cdn.base+"games/",host:cdn.name};
+    var url=cdn.base+"games/"+encodePath(name);
+    return fetchTimeout(url,20000).then(function(r){return r.text();}).then(function(html){
+      if(!isGameHTML(html))throw new Error("source returned a non-game response");
+      return {html:html,href:dirOf(url),host:cdn.name};
     });
   },startIdx,onTry);
 }
@@ -194,6 +276,7 @@ function loadGameHTML(name,onTry){
       if(i>=urls.length)return Promise.reject(new Error("all storage hosts failed"));
       var u=urls[i++];
       return fetchTimeout(u,20000).then(function(r){return r.text();}).then(function(html){
+        if(!isGameHTML(html))throw new Error("storage returned a non-game response");
         return {html:html,href:dirOf(u),host:"storage"};
       }).catch(tryUrl);
     }
@@ -224,15 +307,7 @@ function play(g){
   loadGameHTML(g.file,function(cdn,i,total){
     loading(w,g.dn,"source "+i+"/"+total+" · "+cdn.name+"…");
   }).then(function(res){
-    var html=res.html;
-    /* Only add a <base> when the game doesn't have its own — the game
-       code itself is never touched otherwise. */
-    if(!/<base\s/i.test(html)){
-      var base='<base href="'+res.href+'">';
-      if(/<head[^>]*>/i.test(html))html=html.replace(/<head([^>]*)>/i,function(m,a){return '<head'+a+'>'+base;});
-      else if(/<html[^>]*>/i.test(html))html=html.replace(/<html([^>]*)>/i,function(m,a){return '<html'+a+'>'+base;});
-      else html=base+html;
-    }
+    var html=prepareGameHTML(res.html,res.href);
     w.document.open();
     w.document.write(html);
     w.document.close();
